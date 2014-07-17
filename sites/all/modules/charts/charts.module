@@ -36,7 +36,7 @@ function charts_menu() {
     'file' => 'includes/charts.examples.inc',
     'type' => MENU_NORMAL_ITEM,
   );
-  $items['charts/examples/built-in'] = array(
+  $items['charts/examples/built-inchart_get_librar'] = array(
     'title' => 'Built-in examples',
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
@@ -103,6 +103,9 @@ function charts_element_info() {
     '#max' => NULL, // Integer max value on this axis.
     '#min' => NULL, // Integer minimum value on this axis.
     '#opposite' => FALSE, // Display axis on opposite normal side.
+    '#minRange' => NULL,
+    '#tickInterval' => NULL,
+    '#dateTimeLabelFormats' => NULL,
   );
   $info['chart_xaxis'] = array(
   ) + $axis_properties;
@@ -121,6 +124,8 @@ function charts_element_info() {
     '#line_width' => 1, // Line chart only.
     '#marker_radius' => 3, // Line chart only. Size in pixels, e.g. 1, 5.
     '#target_axis' => NULL, // If using multiple axes, key for the matching y axis.
+    '#pointInterval' => NULL,
+    '#pointStart' => NULL,
 
     // Formatting options.
     '#decimal_count' => NULL, // The number of digits after the decimal separator. e.g. 2
@@ -317,7 +322,7 @@ function charts_type_info() {
  */
 function chart_get_type($chart_type) {
   $types = charts_type_info();
-  return $types[$chart_type] ? $types[$chart_type] : FALSE;
+  return isset($types[$chart_type]) ? $types[$chart_type] : FALSE;
 }
 
 /**
@@ -341,6 +346,10 @@ function charts_charts_type_info() {
   );
   $chart_types['line'] = array(
     'label' => t('Line'),
+    'axis' => CHARTS_DUAL_AXIS,
+  );
+  $chart_types['spline'] = array(
+    'label' => t('Spline'),
     'axis' => CHARTS_DUAL_AXIS,
   );
   $chart_types['area'] = array(

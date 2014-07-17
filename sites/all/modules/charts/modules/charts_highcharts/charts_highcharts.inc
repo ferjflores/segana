@@ -73,6 +73,13 @@ function _charts_highcharts_populate_chart_options($chart, $chart_definition) {
   $chart_definition['title']['style']['fontSize'] = $chart['#title_font_size'];
   $chart_definition['title']['verticalAlign'] = $chart['#title_position'] === 'in' ? 'top' : NULL;
   $chart_definition['title']['y'] = $chart['#title_position'] === 'in' ? 24: NULL;
+  $chart_definition['subtitle']['text'] = isset($chart['#subtitle']) ? $chart['#subtitle'] : NULL;
+  $chart_definition['subtitle']['style']['color'] = isset($chart['#subtitle_color']) ? $chart['#subtitle_color'] : NULL;
+  $chart_definition['subtitle']['style']['fontWeight'] = isset($chart['#subtitle_font_weight']) ? $chart['#subtitle_font_weight'] : NULL;
+  $chart_definition['subtitle']['style']['fontStyle'] = isset($chart['#subtitle_font_style']) ? $chart['#subtitle_font_style'] : NULL;
+  $chart_definition['subtitle']['style']['fontSize'] = isset($chart['#subtitle_font_size']) ? $chart['#subtitle_font_size'] : NULL;
+  $chart_definition['subtitle']['verticalAlign'] = isset($chart['#subtitle_position']) && $chart['#subtitle_position'] === 'in' ? 'top' : NULL;
+  $chart_definition['subtitle']['y'] = isset($chart['#subtitle_position']) && $chart['#subtitle_position'] === 'in' ? 24: NULL;
   $chart_definition['colors'] = $chart['#colors'];
   $chart_definition['chart']['style']['fontFamily'] = $chart['#font'];
   $chart_definition['chart']['style']['fontSize'] = $chart['#font_size'];
@@ -80,13 +87,26 @@ function _charts_highcharts_populate_chart_options($chart, $chart_definition) {
   $chart_definition['plotOptions']['series']['stacking'] = !is_string($chart['#stacking']) && $chart['#stacking'] ? 'normal' : $chart['#stacking'];
   $chart_definition['tooltip']['enabled'] = $chart['#tooltips'] ? TRUE : FALSE;
   $chart_definition['tooltip']['useHTML'] = $chart['#tooltips_use_html'] ? TRUE : FALSE;
-  $chart_definition['plotOptions']['series']['dataLabels']['enabled'] = $chart['#data_labels'] ? TRUE : FALSE;
-
+  $chart_definition['tooltip']['shared'] = isset($chart['#tooltips_shared']) ? TRUE : FALSE;
+  $chart_definition['tooltip']['dateTimeLabelFormats'] = isset($chart['#dateTimeLabelFormats']) ? $chart['#dateTimeLabelFormats'] : NULL; 
+  //$chart_definition['plotOptions']['series']['dataLabels']['enabled'] = $chart['#data_labels'] ? TRUE : FALSE;
+  $chart_definition['plotOptions'] = isset($chart['#plotOptions']) ? $chart['#plotOptions'] : NULL;
   // These changes are for consistency with Google. Perhaps too specific?
   if ($chart['#chart_type'] === 'pie') {
-    $chart_definition['plotOptions']['pie']['dataLabels']['distance'] = -30;
-    $chart_definition['plotOptions']['pie']['dataLabels']['color'] = 'white';
-    $chart_definition['plotOptions']['pie']['dataLabels']['format'] = '{percentage:.1f}%';
+    /*$chart_definition['plotOptions']['pie']['dataLabels']['distance'] = $chart['#plotOptions']['pie']['dataLabels']['distance'];
+    $chart_definition['plotOptions']['pie']['dataLabels']['style'] = $chart['#plotOptions']['pie']['dataLabels']['style'];
+    $chart_definition['plotOptions']['pie']['dataLabels']['connectorPadding'] = $chart['#plotOptions']['pie']['dataLabels']['connectorPadding'];
+    $chart_definition['plotOptions']['pie']['dataLabels']['connectorColor'] = $chart['#plotOptions']['pie']['dataLabels']['connectorColor'];
+    $chart_definition['plotOptions']['pie']['dataLabels']['connectorWidth'] = $chart['#plotOptions']['pie']['dataLabels']['connectorWidth'];
+    $chart_definition['plotOptions']['pie']['dataLabels']['x'] = $chart['#plotOptions']['pie']['dataLabels']['x'];
+    $chart_definition['plotOptions']['pie']['dataLabels']['y'] = $chart['#plotOptions']['pie']['dataLabels']['y'];
+    $chart_definition['plotOptions']['pie']['dataLabels']['inside'] = $chart['#plotOptions']['pie']['dataLabels']['inside'];
+    $chart_definition['plotOptions']['pie']['dataLabels']['padding'] = $chart['#plotOptions']['pie']['dataLabels']['padding'];
+    $chart_definition['plotOptions']['pie']['dataLabels']['color'] = $chart['#plotOptions']['pie']['dataLabels']['color'] ? $chart['#plotOptions']['pie']['dataLabels']['color'] : 'white';
+    $chart_definition['plotOptions']['pie']['borderWidth'] = $chart['#plotOptions']['pie']['borderWidth'];
+    $chart_definition['plotOptions']['pie']['allowPointSelect'] = $chart['#plotOptions']['pie']['allowPointSelect'] ? $chart['#plotOptions']['pie']['allowPointSelect'] : TRUE;
+    $chart_definition['plotOptions']['pie']['cursor'] = $chart['#plotOptions']['pie']['allowPointSelect'] ? $chart['#plotOptions']['pie']['allowPointSelect'] : NULL;
+    $chart_definition['plotOptions']['pie']['dataLabels']['format'] = '{percentage:.1f}%';*/
     $chart_definition['tooltip']['pointFormat'] = '<b>{point.y} ({point.percentage:.1f}%)</b><br/>';
   }
 
@@ -95,6 +115,16 @@ function _charts_highcharts_populate_chart_options($chart, $chart_definition) {
   $chart_definition['legend']['title']['style']['fontWeight'] = $chart['#legend_title_font_weight'];
   $chart_definition['legend']['title']['style']['fontStyle'] = $chart['#legend_title_font_style'];
   $chart_definition['legend']['title']['style']['fontSize'] = $chart['#legend_title_font_size'];
+  $chart_definition['legend']['title']['style']['color'] = isset($chart['#legend_title_color']) ? $chart['#legend_title_color'] : NULL;
+  $chart_definition['legend']['itemMarginBottom'] = isset($chart['#legend_itemMarginBottom']) ? $chart['#legend_itemMarginBottom'] : NULL;
+  $chart_definition['legend']['itemWidth'] = isset($chart['#legend_itemWidth']) ? $chart['#legend_itemWidth'] : NULL;
+  $chart_definition['legend']['width'] = isset($chart['#legend_width']) ? $chart['#legend_width'] : NULL;
+  $chart_definition['legend']['itemStyle'] = isset($chart['#legend_itemStyle']) ? $chart['#legend_itemStyle'] : NULL;
+  $chart_definition['legend']['symbolRadius'] = isset($chart['#legend_symbolRadius']) ? $chart['#legend_symbolRadius'] : NULL;
+  $chart_definition['legend']['symbolHeight'] = isset($chart['#legend_symbolHeight']) ? $chart['#legend_symbolHeight'] : NULL;
+  $chart_definition['legend']['symbolWidth'] = isset($chart['#legend_symbolWidth']) ? $chart['#legend_symbolWidth'] : NULL;
+  $chart_definition['legend']['symbolPadding'] = isset($chart['#legend_symbolPadding']) ? $chart['#legend_symbolPadding'] : NULL;
+
   if ($chart['#legend_position'] === 'bottom') {
     $chart_definition['legend']['verticalAlign'] = 'bottom';
     $chart_definition['legend']['layout'] = 'horizontal';
@@ -111,10 +141,10 @@ function _charts_highcharts_populate_chart_options($chart, $chart_definition) {
   $chart_definition['legend']['itemStyle']['fontWeight'] = $chart['#legend_font_weight'];
   $chart_definition['legend']['itemStyle']['fontStyle'] = $chart['#legend_font_style'];
   $chart_definition['legend']['itemStyle']['fontSize'] = $chart['#legend_font_size'];
-  $chart_definition['chart']['width'] = $chart['#width'] ? $chart['#width'] : NULL;
-  $chart_definition['chart']['height'] = $chart['#height'] ? $chart['#height'] : NULL;
+  $chart_definition['chart']['width'] = isset($chart['#width']) ? $chart['#width'] : NULL;
+  $chart_definition['chart']['height'] = isset($chart['#height']) ? $chart['#height'] : NULL;
+  $chart_definition['chart']['zoomType'] = isset($chart['#zoomType']) ? $chart['#zoomType'] : NULL; 
   $chart_definition['credits']['enabled'] = FALSE;
-
   return $chart_definition;
 }
 
@@ -144,6 +174,9 @@ function _charts_highcharts_populate_chart_axes($chart, $chart_definition) {
       $axis['labels']['style']['fontStyle'] = $chart[$key]['#labels_font_style'];
       $axis['labels']['style']['fontSize'] = $chart[$key]['#labels_font_size'];
       $axis['labels']['rotation'] = $chart[$key]['#labels_rotation'];
+      $axis['labels']['staggerLines'] = isset($chart[$key]['#labels_staggerLines']) ? $chart[$key]['#labels_step'] : NULL;
+      $axis['labels']['step'] = isset($chart[$key]['#labels_step']) ? $chart[$key]['#labels_step'] : NULL;
+      $axis['labels']['maxStaggerLines'] = isset($chart[$key]['#maxStaggerLines']) ? $chart[$key]['#maxStaggerLines'] : NULL;
       $axis['gridLineColor'] = $chart[$key]['#grid_line_color'];
       $axis['lineColor'] = $chart[$key]['#base_line_color'];
       $axis['minorGridLineColor'] = $chart[$key]['#minor_grid_line_color'];
@@ -151,6 +184,12 @@ function _charts_highcharts_populate_chart_axes($chart, $chart_definition) {
       $axis['max'] = $chart[$key]['#max'];
       $axis['min'] = $chart[$key]['#min'];
       $axis['opposite'] = $chart[$key]['#opposite'];
+      $axis['minRange'] = $chart[$key]['#minRange'];
+      $axis['tickInterval'] = $chart[$key]['#tickInterval'];
+      $axis['dateTimeLabelFormats'] = isset($chart[$key]['#dateTimeLabelFormats']) ? $chart[$key]['#dateTimeLabelFormats'] : NULL;
+      $axis['maxPadding'] = isset($chart[$key]['#maxPadding']) ? $chart[$key]['#maxPadding'] : NULL;
+      $axis['allowDecimals'] = isset($chart[$key]['#allowDecimals']) ? $chart[$key]['#allowDecimals'] : NULL;
+
 
       // Dealing with axis rotation in a reasonable manner is complicated in
       // Highcharts. We want the label to be reasonably positioned on the
@@ -227,13 +266,24 @@ function _charts_highcharts_populate_chart_data(&$chart, $chart_definition) {
       $series['name'] = $chart[$key]['#title'];
       $series['color'] = $chart[$key]['#color'];
       $series['marker']['radius'] = $chart[$key]['#marker_radius'];
+      $series['marker']['lineWidth'] = $chart[$key]['#marker_lineWidth'];
+      $series['marker']['lineColor'] = $chart[$key]['#marker_lineColor'];
+      $series['marker']['fillColor'] = $chart[$key]['#marker_fillColor'];
       $series['showInLegend'] = $chart[$key]['#show_in_legend'];
+      $series['pointInterval'] = $chart[$key]['#pointInterval'];
+      $series['pointStart'] = $chart[$key]['#pointStart'];
+      $series['zIndex'] = $chart[$key]['#zIndex'];
+      $series['center'] = $chart[$key]['#center'];
+      $series['size'] = $chart[$key]['#size'];
       $series['connectNulls'] = TRUE;
+      $series['width'] = isset($chart[$key]['#width']) ? $chart[$key]['#width'] : NULL;
 
       $series['tooltip']['valueDecimals'] = $chart[$key]['#decimal_count'];
       $series['tooltip']['xDateFormat'] = $chart[$key]['#date_format'];
       $series['tooltip']['valuePrefix'] = $chart[$key]['#prefix'];
       $series['tooltip']['valueSuffix'] = $chart[$key]['#suffix'];
+      $series['plotOptions'] = isset($chart[$key]['#plotOptions']) ? $chart[$key]['#plotOptions'] : NULL;
+
 
       if ($chart[$key]['#prefix'] || $chart[$key]['#suffix']) {
         $yaxis_index = isset($series['yAxis']) ? $series['yAxis'] : 0;

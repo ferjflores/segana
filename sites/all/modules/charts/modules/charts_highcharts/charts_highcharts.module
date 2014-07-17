@@ -36,12 +36,13 @@ function charts_highcharts_library() {
     'version' => '1.0',
     'js' => array(
       array('data' => drupal_get_path('module', 'charts_highcharts') . '/charts_highcharts.js', 'type' => 'file'),
+      array('data' => 'sites/all/libraries/highcharts/js/modules/exporting.js', 'type' => 'file'),
+      array('data' => 'sites/all/libraries/highcharts/js/export-csv/export-csv.js', 'type' => 'file'),
     ),
     'dependencies' => array(
       array('charts_highcharts', 'highcharts'),
     ),
   );
-
   return $library;
 }
 

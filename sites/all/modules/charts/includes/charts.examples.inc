@@ -4,6 +4,7 @@
  * Menu callback; Display all examples in the system.
  */
 function charts_examples($library = NULL, $id = NULL) {
+  //drupal_add_js('/sites/all/libraries/highcharts/js/modules/exporting.js', array('weight' => 18));
   $functions = get_defined_functions();
   if ($library && $library_info = chart_get_library($library)) {
     $charts_info = array($library => $library_info);
