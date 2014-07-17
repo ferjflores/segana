@@ -1,0 +1,116 @@
+<?php
+function vistas_menu() {
+  $items = array();
+
+
+  $items['notas/ver/%'] = array(
+    'page callback' => 'vista_notas',
+    'file' => 'vistas.inc',
+    'page arguments' => array(2),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+  );
+   $items['elementos_discursivos/ver/%'] = array(
+    'page callback' => 'vista_elementos_discursivos',
+    'file' => 'vistas.inc',
+    'page arguments' => array(2),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+  );
+   $items['agregar/%'] = array(
+    'page callback' => 'agregar_contenido',
+    'file' => 'vistas_form.inc',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'description' => t('Agregar contenido'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['editar/%/%'] = array(
+    'page callback' => 'editar_contenido',
+    'file' => 'vistas_form.inc',
+    'page arguments' => array(1,2),
+    'access arguments' => array('access content'),
+    'description' => t('Editar contenido'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+
+function agregar_contenido($tipo_contenido) {
+  $hash = generateHash();
+  switch($tipo_contenido) {
+    case 'matriz':
+      $tipo_contenido_plural = 'matrices';
+      break;
+    case 'actor':
+      $tipo_contenido_plural = 'actores';
+      break;
+    default:
+      $tipo_contenido_plural = $tipo_contenido ."s";
+  }
+  $titulo = theme('html_tag', array(
+    'element' => array(
+      '#tag' => 'span',
+      '#attributes' => array(
+        'class' => 'titulo-tipo',
+       ),
+      '#value' => ucfirst($tipo_contenido_plural)
+    ),
+  ));
+  $titulo_accion = theme('html_tag', array(
+    'element' => array(
+      '#tag' => 'span',
+      '#attributes' => array(
+        'class' => 'titulo-tipo',
+       ),
+      '#value' => ' para agregar'
+    ),
+  ));
+  drupal_set_title($titulo . $titulo_accion, PASS_THROUGH);
+  $output = drupal_get_form('vistas_' . $tipo_contenido . '_form_' . $hash);
+  return $output;
+}
+
+function editar_contenido($nid) {
+  $hash = generateHash();
+  $node = node_load($nid);
+  $tipo_contenido = $node->type;
+  switch($tipo_contenido) {
+    case 'matriz':
+      $tipo_contenido_plural = 'matrices';
+      break;
+    case 'actor':
+      $tipo_contenido_plural = 'actores';
+      break;
+    default:
+      $tipo_contenido_plural = $tipo_contenido ."s";
+  }
+  $titulo = theme('html_tag', array(
+    'element' => array(
+      '#tag' => 'span',
+      '#attributes' => array(
+        'class' => 'titulo-tipo',
+       ),
+      '#value' => $tipo_contenido_plural
+    ),
+  ));
+  $titulo_accion = theme('html_tag', array(
+    'element' => array(
+      '#tag' => 'span',
+      '#attributes' => array(
+        'class' => 'titulo-tipo',
+       ),
+      '#value' => ' para agregar'
+    ),
+  ));
+  drupal_set_title($titulo . $titulo_accion);
+  $output = drupal_get_form('vistas_' .$tipo_contenido . '_form_editar_' . $hash, $nid);
+  return $output;
+}
+
+
+?>

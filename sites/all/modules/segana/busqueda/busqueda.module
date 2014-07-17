@@ -1,0 +1,63 @@
+<?php
+
+function busqueda_menu() {
+  $items = array();
+
+  $items['busqueda/autocomplete_area'] = array(
+    'page callback' => 'autocomplete_busqueda_area',
+    'file' => 'busqueda_autocomplete.inc',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access user profiles'),
+  );
+  $items['busqueda/autocomplete_tema'] = array(
+    'page callback' => 'autocomplete_busqueda_tema',
+    'file' => 'busqueda_autocomplete.inc',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access user profiles'),
+  );
+  $items['busqueda/autocomplete_matriz'] = array(
+    'page callback' => 'autocomplete_busqueda_matriz',
+    'file' => 'busqueda_autocomplete.inc',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access user profiles'),
+  );
+  $items['busqueda/autocomplete_actor'] = array(
+    'page callback' => 'autocomplete_busqueda_actor',
+    'file' => 'busqueda_autocomplete.inc',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access user profiles'),
+  );
+  return $items;
+}
+
+
+module_load_include('inc', 'busqueda', 'form_busqueda');
+module_load_include('inc', 'busqueda', 'funciones_busqueda_form');
+
+function busqueda_forms($form_id) {
+  $forms = array();
+  if (strpos($form_id, 'busqueda_form_') === 0) {
+    $forms[$form_id] = array(
+      'callback' => 'busqueda_form',
+    );
+  }
+  return $forms;
+}
+
+function busqueda_form_alter(&$form, $form_state, $form_id) {
+  if (strpos($form_id, 'busqueda_form_comportamiento_mediatico') === 0) {
+    $form['#attributes'] = array('class' => 'busqueda-form-comportamiento-mediatico');
+  }
+  if (strpos($form_id, 'busqueda_form_edicion_variables') === 0) {
+    $form['#attributes'] = array('class' => 'busqueda-form-edicion-variables');
+  }
+//      $form['#ajax'] = array('enabled' => TRUE);
+
+}
+
+function tipos() {
+  return array('area', 'tema', 'matriz', 'actor');
+}
+
+
+?>
