@@ -285,7 +285,7 @@ function _neat_scrollbar_css_validate($element, $form_state) {
   // Ready variables.
   $vertical_css = $form_state['values']['neat_scrollbar_content']['vertical_css'];
   $horz_css = $form_state['values']['neat_scrollbar_content']['horizontal_css'];
-  $regex = '#[\.\#]{1}[_a-zA-Z0-9-]+,{1}#';
+  $regex = '#[_a-zA-Z0-9-_\[\]\^\=\.]+,{1}#';
   // Build regex & form validation for vertical & horizontal styles.
   // Unmatched entries will be parsed to an array.
   $vert_css_array = preg_split($regex, $vertical_css, -1, PREG_SPLIT_NO_EMPTY);
