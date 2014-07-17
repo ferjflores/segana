@@ -1,0 +1,234 @@
+.page-notas h1.page__title {
+	padding-bottom: 46px;
+}
+
+.page-notas .principal {
+	width: 874px;
+	float: left;
+	background-color: #E7EBEE;
+}
+.pane-notas {
+	padding-right: 22px;
+	padding-left: 101px;
+}
+
+div.encabezado_notas {
+	border-top: 1px solid #A9B2B8;
+	margin: 0;
+	border-bottom: 1px solid #A9B2B8;
+	height: 67px;
+}
+.page-notas .agregar a {
+	font-family: Ubuntu;
+	font-style: italic;
+	font-weight: bold;
+	text-decoration: none;
+	color: #AAB6BE;
+	background-image: url("/sites/all/themes/segana/images/agregar.png");
+	background-repeat: no-repeat;
+	background-position: right center;
+	display: block;
+	font-size: 15px;
+	width: 82px;
+	float: right;
+	margin-right: 14px;
+	margin-top: -65px;
+}
+
+.encabezado_notas div {
+	float: left;
+	font-family: Ubuntu;
+	font-size: 16px;
+	font-weight: bold;
+	min-height: 10px;
+	position: relative;
+	top: 46px;
+	color: #505E67;
+	right: 19px;
+}
+
+.encabezado_notas-fecha-creacion {
+	width: 160px;
+	margin-right: 39px;
+	margin-left: 609px;
+}
+
+.page-notas .views-exposed-form {
+	float: right;
+}
+
+
+.page-notas .views-exposed-widgets {
+	margin: 0;
+}
+.page-notas .views-exposed-form .views-exposed-widget {
+	padding: 0;
+	float: none;
+}
+
+.page-notas .views-exposed-form .views-exposed-widget label {
+	float: left;
+	font-family: Ubuntu;
+	font-style: italic;
+	color: #8897A0;
+	font-size: 15px;
+	position: absolute;
+	right: 10px;
+}
+
+.page-notas .views-exposed-form .views-exposed-widget:focus label {
+	display: none;
+}
+
+/*.page-notas .views-exposed-form .views-widget {
+	float: left;
+	width: 229px;
+}*/
+
+.page-notas .views-exposed-form .form-item-title {
+	float: right;
+	/*margin-top: -1px;*/
+	border-radius: 4px 4px 4px 4px;
+}
+.page-notas .views-exposed-form .form-item-title #edit-title {
+	padding-left: 28px;
+	width: 201px;
+	background: url("/sites/all/themes/segana/images/lupa.png") no-repeat scroll 8px 50% #F4F5F7;
+	border: 1px solid #E2E6E9;
+	border-radius: 4px 4px 4px 4px;
+}
+
+.page-notas .filtro {
+	position: absolute;
+	right: 21px;
+	top: -27px;
+}
+
+.page-notas .views-row {
+	/*margin-top: 2px;*/
+	border-bottom: 1px solid #A9B2B8;
+	/*padding-bottom: 5px;*/
+}
+
+.page-notas .views-row .views-field-title {
+	display: inline-block;
+	vertical-align: top;
+	margin-right: 10px;
+	width: 563px;
+}
+.page-notas .views-row span {
+	color: black;
+	font-family: ubuntu;
+	font-size: 14px;
+}
+
+.page-notas .views-row a {
+	color: black;
+	font-family: ubuntu;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 14px;
+}
+.page-notas .views-row .views-field-nothing {
+	margin-right: 10px;
+	display: inline-block;
+}
+
+.page-notas .views-row .views-field-nothing .fecha_creacion,
+.page-notas .views-row .views-field-nothing .fecha_actualizacion {
+	width: 81px;
+}
+
+.page-notas .views-row .views-field-nothing .usuario,
+.page-notas .views-row .views-field-nothing .usuario {
+	width: 162px;
+	font-size: 13px;
+	letter-spacing: -0.5px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	line-height: 15px;
+}
+.page-notas .views-row .views-field-title div {
+	width: 465px;
+}
+.page-notas div.ver-editar a {
+	display: none;
+}
+.page-notas .views-row a {
+	color: black;
+	font-family: ubuntu;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 14px;
+}
+.page-notas .views-row .views-field-title .ver-editar {
+	width: 250px;
+	height: 24px;
+}
+
+.page-notas .views-row:hover div.ver-editar a{
+	display: inline;
+    color: #5F5E5E;
+    float: left;
+    font-family: ubuntu;
+    font-size: 14px;
+    font-style: italic;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+
+.page-notas ul.pager {
+	float: left;
+	display: block;
+	padding: 0pt;
+	margin: 21px 11px 0pt 7px;
+}
+.page-notas li.pager-previous {
+	background-image: url("../images/scroll-izq.png");
+	background-repeat: no-repeat;
+	background-position: left center;
+	padding: 0pt;
+	height: 15px;
+	width: 15px;
+	display: inline-block;
+}
+
+.page-notas li.pager-current {
+	display: none;
+}
+.page-notas li.pager-next {
+	background-image: url("../images/scroll-der.png");
+	background-repeat: no-repeat;
+	background-position: right center;
+	padding: 0pt;
+	width: 15px;
+	height: 15px;
+	display: inline-block;
+}
+
+.page-notas li.pager-next a {
+	color: transparent;
+	padding: 0pt;
+}
+.page-notas li.pager-next a {
+	color: transparent;
+	padding: 0pt;
+}
+.page-notas li.pager-previous a {
+	color: transparent;
+	padding: 0pt;
+}
+
+
+.page-notas .view-footer {
+	padding: 5px;
+	margin-top: 11px;
+	font-family: ubuntu;
+	font-size: 14px;
+	font-weight: bold;
+	letter-spacing: -0.4px;
+	color: #505E67;
+	margin-bottom: 5px;
+}

@@ -1,0 +1,132 @@
+.page-alertas h2.pane-title {
+	text-decoration: none;
+	font-family: ubuntu;
+	font-weight: bold;
+	text-indent: 16px;
+	height: 59px;
+	color: #6B7A84;
+	text-transform: uppercase;
+	font-size: 18px;
+	padding: 34px 40px 0pt 0pt;
+	margin: 0;
+}
+
+.page-alertas .views-field-name a{
+	text-decoration: none;
+	font-family: ubuntu;
+	font-weight: bold;
+	color: #010000;
+	margin-right: 8px;
+	font-size: 14px;
+}
+
+.page-alertas .views-field-description {
+	font-size: 12px;
+	font-family: ubuntu;
+}
+
+.panel-alertas {
+}
+
+.panel-alertas .superior .views-row,
+.panel-alertas .medio .views-row {
+	width: 347px;
+	vertical-align: top;
+	padding: 8px;
+	border-top: #8D99A1 1px solid;
+	display: inline-table;
+	margin-right: -6px;
+}
+
+
+.panel-alertas .superior,
+.panel-alertas .inferior  {
+	background-color: rgba(208, 216, 221, 0.5);
+	padding-left: 101px;
+	padding-bottom: 26px;
+}
+
+.panel-alertas .medio {
+	background-color: rgba(208, 216, 221, 1);
+	padding-left: 101px;
+	padding-bottom: 26px;
+}
+
+.panel-alertas .views-row-last:after{
+	content : "";
+	position: absolute;
+	left    : 0;
+	bottom  : 0;
+	height  : 1px;
+	width   : 726px;
+	border-bottom: #8D99A1 1px solid;
+}
+.panel-alertas .view-content {
+	width: 766px;
+	overflow: hidden !important;
+}
+.alertas_scrollbar {
+	height: 251px;
+}
+
+.panel-alertas p {
+	margin: 0;
+	line-height: 16px;
+}
+
+
+.alertas_scrollbar .mCSB_scrollTools .mCSB_buttonDown {
+	background-position: 0;
+}
+
+.alertas_scrollbar .mCSB_scrollTools .mCSB_buttonUp {
+	background-position: 0;
+}
+
+.alertas_scrollbar .mCSB_scrollTools .mCSB_buttonUp {
+	background-image: url(../images/scroll-up.png);
+	opacity: 1;
+	height: 15px;
+}
+.alertas_scrollbar .mCSB_scrollTools .mCSB_buttonDown {
+	background-image: url(../images/scroll-down.png);
+	opacity: 1;
+	top: 19px;
+	height: 15px;
+}
+.alertas_scrollbar .mCSB_scrollTools a + .mCSB_draggerContainer{
+	margin: 0;
+	height: 202px;
+	top: 39px;
+	right: 1px;
+}
+.alertas_scrollbar .mCSB_container{
+	padding-top: 10px;
+}
+
+.alertas_scrollbar .mCSB_scrollTools {
+	width: 15px;
+}
+
+.alertas_scrollbar .mCSB_scrollTools:after{
+	content : "";
+	position: absolute;
+	left    : -5px;
+	bottom  : 10px;
+	height  : 231px;
+	width   : 1px;
+	border-left: gray 1px solid;
+}
+
+.alertas_scrollbar .mCSB_draggerRail {
+	display: none;
+}
+
+.alertas_scrollbar .mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
+	color: #D3D8DC;
+	overflow: hidden;
+	cursor: pointer;
+	border-radius: 2px 2px 2px 2px;
+	height: 49px;
+	width: 6px;
+}

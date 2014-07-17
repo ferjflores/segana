@@ -1,0 +1,1020 @@
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico,
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico legend,
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico fieldset ,
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico label {
+	font-family: ubuntu;
+	font-weight: bold;
+	text-decoration: none;
+	clear: none;
+	color: #6B7A84;
+	text-transform: uppercase;
+	font-size: 12px;
+}
+
+.page-comportamiento-mediatico div#edit-opciones {
+	float: left;
+	background-color: rgba(208, 216, 221, 0.5);
+	padding-left: 100px;
+	width: 774px;
+	min-height: 365px;
+}
+
+.page-comportamiento-mediatico fieldset {
+	-webkit-margin-start: 0;
+	-webkit-margin-end: 0;
+	-webkit-padding-before: 0;
+	-webkit-padding-start: 0;
+	-webkit-padding-end: 0;
+	-webkit-padding-after: 0;
+	border: medium none;
+	margin: 0pt;
+	padding: 0pt;
+}
+
+.page-comportamiento-mediatico div.fieldset-wrapper {
+	font-size: 0;
+}
+
+.page-comportamiento-mediatico #edit-opciones-izquierda {
+	float: left;
+	margin-top: 24px;
+}
+
+
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .form-item-tipo-localizacion,
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico div[id^=edit-wrapper-area],
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico div[id^=edit-wrapper-tema],
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico div[id^=edit-wrapper-matriz],
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico div[id^=edit-wrapper-actor],
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .form-item-palabra-clave,
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .form-checkboxes .form-item,
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .form-item-busqueda-exacta,
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .form-item-cualquiera {
+	float: none;
+	clear: both;
+	position: relative;
+	left: 0px;
+	display: block;
+	margin: 0px;
+}
+
+.page-comportamiento-mediatico #edit-opciones-izquierda div.form-item select {
+	color: #8897A0;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #A9B6BB;
+	width: 152px;
+	margin-top: 6px;
+}
+
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .form-text,
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .form-select {
+	color: black;
+	font-family: ubuntu;
+	font-size: 13px;
+	background-color: #F0F2F4;
+}
+
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .form-item-busqueda-exacta input,
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .form-item-cualquiera input,
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .form-item-primera-pagina input {
+	margin: 2px 0pt;
+}
+
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico #primera_pagina {
+	clear: both;
+	height: 27px;
+	width: 115px;
+	margin: 0pt 0pt 0pt 16px;
+}
+
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .form-item-busqueda-exacta label,
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .form-item-cualquiera label,
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico #primera_pagina label {
+	margin: 0px !important;
+	float: none !important;
+}
+
+.page-comportamiento-mediatico .form-item-busqueda-exacta label.option,
+.page-comportamiento-mediatico .form-item-cualquiera label.option,
+.page-comportamiento-mediatico #primera_pagina label {
+	font-style: italic;
+	font-weight: bold;
+	text-transform: none;
+}
+
+.page-comportamiento-mediatico .form-item-busqueda-exacta label.option,
+.page-comportamiento-mediatico .form-item-cualquiera label.option {
+	font-size: 11px;
+	position: absolute;
+	top: 4px;
+}
+
+.page-comportamiento-mediatico div#fecha {
+	position: absolute;
+	background-image: url("/sites/all/themes/segana/images/fecha-fondo.png");
+	width: 348px;
+	height: 33px;
+	background-repeat: no-repeat;
+	top: 69px;
+	right: 303px;
+}
+.page-comportamiento-mediatico div#fecha legend {
+	float: left;
+	color: white;
+	margin: 6px 0pt 0pt 8px;
+}
+
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .container-inline-date {
+	float: left;
+	clear: none;
+	position: relative;
+	left: 0pt;
+	display: block;
+	width: 141px;
+	margin: 0pt;
+}
+
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .form-item-fecha-desde {
+	border-right: 1px solid white;
+}
+.page-comportamiento-mediatico .form-item-fecha-desde label[for^=edit-fecha-desde],
+.page-comportamiento-mediatico .form-item-fecha-hasta label[for^=edit-fecha-hasta] {
+	color: white;
+	float: left;
+	font-size: 12px;
+	font-style: italic;
+	text-transform: none;
+	margin-right: 5px;
+}
+.page-comportamiento-mediatico .form-item-fecha-hasta label[for^=edit-fecha-hasta] {
+	margin-left: 9px;
+}
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .form-item-fecha-desde,
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .form-item-fecha-hasta {
+	width: 139px;
+	margin: 6px 8px 8px;
+	height: 19px;
+}
+
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .container-inline-date div.date-padding,
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .container-inline-date div.date-padding div.form-item {
+	width: 74px;
+	padding: 0;
+}
+
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico div.date-padding label[for^=edit-fecha] {
+	display: none;
+}
+
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .container-inline-date .description {
+	display: none;
+}
+
+.page-comportamiento-mediatico div.date-padding input[id^=edit-fecha] {
+	float: left;
+	color: white;
+	font-size: 14px;
+	background-color: transparent;
+	border: medium none;
+	width: 75px;
+	margin-top: 3px;
+}
+
+.page-comportamiento-mediatico #edit-opciones-derecha {
+	float: right;
+	min-height: 304px;
+	border-left: 1px solid #8D99A1;
+	padding-right: 23px;
+	padding-left: 28px;
+	width: 318px;
+	margin-bottom: 11px;
+	margin-top: 17px;
+}
+
+.page-comportamiento-mediatico #edit-opciones-derecha label {
+	float: left;
+	clear: left;
+	margin-top: 7px;
+	line-height: 14px;
+}
+
+.page-comportamiento-mediatico .form-item-palabra-clave label {
+	width: 67px;
+	line-height: 11px;
+	margin: 3px 0pt;
+}
+
+.page-comportamiento-mediatico .form-item-palabra-clave textarea {
+	float: left;
+	height: 25px;
+	background-color: #F0F2F4;
+	border: 1px solid #A9B6BB;
+	resize: vertical;
+	width: 225px;
+	color: #8897A0;
+	font-size: 14px;
+	border-radius: 3px 3px 3px 3px;
+	margin:9px 0 0 9px;
+	line-height: 23px;
+}
+
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico #edit-opciones-derecha .form-item-busqueda-exacta,
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico #edit-opciones-derecha .form-item-cualquiera {
+	height: 27px;
+	margin: 0 10px;
+	float: left;
+}
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico #edit-opciones-derecha .form-item-cualquiera {
+	width: 159px;
+	clear: none;
+}
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico #edit-opciones-derecha .form-item-busqueda-exacta {
+	width: 100px;
+	clear: left;
+	margin-left: 29px;
+}
+
+.page-comportamiento-mediatico input[type="checkbox"] {
+	width: 15px;
+	height: 15px;
+	margin: 0pt 1px 0pt 4px;
+}
+
+
+.page-comportamiento-mediatico input[id^=edit-agregar-area],
+.page-comportamiento-mediatico input[id^=edit-agregar-tema],
+.page-comportamiento-mediatico input[id^=edit-agregar-matriz],
+.page-comportamiento-mediatico input[id^=edit-agregar-actor]{
+	float: right;
+	position: relative;
+	left: 0pt;
+	display: block;
+	margin: 5px 0px 6px 0px	;
+	border: 0px none;
+	width: 14px;
+	height: 14px;
+}
+
+.page-comportamiento-mediatico input {
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #A9B6BB;
+}
+
+.page-comportamiento-mediatico #edit-opciones-derecha input.form-text {
+	float: right;
+	height: 23px;
+	color: #8897A0;
+	text-transform: uppercase;
+	padding: 0 15px 0 1px;
+}
+
+html.js .page-comportamiento-mediatico input.form-autocomplete {
+	background-position: 100% 4px !important;
+	background-repeat: no-repeat;
+}
+
+html.js .page-comportamiento-mediatico input.throbbing {
+	background-position: 100% -17px !important;
+}
+
+.page-comportamiento-mediatico input:focus,
+.page-comportamiento-mediatico textarea:focus,
+.page-comportamiento-mediatico select:focus {
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #6B7A84;
+	outline: none;
+}
+
+
+
+.page-comportamiento-mediatico #edit-opciones-derecha div.form-item {
+	width: 301px;
+	margin-right: 3px;
+	float: left;
+}
+
+
+.page-comportamiento-mediatico #edit-opciones-area,
+.page-comportamiento-mediatico #edit-opciones-tema,
+.page-comportamiento-mediatico #edit-opciones-matriz,
+.page-comportamiento-mediatico #edit-opciones-actor {
+	margin: 9px 0;
+	float: left;
+	width: 318px;
+}
+
+
+.page-comportamiento-mediatico #lista_elementos_area,
+.page-comportamiento-mediatico #lista_elementos_tema,
+.page-comportamiento-mediatico #lista_elementos_matriz,
+.page-comportamiento-mediatico #lista_elementos_actor {
+	float: right;
+	width: 260px;
+}
+
+.page-comportamiento-mediatico #lista_elementos_area fieldset input,
+.page-comportamiento-mediatico #lista_elementos_tema fieldset input,
+.page-comportamiento-mediatico #lista_elementos_matriz fieldset input,
+.page-comportamiento-mediatico #lista_elementos_actor fieldset input {
+	border: medium none;
+	float: right;
+	margin: 4px 4px 0pt 6px;
+	clear: right;
+}
+
+
+.page-comportamiento-mediatico #lista_elementos_area div#elemento,
+.page-comportamiento-mediatico #lista_elementos_tema div#elemento,
+.page-comportamiento-mediatico #lista_elementos_matriz div#elemento,
+.page-comportamiento-mediatico #lista_elementos_actor div#elemento {
+	float: right;
+	color: #8897A0;
+	font-weight: normal;
+	font-size: 13px;
+	max-width: 236px;
+	text-align: right;
+	line-height: 12px;
+	margin: 4px 0;
+}
+.page-comportamiento-mediatico #botones {
+	clear: both;
+	margin-left: -100px;
+	height: 33px;
+	background-color: rgba(170, 182, 190, 0.7);
+	padding-right: 23px;
+	width: 851px;
+}
+.page-comportamiento-mediatico #botones fieldset {
+	height: 100%;
+}
+
+.page-comportamiento-mediatico #botones input {
+	float: right;
+	border: medium none;
+	font-style: italic;
+	background-color: transparent;
+	color: white;
+	font-weight: bold;
+	font-family: ubuntu;
+	width: 124px;
+	height: 25px;
+	background-image: url("/sites/all/themes/segana/images/busqueda-boton.png");
+	padding-bottom: 2px;
+	margin-top: 4px;
+	margin-left: 2px;
+	font-size: 11px;
+}
+
+.page-comportamiento-mediatico .form-item-tipo-informacion {
+	margin: 12px 0;
+}
+
+
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico #medios-wrapper {
+	position: absolute;
+	margin-top: 14px;
+	left: 270px;
+	width: 214px;
+}
+
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico #medios-wrapper .form-item {
+	width: 194px;
+}
+
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico .form-item-medios {
+	margin: 12px 12px 12px 0;
+}
+
+.page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico #medios-wrapper label {
+	float: left;
+	clear: both;
+	width: 220px;
+}
+
+.page-comportamiento-mediatico div[id^=edit-medios] {
+	border: 1px solid #A9B6BB;
+	background-color: #F0F2F4;
+	margin-top: 4px;
+	width: 214px;
+	height: 261px;
+	border-radius: 3px 3px 3px 3px;
+	padding-top: 4px;
+	clear: both;
+	overflow: hidden;
+}
+
+.page-comportamiento-mediatico #medios-wrapper div[id^=edit-medios] .form-item label {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 174px;
+	font-weight: normal;
+	float: right;
+	line-height: 18px;
+}
+
+.page-comportamiento-mediatico #medios-wrapper div[id^=edit-medios] .form-item {
+	height: 20px;
+	letter-spacing: -0.3px;
+}
+
+form.busqueda-form-comportamiento-mediatico .mCSB_scrollTools .mCSB_buttonDown {
+	background-position: 0;
+}
+
+form.busqueda-form-comportamiento-mediatico .mCSB_scrollTools .mCSB_buttonUp {
+	background-position: 0;
+}
+
+form.busqueda-form-comportamiento-mediatico .mCSB_scrollTools .mCSB_buttonUp {
+	background-image: url(../images/scroll-up.png);
+	opacity: 1;
+	height: 15px;
+	top: -1px;
+}
+form.busqueda-form-comportamiento-mediatico .mCSB_scrollTools .mCSB_buttonDown {
+	background-image: url(../images/scroll-down.png);
+	opacity: 1;
+	top: 16px;
+	height: 15px;
+}
+
+form.busqueda-form-comportamiento-mediatico div[id^=edit-medios] .mCSB_scrollTools a + .mCSB_draggerContainer{
+	margin: 0;
+	height: 196px;
+	top: 39px;
+	right: 1px;
+}
+
+form.busqueda-form-comportamiento-mediatico .mCSB_scrollTools {
+	width: 15px;
+	right: 1px;
+}
+
+form.busqueda-form-comportamiento-mediatico div[id^=edit-medios] .mCSB_scrollTools:after{
+	content: "";
+	position: absolute;
+	left: -3px;
+	bottom: 3px;
+	height: 258px;
+	width: 1px;
+	border-left: gray 1px solid;
+}
+
+form.busqueda-form-comportamiento-mediatico .mCSB_draggerRail {
+	display: none;
+}
+
+form.busqueda-form-comportamiento-mediatico div[id^=edit-medios] .mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
+	color: #D3D8DC;
+	overflow: hidden;
+	cursor: pointer;
+	border-radius: 2px 2px 2px 2px;
+	height: 49px;
+	width: 6px;
+}
+
+form.busqueda-form-comportamiento-mediatico  #edit-opciones-graficos .fieldset-legend {
+	background-position: 0px 50%;
+}
+
+
+form.busqueda-form-comportamiento-mediatico  #edit-opciones-graficos .fieldset-legend {
+	padding-left: 10px;
+}
+
+form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos a {
+	text-decoration: none;
+	color: #6B7A84;
+}
+
+form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos .fieldset-wrapper {
+	background-color: rgba(208, 216, 221, 0.5);
+	padding: 4px;
+	width: 140px;
+}
+
+form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos .fieldset-wrapper a,
+form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos .fieldset-wrapper label {
+	font-size: 11px;
+	letter-spacing: -0.4px;
+	text-transform: none;
+}
+form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos .fieldset-wrapper select {
+	font-size: 11px;
+	text-transform: none;
+}
+
+
+form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos .fieldset-wrapper .fieldset-wrapper{
+	width: 140px;
+	padding: 0;
+}
+
+form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos .collapsible{
+	min-height: 20px;
+}
+
+form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos select[name=cantidad_lineal],
+form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos select[name=cantidad_combinado] {
+	width: 40px;
+}
+
+form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos select[name=tipo-combinado] {
+	width: 100px;
+}
+
+form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos .form-type-jquery-colorpicker {
+	width: 45px;
+	display: inline-block;
+}
+
+form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos input[id^=edit-paleta-colores-reiniciar-colores] {
+	border: none;
+	vertical-align: bottom;
+	margin: 3px 3px;
+}
+
+form.busqueda-form-comportamiento-mediatico #graficos {
+	border-bottom: #D3D9DD 33px solid;
+	margin-bottom: 13px;
+}
+form.busqueda-form-comportamiento-mediatico #tabs_graficos {
+	font-size: 12px;
+	padding: 0;
+	border: none;
+	background: none;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos {
+	border-bottom: #626c74 1px solid;
+	border-radius: 0;
+	margin-bottom: 21px;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul {
+	background: transparent url("/sites/all/themes/segana/images/graficos-tabs-fondo.png");
+	width: 1054px;
+	margin-right: 0pt;
+	margin-bottom: 0pt;
+	margin-left: 0pt;
+	margin-top: 14px ! important;
+	height: 28px;
+	padding: 0 0 0 99px;
+	border: none;
+	border-radius: 0;
+}
+
+.page-comportamiento-mediatico #tabs_graficos ul.ui-tabs-nav li {
+	padding: 0pt 0pt 0pt 13px;
+	display: block;
+	float: left;
+	height: 28px;
+	margin: 0 0 0 -13px;
+	border: none;
+	background-color: transparent;
+	border-radius: 0;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos li a {
+	text-transform: uppercase;
+	text-decoration: none;
+	font-size: 12px;
+	font-weight: bold;
+	line-height: 28px;
+	display: block;
+	text-align: center;
+	color: #A7AEB3;
+	padding: 0;
+	float: none;
+	border-style: none;
+	text-decoration: none;
+	border: 0 none;
+	outline: 0;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos li.ui-state-active a,
+form.busqueda-form-comportamiento-mediatico #tabs_graficos li a:hover {
+	color: white;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#notas {
+	background-image: url("/sites/all/themes/segana/images/graficos-tab-notas.png");
+	width: 169px;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#area {
+	background-image: url("/sites/all/themes/segana/images/graficos-tab-area.png");
+	width: 119px;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#tema {
+	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio.png");
+	width: 141px;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#matriz {
+	background-image: url("/sites/all/themes/segana/images/graficos-tab-matriz.png");
+	width: 147px;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#actor {
+	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio.png");
+	width: 141px;
+}
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#medio {
+	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio.png");
+	width: 141px;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#notas.ui-state-active,
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#notas:hover {
+	background-image: url("/sites/all/themes/segana/images/graficos-tab-notas-active.png");
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#area.ui-state-active,
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#area:hover{
+	background-image: url("/sites/all/themes/segana/images/graficos-tab-area-active.png");
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#tema.ui-state-active,
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#tema:hover {
+	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio-active.png");
+	width: 141px;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#matriz.ui-state-active,
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#matriz:hover {
+	background-image: url("/sites/all/themes/segana/images/graficos-tab-matriz-active.png");
+	width: 147px;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#actor.ui-state-active,
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#actor:hover {
+	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio-active.png");
+	width: 141px;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#medio.ui-state-active,
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#medio:hover {
+	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio-active.png");
+	width: 141px;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos .tabs {
+	padding: 0;
+	text-transform: none;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos div.tabs ul {
+	background: none;
+	margin: 0 !important;
+	padding: 0;
+	height: auto;
+	width: 1153px;
+	list-style-type: none;
+}
+form.busqueda-form-comportamiento-mediatico #tabs_graficos div.tabs ul li{
+	float: left;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos .jcarousel-skin-default .jcarousel-container-horizontal {
+	width:1153px;
+	height: 450px;
+	padding: 0;
+	margin: 0;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos #tab-notas>ul>li {
+	width: 1054px;
+	height: 400px;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos #tab-notas .jcarousel-skin-default .jcarousel-container-horizontal {
+	width:1054px;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos #tab-notas .jcarousel-skin-default .jcarousel-container-horizontal {
+	height: 400px;
+}
+
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos .jcarousel-skin-default .jcarousel-clip-horizontal {
+	width: 1153px;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos .jcarousel-skin-default .jcarousel-item {
+	padding: 0;
+	width: 1153px;
+	height: 450px;
+	overflow: hidden;
+	border: none;
+	list-style: none;
+	background: none;
+	margin: 0;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos #tabs-notas .jcarousel-skin-default .jcarousel-item {
+	width:1054px;
+	margin: 0 50px 0 49px;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos #tab-notas .jcarousel-skin-default .jcarousel-item {
+	height: 400px;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos .jcarousel-skin-default .jcarousel-prev-horizontal {
+	position: absolute;
+	bottom: -20px;
+	left: 2px;
+	top: auto;
+	right: auto;
+	background-position: 0 0;
+}
+
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos .jcarousel-skin-default .jcarousel-next-horizontal {
+	position: absolute;
+	bottom: -20px;
+	left: 20px;
+	top: auto;
+	right: auto;
+	background-position: 0;
+}
+
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos .jcarousel-skin-default .jcarousel-prev {
+	display: block;
+	width: 15px;
+	height: 15px;
+	background-image: url(../images/scroll-izq.png);
+	opacity: 0.8;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos .jcarousel-skin-default .jcarousel-prev-disabled {
+	opacity: 0;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos .jcarousel-skin-default .jcarousel-next {
+	display: block;
+	width: 15px;
+	height: 15px;
+	background-image: url(../images/scroll-der.png);
+	opacity: 0.8;
+
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos .jcarousel-skin-default .jcarousel-next-disabled {
+	opacity: 0;
+}
+
+form.busqueda-form-comportamiento-mediatico #tabs_graficos .jcarousel-skin-default .jcarousel-prev:hover,
+form.busqueda-form-comportamiento-mediatico #tabs_graficos .jcarousel-skin-default .jcarousel-next:hover {
+	opacity: 1;
+}
+
+
+
+form.busqueda-form-comportamiento-mediatico #resumen {
+	position: relative;
+	min-height: 271px;
+	clear: both;
+	padding-left: 84px;
+	font-size: 13px;
+}
+
+
+form.busqueda-form-comportamiento-mediatico #resumen canvas {
+	margin: auto;
+}
+
+
+
+
+.page-comportamiento-mediatico #resultados #resumen h3.resumen {
+	margin: 0pt 0pt 2px;
+	height: 18px;
+	font-size: 0;
+	text-transform: none;
+	padding: 0px;
+	border-radius: 0;
+	border: 0;
+	background: none;
+	display: table;
+}
+
+.page-comportamiento-mediatico #resumen h3.resumen div {
+	color: white;
+	text-decoration: none;
+	font-size: 13px;
+	background-color: #505E67;
+	vertical-align: top;
+	height: 19px;
+	text-transform: capitalize;
+	line-height: 19px;
+	font-weight: bold;
+	font-family: ubuntu;
+}
+
+.page-comportamiento-mediatico #resumen #contenido {
+	padding: 0;
+	border-radius: 0;
+	border: 0;
+	background: none;
+	width: 350px;
+}
+.page-comportamiento-mediatico #resumen  .izquierda {
+	display: table-cell;
+	text-align: center;
+	/*color: #53606A;*/
+	width: 70px;
+}
+
+.page-comportamiento-mediatico #resumen .medio {
+	/*color: #53606A;*/
+	display: table-cell;
+	margin-left: 2px;
+	text-align: center;
+	width: 46px;
+	border-left: 2px solid white;
+}
+
+.page-comportamiento-mediatico #resumen .derecha {
+	display: table-cell;
+	padding-left: 6px;
+	margin-left: 2px;
+	width: 194px;
+	max-width: 194px;
+	border-left: 2px solid white;
+}
+
+.page-comportamiento-mediatico #resumen  #blanco {
+	background-color: white;
+}
+.page-comportamiento-mediatico #resumen  #contenido span {
+	text-decoration: none;
+	display: table;
+	text-transform: none;
+	color: #53606A;
+	font-weight: normal;
+	font-size: 12px;
+	font-family: ubuntu;
+	min-height: 19px;
+	cursor: pointer;
+}
+.page-comportamiento-mediatico #resumen  #contenido span.activo {
+	color: #C71E25;
+	font-weight: bold;
+}
+
+.page-comportamiento-mediatico #resumen  #contenido #valores {
+	width: 350px;
+	overflow: hidden;
+	max-height: 171px;
+}
+.page-comportamiento-mediatico #resumen  #contenido #valores span div {
+	min-height: 19px;
+	vertical-align: middle;
+}
+.page-comportamiento-mediatico #resumen  #contenido #valores span.even div {
+	background-color: #E5E9ED;
+}
+.page-comportamiento-mediatico #resumen  #contenido #valores span.odd div {
+	background-color: #D1D9DD;
+}
+
+form.busqueda-form-comportamiento-mediatico div#valores .mCSB_container {
+	margin: 0;
+}
+
+form.busqueda-form-comportamiento-mediatico div#valores .mCSB_scrollTools a + .mCSB_draggerContainer{
+	margin: 0;
+	height: 110px;
+	top: 39px;
+	right: 1px;
+}
+
+form.busqueda-form-comportamiento-mediatico div#valores .mCSB_scrollTools:after{
+	content: "";
+	position: absolute;
+	left: -5px;
+	bottom: 0;
+	height: 171px;
+	width: 1px;
+	border-left: gray 1px solid;
+}
+
+form.busqueda-form-comportamiento-mediatico div#valores .mCSB_scrollTools:before{
+	content: "";
+	position: absolute;
+	right: -8px;
+	bottom: 0;
+	height: 171px;
+	width: 1px;
+	border-left: #D3D8DC 1px solid;
+}
+
+
+form.busqueda-form-comportamiento-mediatico div#valores .mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
+	color: #D3D8DC;
+	overflow: hidden;
+	cursor: pointer;
+	border-radius: 2px 2px 2px 2px;
+	height: 49px;
+	width: 6px;
+}
+
+form.busqueda-form-comportamiento-mediatico div#valores .mCSB_scrollTools {
+	width: 15px;
+	right: 10px;
+}
+
+
+
+.page-comportamiento-mediatico #resumen #contenido #resumen_notas {
+	position: absolute;
+	max-height: 254px;
+	top: 10px;
+	width: 654px;
+	right: 0px;
+	overflow: hidden;
+}
+
+.page-comportamiento-mediatico #resumen #contenido #resumen_notas a {
+	color: #8897A0;
+	text-decoration: none;
+	margin-bottom: 6px;
+	display: block;
+	width: 600px;
+	text-transform: none;
+	height: 17px;
+}
+
+.page-comportamiento-mediatico #resumen #contenido #resumen_notas span {
+	font-size: 13px;
+}
+
+.page-comportamiento-mediatico #resumen #contenido #resumen_notas .fecha {
+	float: left;
+	margin-right: 10px;
+	width: 64px;
+}
+
+.page-comportamiento-mediatico #resumen #contenido #resumen_notas .nota {
+	float: left;
+	width: 526px;
+}
+
+form.busqueda-form-comportamiento-mediatico div#resumen_notas .mCSB_container {
+	margin: 0;
+}
+
+form.busqueda-form-comportamiento-mediatico div#resumen_notas .mCSB_scrollTools a + .mCSB_draggerContainer{
+	margin: 0;
+	height: 195px;
+	top: 39px;
+	right: 1px;
+}
+
+form.busqueda-form-comportamiento-mediatico div#resumen_notas .mCSB_scrollTools:after{
+	content: "";
+	position: absolute;
+	left: -5px;
+	bottom: 0;
+	height: 254px;
+	width: 1px;
+	border-left: gray 1px solid;
+}
+
+form.busqueda-form-comportamiento-mediatico div#resumen_notas .mCSB_scrollTools:before{
+	content: "";
+	position: absolute;
+	right: -8px;
+	bottom: 0;
+	height: 254px;
+	width: 1px;
+	border-left: #D3D8DC 1px solid;
+}
+
+
+form.busqueda-form-comportamiento-mediatico div#resumen_notas .mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
+	color: #D3D8DC;
+	overflow: hidden;
+	cursor: pointer;
+	border-radius: 2px 2px 2px 2px;
+	height: 49px;
+	width: 6px;
+}
+
+form.busqueda-form-comportamiento-mediatico div#resumen_notas .mCSB_scrollTools {
+	width: 15px;
+	right: 10px;
+}
+
+form.busqueda-form-comportamiento-mediatico #resumen #contenido div#resumen_notas a.mCSB_buttonDown,
+form.busqueda-form-comportamiento-mediatico #resumen #contenido div#resumen_notas a.mCSB_buttonUp {
+	height: 15px;
+	width: 15px;
+	margin: 0;
+}

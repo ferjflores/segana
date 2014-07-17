@@ -1,0 +1,96 @@
+#cboxLoadedContent {
+	/*overflow: visible !important;*/
+}
+#vista_notas {
+	font-family: ubuntu;
+	padding: 0 20px 0 13px;
+	/*overflow: hidden;*/
+}
+#vista_notas h2#titulo {
+	font-size: 19px;
+	color: #90999F;
+}
+
+#vista_notas #cuerpo_texto {
+	font-size: 14px;
+}
+
+#vista_notas #fecha_medio {
+	font-size: 14px;
+	clear: both;
+	font-family: ubuntu;
+	font-weight: bold;
+	color: #737E86;
+	position: static;
+	background: none;
+}
+
+#vista_notas #medio {
+	padding: 0 20px;
+	font-size: 15px;
+}
+
+
+#vista_notas #elementos_discursivos {
+	border-spacing: 2px;
+}
+#vista_notas #elementos_discursivos td {
+	font-size: 14px;
+	padding: 4px 10px;
+	width: 22%;
+	text-align: center;
+}
+#vista_notas #elementos_discursivos td.cuerpo_argumentativo {
+	font-size: 12px;
+	line-height: 16px;
+	letter-spacing: -0.2px;
+	text-align: inherit;
+	width: 34%;
+}
+
+#vista_notas #elementos_discursivos th {
+	font-size: 15px;
+	color: #737E86;
+	font-weight: bold;
+}
+#vista_notas #elementos_discursivos th.cuerpo_argumentativo {
+	text-align: justify;
+	padding: 0 10px;
+}
+
+#vista_notas #autor {
+	color: #737E86;
+	font-style: italic;
+	margin-top: 10px;
+}
+
+
+#vista_elementos_discursivos h2#tipo {
+	font-family: ubuntu;
+	font-size: 20px;
+	font-weight: bold;
+	margin: 40px 40px 25px;
+	text-transform: uppercase;
+	color: #5F5E5E;
+}
+
+#vista_elementos_discursivos {
+	font-family: ubuntu;
+	padding: 0 20px 0 13px;
+}
+
+#vista_elementos_discursivos #nombre {
+	font-size: 20px;
+	color: #90999F;
+	margin-bottom: 15px;
+	font-weight: bold;
+}
+
+#vista_elementos_discursivos #fecha {
+	font-size: 14px;
+	color: #737E86;
+}
+
+#vista_elementos_discursivos #descripcion {
+	margin-top: 20px;
+}

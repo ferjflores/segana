@@ -1,0 +1,66 @@
+@font-face {
+	font-family: "Segan";
+	src: url('../fonts/107269288-Segan-Light.eot');
+	src: url('../fonts/107269288-Segan-Light.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/107269288-Segan-Light.svg#Segan') format('svg'),
+		url('../fonts/107269288-Segan-Light.woff') format('woff'),
+		url('../fonts/107269288-Segan-Light.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Segan";
+	src: url('../fonts/107269288-Segan-Light.eot');
+	src: url('../fonts/107269288-Segan-Light.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/107269288-Segan-Light.svg#Segan') format('svg'),
+		url('../fonts/107269288-Segan-Light.woff') format('woff'),
+		url('../fonts/107269288-Segan-Light.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Ubuntu";
+	src: url('../fonts/103363038-Ubuntu-L.eot');
+	src: url('../fonts/103363038-Ubuntu-L.eot?#iefix') format('embedded-opentype'),
+	url('../fonts/103363038-Ubuntu-L.svg#Ubuntu') format('svg'),
+	url('../fonts/103363038-Ubuntu-L.woff') format('woff'),
+	url('../fonts/103363038-Ubuntu-L.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Ubuntu";
+	src: url('../fonts/669006348-Ubuntu-B.eot');
+	src: url('../fonts/669006348-Ubuntu-B.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/669006348-Ubuntu-B.svg#Ubuntu') format('svg'),
+		url('../fonts/669006348-Ubuntu-B.woff') format('woff'),
+		url('../fonts/669006348-Ubuntu-B.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+
+@font-face {
+	font-family: "Ubuntu";
+	src: url('../fonts/813201905-Ubuntu-BI.eot');
+	src: url('../fonts/813201905-Ubuntu-BI.eot?#iefix') format('embedded-opentype'),
+	url('../fonts/813201905-Ubuntu-BI.svg#Ubuntu') format('svg'),
+	url('../fonts/813201905-Ubuntu-BI.woff') format('woff'),
+	url('../fonts/813201905-Ubuntu-BI.ttf') format('truetype');
+	font-weight: bold;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: "Ubuntu";
+	src: url('../fonts/421173096-Ubuntu-LI.eot');
+	src: url('../fonts/421173096-Ubuntu-LI.eot?#iefix') format('embedded-opentype'),
+	url('../fonts/421173096-Ubuntu-LI.svg#Ubuntu') format('svg'),
+	url('../fonts/421173096-Ubuntu-LI.woff') format('woff'),
+	url('../fonts/421173096-Ubuntu-LI.ttf') format('truetype');
+	font-weight: normal;
+	font-style: italic;
+}
