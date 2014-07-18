@@ -95,16 +95,24 @@ function busqueda_form($form, &$form_state) {
 		'#default_value' => isset($form_state['storage']['values']['tipo_informacion']) ? $form_state['storage']['values']['tipo_informacion'] : $tipo_informacion_default,
 		'#options' => $tipo_informacion,
 	);
-	$form['busqueda']['opciones']['izquierda']['opciones_graficos'] = array(
+
+
+
+
+
+
+	///// opciones graficos
+
+	$form['busqueda']['opciones']['opciones_graficos'] = array(
 		'#type' => 'fieldset',
 		'#title' => 'Opciones gráficos',
 		'#collapsible' => TRUE, 
-	  	'#collapsed' => TRUE,
+	  	'#collapsed' => FALSE,
 	  	'#attributes' => array('id' => 'edit-opciones-graficos'),
 		'#prefix' => '<div id="opciones_graficos">',
 		'#suffix' => '</div>',
 	);
-	$form['busqueda']['opciones']['izquierda']['opciones_graficos']['opciones_simple'] = array(
+	$form['busqueda']['opciones']['opciones_graficos']['opciones_simple'] = array(
 		'#type' => 'fieldset',
 		'#title' => 'Gráficos simples',
 		'#collapsible' => TRUE, 
@@ -113,24 +121,24 @@ function busqueda_form($form, &$form_state) {
 		'#prefix' => '<div id="opciones_simple">',
 		'#suffix' => '</div>',
 	);
-	$form['busqueda']['opciones']['izquierda']['opciones_graficos']['opciones_simple']['conectores'] = array(
+	$form['busqueda']['opciones']['opciones_graficos']['opciones_simple']['conectores'] = array(
 			'#type' => 'checkbox',
 			'#title' => t('Usar conectores'),
 			'#attributes' => (isset($form_state['storage']['values']['conectores']) && $form_state['storage']['values']['conectores'] == 1 ) ? array('checked' => 'checked') : NULL,
 	);
-	$form['busqueda']['opciones']['izquierda']['opciones_graficos']['opciones_simple']['otros'] = array(
+	$form['busqueda']['opciones']['opciones_graficos']['opciones_simple']['otros'] = array(
 			'#type' => 'checkbox',
 			'#title' => t('Agrupar resto en otros'),
 			'#attributes' => (isset($form_state['storage']['values']['otros']) && $form_state['storage']['values']['otros'] == 1 ) ? array('checked' => 'checked') : NULL,
 	);
 
-	$form['busqueda']['opciones']['izquierda']['opciones_graficos']['opciones_simple']['leyenda'] = array(
+	$form['busqueda']['opciones']['opciones_graficos']['opciones_simple']['leyenda'] = array(
 		'#type' => 'select',
 		'#attributes' => array('id' => 'edit-leyenda'),
 		'#options' => array('Sin leyenda', 'Leyenda en 1 columna', 'Leyenda en 2 columnas'),
 		'#default_value' => isset($form_state['storage']['values']['leyenda']) ? $form_state['storage']['values']['leyenda'] : array(1),
 	);
-	$form['busqueda']['opciones']['izquierda']['opciones_graficos']['opciones_simple']['tipo-simple'] = array(
+	$form['busqueda']['opciones']['opciones_graficos']['opciones_simple']['tipo-simple'] = array(
 		'#type' => 'select',
 		'#attributes' => array('id' => 'edit-tipo-simple'),
 		'#options' => array(
@@ -138,7 +146,7 @@ function busqueda_form($form, &$form_state) {
 			'bar' => 'Barras',
 		),
 	);
-	$form['busqueda']['opciones']['izquierda']['opciones_graficos']['opciones_lineales'] = array(
+	$form['busqueda']['opciones']['opciones_graficos']['opciones_lineales'] = array(
 		'#type' => 'fieldset',
 		'#title' => 'Gráficos lineales',
 		'#collapsible' => TRUE, 
@@ -148,14 +156,14 @@ function busqueda_form($form, &$form_state) {
 		'#suffix' => '</div>',
 	);
 
-	$form['busqueda']['opciones']['izquierda']['opciones_graficos']['opciones_lineales']['cantidad_lineal'] = array(
+	$form['busqueda']['opciones']['opciones_graficos']['opciones_lineales']['cantidad_lineal'] = array(
 			'#type' => 'select',
 			'#title' => t('Cantidad de elementos'),
 			'#options' => array(2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8),
 			'#default_value' => isset($form_state['values']['cantidad_lineal']) ? $form_state['values']['cantidad_lineal'] : 3,
 	);
 
-	$form['busqueda']['opciones']['izquierda']['opciones_graficos']['opciones_combinados'] = array(
+	$form['busqueda']['opciones']['opciones_graficos']['opciones_combinados'] = array(
 		'#type' => 'fieldset',
 		'#title' => 'Gráficos combinados',
 		'#collapsible' => TRUE, 
@@ -165,7 +173,7 @@ function busqueda_form($form, &$form_state) {
 		'#suffix' => '</div>',
 	);
 
-	$form['busqueda']['opciones']['izquierda']['opciones_graficos']['opciones_combinados']['tipo-combinado'] = array(
+	$form['busqueda']['opciones']['opciones_graficos']['opciones_combinados']['tipo-combinado'] = array(
 		'#type' => 'select',
 		'#attributes' => array('id' => 'edit-tipo-combinado'),
 		'#options' => array(
@@ -175,7 +183,7 @@ function busqueda_form($form, &$form_state) {
 		),
 	);
 
-	$form['busqueda']['opciones']['izquierda']['opciones_graficos']['opciones_combinados']['apiladas'] = array(
+	$form['busqueda']['opciones']['opciones_graficos']['opciones_combinados']['apiladas'] = array(
 			'#type' => 'checkbox',
 			'#title' => t('Apiladas'),
 			'#default_value' => array(0),
@@ -183,7 +191,7 @@ function busqueda_form($form, &$form_state) {
 			'#process' => array('ctools_dependent_process'),
 			'#dependency' => array('edit-tipo-combinado' => array('bar', 'column')),
 	);
-	$form['busqueda']['opciones']['izquierda']['opciones_graficos']['opciones_combinados']['cantidad_combinado'] = array(
+	$form['busqueda']['opciones']['opciones_graficos']['opciones_combinados']['cantidad_combinado'] = array(
 			'#type' => 'select',
 			'#title' => t('Cantidad de elementos'),
 			'#options' => array(2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8),
@@ -192,7 +200,7 @@ function busqueda_form($form, &$form_state) {
 			'#dependency' => array('edit-tipo-combinado' => array('bar', 'column')),
 	);
 
-	$form['busqueda']['opciones']['izquierda']['opciones_graficos']['paleta_colores'] = array(
+	$form['busqueda']['opciones']['opciones_graficos']['paleta_colores'] = array(
 		'#type' => 'fieldset',
 		'#title' => 'Paleta de colores',
 		'#collapsible' => TRUE, 
@@ -203,14 +211,14 @@ function busqueda_form($form, &$form_state) {
 	);
 
 	foreach (paleta() as $key => $color) {
-		$form['busqueda']['opciones']['izquierda']['opciones_graficos']['paleta_colores'][$key] = array(
+		$form['busqueda']['opciones']['opciones_graficos']['paleta_colores'][$key] = array(
 			'#type' => 'jquery_colorpicker',
 			'#title' => t('Color ' . ($key+1) ),
 			'#default_value' => substr($color, 1),
 		);
 	}
 
-	$form['busqueda']['opciones']['izquierda']['opciones_graficos']['paleta_colores']['reiniciar_colores'] = array(
+	$form['busqueda']['opciones']['opciones_graficos']['paleta_colores']['reiniciar_colores'] = array(
 		'#type' => 'image_button',
 		'#description' => 'Reiniciar colores',
 		'#title' => 'Reiniciar colores',
@@ -226,6 +234,12 @@ function busqueda_form($form, &$form_state) {
 			'progress' => array('type' => 'none'),
 		)
 	);
+	///// fin opciones graficos
+
+
+	
+
+	/// opciones derecha
 	$form['busqueda']['opciones']['derecha'] = array(
 		'#type' => 'fieldset',
 		'#prefix' => '<div id="edit-opciones-derecha">',
@@ -448,6 +462,7 @@ function busqueda_form($form, &$form_state) {
 	}
 
 
+
 	$form['busqueda']['opciones']['botones'] = array(
 		'#type' => 'fieldset',
 		'#prefix' => '<div id="botones">',
@@ -484,6 +499,8 @@ function busqueda_form($form, &$form_state) {
 			'progress' => array('type' => 'throbber'),
 		),
 	);
+
+
 
 	$form['busqueda']['resultados'] = array(
 		'#type' => 'fieldset',

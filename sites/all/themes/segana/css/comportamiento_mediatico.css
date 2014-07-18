@@ -1,3 +1,12 @@
+.page-comportamiento-mediatico h1#page-title {
+	width: 1015px;
+}
+.page-comportamiento-mediatico #content {
+	width: 1154px;
+}
+
+
+
 .page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico,
 .page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico legend,
 .page-comportamiento-mediatico form.busqueda-form-comportamiento-mediatico fieldset ,
@@ -15,7 +24,7 @@
 	float: left;
 	background-color: rgba(208, 216, 221, 0.5);
 	padding-left: 100px;
-	width: 774px;
+	width: 1054px;
 	min-height: 365px;
 }
 
@@ -341,7 +350,7 @@ html.js .page-comportamiento-mediatico input.throbbing {
 	margin-left: -100px;
 	height: 33px;
 	background-color: rgba(170, 182, 190, 0.7);
-	padding-right: 23px;
+	padding-right: 303px;
 	width: 851px;
 }
 .page-comportamiento-mediatico #botones fieldset {
@@ -475,6 +484,13 @@ form.busqueda-form-comportamiento-mediatico div[id^=edit-medios] .mCSB_scrollToo
 	width: 6px;
 }
 
+form.busqueda-form-comportamiento-mediatico  #edit-opciones-graficos {
+	float: right;
+	width: 280px;
+	margin-top: 24px;
+	padding-left: 20px;
+}
+
 form.busqueda-form-comportamiento-mediatico  #edit-opciones-graficos .fieldset-legend {
 	background-position: 0px 50%;
 }
@@ -492,7 +508,7 @@ form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos a {
 form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos .fieldset-wrapper {
 	background-color: rgba(208, 216, 221, 0.5);
 	padding: 4px;
-	width: 140px;
+	width: 250px;
 }
 
 form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos .fieldset-wrapper a,
@@ -508,7 +524,7 @@ form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos .fieldset-wr
 
 
 form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos .fieldset-wrapper .fieldset-wrapper{
-	width: 140px;
+	width: 250px;
 	padding: 0;
 }
 
