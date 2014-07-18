@@ -1492,8 +1492,17 @@ class SelectQuery extends Query implements SelectQueryInterface {
     // Create a sanitized comment string to prepend to the query.
     $comments = $this->connection->makeComment($this->comments);
 
+    // Prepend the comments
+    $query = $comments;
+
+    // If we union we have to put the whole query into parenthesis
+    if ($this->union) {
+      $query .= ' ( ';
+    }
+
     // SELECT
-    $query = $comments . 'SELECT ';
+    $query .= 'SELECT ';
+
     if ($this->distinct) {
       $query .= 'DISTINCT ';
     }
@@ -1580,16 +1589,17 @@ class SelectQuery extends Query implements SelectQueryInterface {
       $query .= "\nLIMIT " . (int) $this->range['length'] . " OFFSET " . (int) $this->range['start'];
     }
 
+    if ($this->forUpdate) {
+      $query .= ' FOR UPDATE';
+    }
+
     // UNION is a little odd, as the select queries to combine are passed into
     // this query, but syntactically they all end up on the same level.
     if ($this->union) {
       foreach ($this->union as $union) {
-        $query .= ' ' . $union['type'] . ' ' . (string) $union['query'];
+        $query .= " )\n" . $union['type'] . "\n( " . (string) $union['query'];
       }
-    }
-
-    if ($this->forUpdate) {
-      $query .= ' FOR UPDATE';
+      $query .= " )\n";
     }
 
     return $query;
