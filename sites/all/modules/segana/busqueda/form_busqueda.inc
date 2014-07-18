@@ -112,6 +112,11 @@ function busqueda_form($form, &$form_state) {
 		'#prefix' => '<div id="opciones_graficos">',
 		'#suffix' => '</div>',
 	);
+	$form['busqueda']['opciones']['opciones_graficos']['deshabilitar_graficos'] = array(
+			'#type' => 'checkbox',
+			'#title' => t('Deshabilitar graficos'),
+			'#attributes' => (isset($form_state['storage']['values']['deshabilitar_graficos']) && $form_state['storage']['values']['deshabilitar_graficos'] == 1 ) ? array('checked' => 'checked') : NULL,
+	);
 	$form['busqueda']['opciones']['opciones_graficos']['opciones_simple'] = array(
 		'#type' => 'fieldset',
 		'#title' => 'Gráficos simples',
@@ -155,12 +160,27 @@ function busqueda_form($form, &$form_state) {
 		'#prefix' => '<div id="opciones_lineales">',
 		'#suffix' => '</div>',
 	);
-
+	$form['busqueda']['opciones']['opciones_graficos']['opciones_lineales']['barras_lineal'] = array(
+			'#type' => 'checkbox',
+			'#title' => t('Gráficos combinado con barras y torta'),
+			'#attributes' => (isset($form_state['storage']['values']['barras_lineal']) && $form_state['storage']['values']['barras_lineal'] == 1 ) ? array('checked' => 'checked') : NULL,
+	);
+	$form['busqueda']['opciones']['opciones_graficos']['opciones_lineales']['multiple_lineal'] = array(
+			'#type' => 'checkbox',
+			'#title' => t('Gráficos lineales multiples'),
+			'#attributes' => (isset($form_state['storage']['values']['multiple_lineal']) && $form_state['storage']['values']['multiple_lineal'] == 1 ) ? array('checked' => 'checked') : NULL,
+	);
 	$form['busqueda']['opciones']['opciones_graficos']['opciones_lineales']['cantidad_lineal'] = array(
 			'#type' => 'select',
 			'#title' => t('Cantidad de elementos'),
-			'#options' => array(2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8),
+			'#options' => array(2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7),
 			'#default_value' => isset($form_state['values']['cantidad_lineal']) ? $form_state['values']['cantidad_lineal'] : 3,
+	);
+	$form['busqueda']['opciones']['opciones_graficos']['opciones_lineales']['leyenda_lineal'] = array(
+			'#type' => 'select',
+			'#title' => t('Posición leyenda'),
+			'#options' => array(0 => 'Sin leyenda', 'bottom' => 'Abajo', 'left' => 'Izquierda', 'right' => 'Derecha', 'top' => 'Arriba'),
+			'#default_value' => isset($form_state['values']['leyenda_lineal']) ? $form_state['values']['leyenda_lineal'] : 'bottom',
 	);
 
 	$form['busqueda']['opciones']['opciones_graficos']['opciones_combinados'] = array(
@@ -514,11 +534,13 @@ function busqueda_form($form, &$form_state) {
 		'#value' => isset($form_state['storage']['values']['variables']) ? base64_url_encode(cifrar($form_state['storage']['values']['variables'])) : NULL,
 	);
 	if (isset($form_state['triggering_element']['#return_value']) && $form_state['triggering_element']['#return_value'] == 'Mostrar resultados') {
-		$form['busqueda']['resultados']['graficos'] = array(
-			'#markup' => graficos($variables),
-			'#prefix' => '<div id="graficos">',
-			'#suffix' => '</div>',
-		);
+		if (!($form_state['storage']['values']['deshabilitar_graficos'])){
+			$form['busqueda']['resultados']['graficos'] = array(
+				'#markup' => graficos($variables),
+				'#prefix' => '<div id="graficos">',
+				'#suffix' => '</div>',
+			);
+		}
 		$form['busqueda']['resultados']['resumen'] = array(
 		    '#type' => 'container',
 		    '#attributes' => array('id' => 'resumen')
@@ -587,8 +609,12 @@ function busqueda_form_submit($form, &$form_state) {
 			$variables['palabra_clave'] = $form_state['values']['palabra_clave'];
 			$variables['busqueda_exacta'] = $form_state['values']['busqueda_exacta'];
 			$variables['cualquiera'] = $form_state['values']['cualquiera'];
+			$variables['deshabilitar_graficos'] = $form_state['values']['deshabilitar_graficos'];
 			$variables['tipo-simple'] = $form_state['values']['tipo-simple'];
 			$variables['cantidad_lineal'] = $form_state['values']['cantidad_lineal'];
+			$variables['leyenda_lineal'] = $form_state['values']['leyenda_lineal'];
+			$variables['barras_lineal'] = $form_state['values']['barras_lineal'];
+			$variables['multiple_lineal'] = $form_state['values']['multiple_lineal'];
 			$variables['tipo-combinado'] = $form_state['values']['tipo-combinado'];
 			$variables['apiladas'] = $form_state['values']['apiladas'];
 			$variables['cantidad_combinado'] = $form_state['values']['cantidad_combinado'];

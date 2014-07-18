@@ -124,6 +124,8 @@ function grafico_lineal($variables, $tipo = NULL, $combinado = NULL, $ejeX = 'ti
 			'#zoomType' => 'x',
 			'#width' => 1054,
 			'#colors' => $variables['paleta_colores'],
+			'#legend' => ($variables['leyenda_lineal']) ? TRUE : FALSE,
+			'#legend_position' => $variables['leyenda_lineal'],
 		);
 
 

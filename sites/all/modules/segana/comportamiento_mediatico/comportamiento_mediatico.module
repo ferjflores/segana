@@ -133,14 +133,22 @@ function graficos($variables){
     foreach ($tipos as $tipo) {
       // si tipo es 1 el grafico sería igual al gráfico general
       if (count($variables[$tipo]) != 1) {
-        $graficos['items'][] = grafico_lineal($variables, $tipo);
-        $graficos['items'][] = grafico_lineal($variables, $tipo, TRUE);
+        if ($variables['multiple_lineal']) {
+          $graficos['items'][] = grafico_lineal($variables, $tipo);
+        }
+        if ($variables['barras_lineal']) {
+          $graficos['items'][] = grafico_lineal($variables, $tipo, TRUE);
+        }
       }
     }
     // si medio es 1 el grafico sería igual al gráfico general
     if (!isset($variables['medio']) || count($variables['medio']) == 0 || count($variables['medio']) > 1) {
-      $graficos['items'][] = grafico_lineal($variables, 'medio');
-      $graficos['items'][] = grafico_lineal($variables, 'medio', TRUE);
+      if ($variables['multiple_lineal']) {
+        $graficos['items'][] = grafico_lineal($variables, 'medio');
+      }
+      if ($variables['barras_lineal']) {
+        $graficos['items'][] = grafico_lineal($variables, 'medio', TRUE);
+      }
     }
 
 
