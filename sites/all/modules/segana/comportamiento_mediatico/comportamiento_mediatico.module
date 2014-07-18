@@ -5,7 +5,8 @@ function comportamiento_mediatico_menu() {
   $items['comportamiento_mediatico'] = array(
     'title' => 'Comportamiento Mediático',
     'page callback' => 'comportamiento_mediatico',
-    'access callback' => TRUE,
+    //'access callback' => TRUE,
+    'access arguments' => array('access content'),
     'weight' => 0,
   );
   $items['comportamiento_mediatico/autocomplete_area'] = array(
