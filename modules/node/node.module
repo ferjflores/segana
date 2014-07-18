@@ -1096,7 +1096,10 @@ function node_save($node) {
     }
     // The changed timestamp is always updated for bookkeeping purposes,
     // for example: revisions, searching, etc.
-    $node->changed = REQUEST_TIME;
+    //fflores cambiado
+    if (empty($node->changed)) {
+    	$node->changed = REQUEST_TIME;
+    }
 
     $node->timestamp = REQUEST_TIME;
     $update_node = TRUE;
