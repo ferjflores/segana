@@ -846,6 +846,22 @@ form.busqueda-form-comportamiento-mediatico #resumen canvas {
 	font-family: ubuntu;
 }
 
+
+.page-comportamiento-mediatico #resumen h3.resumen div span {
+	float: right;
+	margin: 2px 2px 0pt 0pt;
+	display: none;
+	width: 13px;
+	height: 13px;
+	background-image: url("/sites/all/themes/segana/images/boton-expandir.png");
+	background-repeat: no-repeat;
+}
+
+
+.page-comportamiento-mediatico #resumen h3.ui-state-hover.ui-state-active div span {
+	display: block;
+}
+
 .page-comportamiento-mediatico #resumen #contenido {
 	padding: 0;
 	border-radius: 0;

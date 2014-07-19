@@ -318,11 +318,18 @@ function comportamiento_mediatico_resultado($variables = NULL) {
         '#value' => ($tipo == 'area' ? '%' : '')
       )
     ));
+    $boton_expandir = theme('html_tag', array(
+      'element' => array(
+        '#tag' => 'span',
+        '#attributes' => array('id' => $tipo, 'class' => 'expandir'),
+        '#value' => ''
+      )
+    ));
     $derecha = theme('html_tag', array(
       'element' => array(
         '#tag' => 'div',
         '#attributes' => array('class' => 'derecha encabezado'),
-        '#value' => $plural_tipo
+        '#value' => $plural_tipo . $boton_expandir
       )
     ));
     $h3 = theme('html_tag', array(
