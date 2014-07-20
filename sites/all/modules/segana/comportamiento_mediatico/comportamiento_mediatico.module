@@ -41,6 +41,14 @@ function comportamiento_mediatico_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
+  $items['comportamiento_mediatico/resultado_expandido/%/%'] = array(
+    'title' => 'Data',
+    'page callback' => 'comportamiento_mediatico_resultado_expandido',
+    'page arguments' => array(2,3),
+    'access callback' => TRUE,
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
   $items['comportamiento_mediatico/notas/%/%'] = array(
     'title' => 'Data',
     'page callback' => 'comportamiento_mediatico_notas',
@@ -65,7 +73,10 @@ function generateHash(){
 
 function comportamiento_mediatico() {
   drupal_add_js(drupal_get_path('module', 'jcarousel') .'/js/jquery.jcarousel.min.js', array('weight' => 19));
-  //drupal_add_js('/sites/all/libraries/highcharts/js/modules/exporting.js', array('weight' => 18));
+  drupal_add_js('/sites/all/libraries/datatables/media/js/jquery.dataTables.min.js', array('weight' => 18));
+  drupal_add_js('/sites/all/libraries/datatables/extensions/TableTools/js/dataTables.tableTools.min.js', array('weight' => 19));
+  drupal_add_css('/sites/all/libraries/datatables/media/css/jquery.dataTables.css', array('group' => CSS_THEME, 'preprocess' => FALSE, 'weight' => '9999'));
+  drupal_add_css('/sites/all/libraries/datatables/extensions/TableTools/css/dataTables.tableTools.css', array('group' => CSS_THEME, 'preprocess' => FALSE, 'weight' => '9999'));
   drupal_add_library ( 'system' , 'ui.tabs' );
   drupal_add_library ( 'system' , 'ui.accordion' );
   drupal_add_js(drupal_get_path('module', 'comportamiento_mediatico') . '/js/comportamiento_mediatico.js', array('weight' => 20));
@@ -519,6 +530,60 @@ function comportamiento_mediatico_notas($variables, $tid, $tipo, $return = FALSE
   else {
     print $output;
   }
+}
+
+
+function comportamiento_mediatico_resultado_expandido($variables, $tipo) {
+  $inicio = microtime(TRUE);
+  $variables =  unserialize(descifrar(base64_url_decode($variables)));
+
+  switch ($tipo) {
+    case 'matriz':
+      $plural_tipo = 'matrices';
+      break;
+    case 'actor':
+      $plural_tipo = 'actores';
+      break;
+    case 'area':
+      $plural_tipo = 'áreas';
+      break;
+    default:
+      $plural_tipo = $tipo ."s";
+      break;
+  }
+
+  $attributes = array('id' => 'resultado_expandido');
+
+  // Define table columns
+  $header = array('Cantidad de Notas', '%', ucfirst($tipo));
+  $rows = array();
+
+  $query = query_por_tipo($variables, $tipo);
+  $resultado = $query->execute();
+
+  foreach ($resultado as $row) {
+    $serieX[] = intval($row->nid_count);
+    $serieY[] = $row->name;
+    $serieZ[] = $row->tid;
+  }
+  $total = array_sum($serieX);
+
+  foreach ($serieX as $key => $nid_count) {
+    $rows[] = array($nid_count, round(100 * $nid_count / $total, 2), $serieY[$key]);
+  }
+
+
+  // render using a theme function.
+  $variables = array(
+    'attributes' => $attributes,
+    'header' => $header,
+    'rows' => $rows,
+  );
+  $output = theme('table', $variables);
+
+
+  ed("tiempo total expandido: ". (microtime(TRUE) - $inicio));
+  print $output;
 }
 
 

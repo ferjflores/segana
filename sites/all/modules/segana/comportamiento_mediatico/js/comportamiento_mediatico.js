@@ -28,32 +28,33 @@
 
 	$("div#accordion").livequery(function() {
     
-    $( "#accordion" ).accordion({
-    		heightStyle: "content",
-    		icons: null,
-    		//animate: false,
-  	});
+		$( "#accordion" ).accordion({
+			heightStyle: "content",
+			icons: null,
+			//animate: false,
+		});
 
 
-    $("div#valores:visible").once(function() {
+    	$("div#valores:visible").once(function() {
 
-      $(this).mCustomScrollbar({
-      	theme: "dark",
-	      scrollButtons:{enable: 1},
-	      horizontalScroll: 0,
-	      mouseWheel: 1,
-	      scrollInertia: "550",
-	      autoDraggerLength: false,
-	      contentTouchScroll: 0,
-	      autoHideScrollbar: 0,
-	      advanced:{
-		      updateOnContentResize: 1,
-		      updateOnBrowserResize: 1,
-		      autoScrollOnFocus: 0
-	    	},
-	    })	
-    });
-	  $("div#resumen_notas:visible").mCustomScrollbar({
+			$(this).mCustomScrollbar({
+			theme: "dark",
+			  scrollButtons:{enable: 1},
+			  horizontalScroll: 0,
+			  mouseWheel: 1,
+			  scrollInertia: "550",
+			  autoDraggerLength: false,
+			  contentTouchScroll: 0,
+			  autoHideScrollbar: 0,
+			  advanced:{
+			      updateOnContentResize: 1,
+			      updateOnBrowserResize: 1,
+			      autoScrollOnFocus: 0
+				},
+			})
+		});
+
+		$("div#resumen_notas:visible").mCustomScrollbar({
 			theme: "dark",
 			scrollButtons:{enable: 1},
 			horizontalScroll: 0,
@@ -69,15 +70,14 @@
 			},
 		});
 
-	  //$(".colorbox-notas").colorbox({"iframe": true, "width": "600px", "height": function(){return $(window).height();}, "innerHeight": "700px", "transition": "elastic", "speed": "350", "opacity": "0.90"});
-	  $(".colorbox-notas").colorbox({html: function(){
-	  		var url = $(this).attr('href');
-	  		$.get(url, function (data) {
-    			return data;
+		$(".colorbox-notas").colorbox({html: function(){
+			var url = $(this).attr('href');
+			$.get(url, function (data) {
+				return data;
 			});
-	  	},
-	  	"width": "750px", "height": function(){return $(window).height() -100;}, "innerHeight": "700px", "transition": "elastic", "speed": "350", "opacity": "0.90"
-	  });
+			},
+			"width": "750px", "height": function(){return $(window).height() -100;}, "innerHeight": "700px", "transition": "elastic", "speed": "350", "opacity": "0.90"
+		});
 		
 
 
@@ -148,6 +148,56 @@
 			
 
 		});
+		$("div#valores span").click(function() {
+			$(this).parents("div#valores").find("span").removeClass('activo')
+			$(this).addClass('activo');
+			var tid = $(this).attr("id");
+			var variables = $('input[name=variables]').attr("value");
+			var resumen_notas = $(this).parents("div#valores").next("div#resumen_notas");
+			var contenedor_resumen_notas = $(resumen_notas).find("div.mCSB_container");
+
+			$(resumen_notas).mCustomScrollbar("scrollTo","top");
+			$(contenedor_resumen_notas).load('/comportamiento_mediatico/notas/' + variables + "/" + tid, function(){
+				$(".colorbox-notas").colorbox({
+					html: function(){
+						var url = $(this).attr('href');
+						$.get(url, function (data) {
+							return data;
+						});
+					},
+					"width": "750px", "height": function(){return $(window).height() -100;}, "innerHeight": "700px", "transition": "elastic", "speed": "350", "opacity": "0.90"
+				});
+			});
+		});
+
+		$("span.expandir").click(function() {
+			var tipo = $(this).attr("id");
+			var variables = $('input[name=variables]').attr("value");
+			$.colorbox({href:"/comportamiento_mediatico/resultado_expandido/" + variables + "/" + tipo, width: "1000px", height: function(){return $(window).height() -100;}, innerHeight: "950px", transition: "elastic", speed: "350", opacity: "0.90", open: true,
+				onComplete:function(){
+					$('#resultado_expandido').dataTable({
+						dom: 'T<"clear">lfrtip',
+						tableTools: {
+							"sSwfPath": "/sites/all/libraries/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
+						},
+						"order": [[ 0, "desc" ]],
+						"lengthMenu": [ [15, 25, 50, -1], [15, 25, 50, "All"] ],
+				        "oLanguage": {
+					      "oPaginate": {
+					      	"sPrevious": "Anterior",
+					        "sNext": "Siguiente"
+					      },
+					      "sLengthMenu": "Mostrar _MENU_ registros por página",
+					      "sZeroRecords": "No se encontraron resultados",
+					      "sInfo": "Mostrando página _PAGE_ de _PAGES_",
+				          "sInfoEmpty": "No hay registros disponibles",
+				          "sInfoFiltered": "(filtrado de _MAX_ total registros)",
+				          "sSearch": "Buscar",
+					    },
+					});
+				},
+			});
+		});
 
 	});
 
@@ -168,5 +218,6 @@
 		    	},
 		});
 	});
+
 
 })(jQuery);
