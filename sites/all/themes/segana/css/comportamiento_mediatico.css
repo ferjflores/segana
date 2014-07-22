@@ -533,6 +533,13 @@ form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos .collapsible
 	min-height: 20px;
 }
 
+form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos select {
+	color: #8897A0;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #A9B6BB;
+	background-color: #F0F2F4;
+}
+
 form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos select[name=cantidad_lineal],
 form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos select[name=cantidad_combinado] {
 	width: 40px;
@@ -1062,4 +1069,73 @@ form.busqueda-form-comportamiento-mediatico #resumen #contenido div#resumen_nota
 	height: 15px;
 	width: 15px;
 	margin: 0;
+}
+
+
+
+.page-comportamiento-mediatico #resultado_expandido_wrapper {
+	font-family: ubuntu;
+}
+
+
+.page-comportamiento-mediatico #resultado_expandido_wrapper select {
+	color: #8897A0;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #A9B6BB;
+	background-color: #FFFFFF;
+}
+
+.page-comportamiento-mediatico #resultado_expandido_wrapper label {
+	color: #616C74;
+	font-weight: bold;
+	font-size: 15px;
+}
+
+.page-comportamiento-mediatico #resultado_expandido_wrapper #resultado_expandido_filter {
+	margin-right: 30px;
+}
+
+.page-comportamiento-mediatico #resultado_expandido_wrapper table tr {
+	height: 40px;
+}
+
+.page-comportamiento-mediatico #resultado_expandido_wrapper table thead tr th {
+	padding: 0pt 9px;
+	background-color: white;
+	border-top: 2px solid #CBD0D3;
+	border-bottom: 1px solid #A9AFB4;
+	color: red;
+	font-weight: bold;
+	text-shadow: none;
+	font-size: 16px;
+}
+.page-comportamiento-mediatico #resultado_expandido_wrapper table thead tr th.sorting {
+	color: #848F96;
+}
+
+
+
+.page-comportamiento-mediatico #resultado_expandido_wrapper table tr.odd {
+	background-color: #E9ECEE;
+}
+
+
+.page-comportamiento-mediatico #resultado_expandido_wrapper table td {
+	/*overflow: hidden;
+	text-overflow: ellipsis;*/
+	padding: 0pt 9px;
+	min-height: 40px;
+	white-space: nowrap;
+	border: medium none;
+	text-transform: none;
+	font-size: 14px;
+	color: black;
+	font-weight: normal;
+	letter-spacing: -0.2px;
+}
+
+.page-comportamiento-mediatico #tabs_resumen_expandido {
+	padding: 0;
+	border: none;
+	background: none;
 }

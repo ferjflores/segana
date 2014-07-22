@@ -41,9 +41,17 @@ function comportamiento_mediatico_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
-  $items['comportamiento_mediatico/resultado_expandido/%/%'] = array(
+  $items['comportamiento_mediatico/resultado_expandido/%'] = array(
     'title' => 'Data',
     'page callback' => 'comportamiento_mediatico_resultado_expandido',
+    'page arguments' => array(2),
+    'access callback' => TRUE,
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['comportamiento_mediatico/resultado_expandido_tab/%/%'] = array(
+    'title' => 'Data',
+    'page callback' => 'comportamiento_mediatico_resultado_expandido_tab',
     'page arguments' => array(2,3),
     'access callback' => TRUE,
     'access arguments' => array('access content'),
@@ -533,9 +541,15 @@ function comportamiento_mediatico_notas($variables, $tid, $tipo, $return = FALSE
 }
 
 
-function comportamiento_mediatico_resultado_expandido($variables, $tipo) {
-  $inicio = microtime(TRUE);
-  $variables =  unserialize(descifrar(base64_url_decode($variables)));
+function comportamiento_mediatico_resultado_expandido($variables) {
+
+  $tipos = tipos();
+  $tipos[] = 'medio';
+
+  foreach ($tipos as $value) {
+      $tabs['items'][] = array('data' => l($value, "comportamiento_mediatico/resultado_expandido_tab/$variables/$value"), 'id' => $value);
+  }
+  $tabs['type'] = 'ul';
 
   switch ($tipo) {
     case 'matriz':
@@ -552,10 +566,33 @@ function comportamiento_mediatico_resultado_expandido($variables, $tipo) {
       break;
   }
 
-  $attributes = array('id' => 'resultado_expandido');
+  $resumen_expandido = theme('html_tag', array(
+    'element' => array(
+      '#tag' => 'div',
+      '#attributes' => array(
+        'id' => 'tabs_resumen_expandido',
+        ),
+      '#value' => theme('item_list', $tabs),
+    ),
+  ));
+  print $resumen_expandido;
+
+}
+
+function comportamiento_mediatico_resultado_expandido_tab($variables, $tipo) {
+
+  $inicio = microtime(TRUE);
+  $variables_cifradas = $variables;
+  $variables =  unserialize(descifrar(base64_url_decode($variables)));
+  /// tabla para el datatable ///
+  $attributes = array('id' => 'resultado_expandido', 'class' => array('resultado_expandido'));
 
   // Define table columns
-  $header = array('Cantidad de Notas', '%', ucfirst($tipo));
+  $header = array(
+    'cantidad_notas' => array('data' => 'Cantidad de Notas', 'id' => 'cantidad_notas'),
+    '%',
+    ucfirst($tipo)
+  );
   $rows = array();
 
   $query = query_por_tipo($variables, $tipo);
@@ -572,19 +609,28 @@ function comportamiento_mediatico_resultado_expandido($variables, $tipo) {
     $rows[] = array($nid_count, round(100 * $nid_count / $total, 2), $serieY[$key]);
   }
 
-
   // render using a theme function.
   $variables = array(
     'attributes' => $attributes,
     'header' => $header,
     'rows' => $rows,
   );
-  $output = theme('table', $variables);
 
+  /// fin tabla
+
+  $tab = theme('html_tag', array(
+      'element' => array(
+        '#tag' => 'div',
+        '#attributes' => array(
+          'id' => 'resumen-' . $tipo,
+          ),
+        '#value' => theme('table', $variables),
+      ),
+  ));
 
   ed("tiempo total expandido: ". (microtime(TRUE) - $inicio));
-  print $output;
-}
 
+  print $tab;
+}
 
 ?>

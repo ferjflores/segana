@@ -175,25 +175,50 @@
 			var variables = $('input[name=variables]').attr("value");
 			$.colorbox({href:"/comportamiento_mediatico/resultado_expandido/" + variables + "/" + tipo, width: "1000px", height: function(){return $(window).height() -100;}, innerHeight: "950px", transition: "elastic", speed: "350", opacity: "0.90", open: true,
 				onComplete:function(){
-					$('#resultado_expandido').dataTable({
-						dom: 'T<"clear">lfrtip',
-						tableTools: {
-							"sSwfPath": "/sites/all/libraries/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf"
+					switch (tipo) {
+					    case 'area':
+					    	var index = 0;
+					    	break;
+					    case 'tema':
+					    	var index = 1;
+					    	break;
+					    case 'matriz':
+					    	var index = 2;
+					    	break;
+					    case 'actor':
+					    	var index = 3;
+					    	break;
+					    case 'medio':
+					    	var index = 4;
+					    	break;
+					}
+					jQuery("#tabs_resumen_expandido").tabs({ 
+						active: index,
+						load: function(){
+							$('table.resultado_expandido').once(function(){
+								$(this).dataTable({
+									dom: 'T<"clear">lfrtip',
+									tableTools: {
+										"sSwfPath": "/sites/all/libraries/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+										"aButtons": [ "copy", "xls", "pdf" ]
+									},
+									"order": [[ 0, "desc" ]],
+									"lengthMenu": [ [15, 25, 50, -1], [15, 25, 50, "All"] ],
+							        "oLanguage": {
+								      "oPaginate": {
+								      	"sPrevious": "Anterior",
+								        "sNext": "Siguiente"
+								      },
+								      "sLengthMenu": "Mostrar _MENU_ registros por página",
+								      "sZeroRecords": "No se encontraron resultados",
+								      "sInfo": "Mostrando página _PAGE_ de _PAGES_ (_MAX_ registros)",
+							          "sInfoEmpty": "No hay registros disponibles",
+							          "sInfoFiltered": "(filtrado de _MAX_ total registros)",
+							          "sSearch": "Buscar",
+								    },
+								});
+							});
 						},
-						"order": [[ 0, "desc" ]],
-						"lengthMenu": [ [15, 25, 50, -1], [15, 25, 50, "All"] ],
-				        "oLanguage": {
-					      "oPaginate": {
-					      	"sPrevious": "Anterior",
-					        "sNext": "Siguiente"
-					      },
-					      "sLengthMenu": "Mostrar _MENU_ registros por página",
-					      "sZeroRecords": "No se encontraron resultados",
-					      "sInfo": "Mostrando página _PAGE_ de _PAGES_",
-				          "sInfoEmpty": "No hay registros disponibles",
-				          "sInfoFiltered": "(filtrado de _MAX_ total registros)",
-				          "sSearch": "Buscar",
-					    },
 					});
 				},
 			});
