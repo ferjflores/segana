@@ -495,3 +495,42 @@ html[xmlns] .clearfixsegana {
 	border-radius: 0 !important;
 	border: none !important;
 }
+
+
+.inline-messages {
+	padding: 30px 0 0 99px;
+	background: rgba(208, 216, 221, 0.5);
+	padding-right: 22px;
+}
+div.inline-messages:empty {
+	padding: 0;
+}
+.error, .messages--error {
+	border: 1px solid #616C74 !important;
+	border-radius: 6px 6px 6px 6px;
+	background-color: #686E75 !important;
+	color: #E1E2E3 !important;
+	font-weight: bold;
+}
+
+.messages--error {
+	background-image: url("/sites/all/themes/segana/images/error.png") !important;
+}
+
+.error li,
+.messages--error li {
+	border-bottom: 2px solid #6A777F;
+	margin-right: 20px;
+	margin-bottom: 10px;
+}
+
+
+.error a,
+.messages--error a {
+	color: white;
+}
+
+input.error,
+input.messages--error {
+	background-color: #F6F7F7 !important;
+}

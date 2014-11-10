@@ -11,7 +11,21 @@ function vistas_menu() {
     'type' => MENU_CALLBACK,
     'access arguments' => array('access content'),
   );
-   $items['elementos_discursivos/ver/%'] = array(
+  $items['notas/autocomplete_medio'] = array(
+    'page callback' => 'autocomplete_medio',
+    'page arguments' => array(2),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+  );
+  $items['notas/autocomplete'] = array(
+    'page callback' => 'autocomplete_elemento',
+    'page arguments' => array(2,3,4,5),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+  );
+  $items['elementos_discursivos/ver/%'] = array(
     'page callback' => 'vista_elementos_discursivos',
     'file' => 'vistas.inc',
     'page arguments' => array(2),
@@ -19,17 +33,15 @@ function vistas_menu() {
     'type' => MENU_CALLBACK,
     'access arguments' => array('access content'),
   );
-   $items['agregar/%'] = array(
+   $items['agregar/%tipo_contenido'] = array(
     'page callback' => 'agregar_contenido',
-    'file' => 'vistas_form.inc',
     'page arguments' => array(1),
     'access arguments' => array('access content'),
     'description' => t('Agregar contenido'),
     'type' => MENU_CALLBACK,
   );
-  $items['editar/%/%'] = array(
+  $items['editar/%tipo_contenido/%'] = array(
     'page callback' => 'editar_contenido',
-    'file' => 'vistas_form.inc',
     'page arguments' => array(1,2),
     'access arguments' => array('access content'),
     'description' => t('Editar contenido'),
@@ -39,6 +51,7 @@ function vistas_menu() {
   return $items;
 }
 
+module_load_include('inc', 'vistas', 'vistas_form');
 
 function agregar_contenido($tipo_contenido) {
   $hash = generateHash();
@@ -70,32 +83,50 @@ function agregar_contenido($tipo_contenido) {
       '#value' => ' para agregar'
     ),
   ));
+
+  $messages = theme('html_tag', array(
+    'element' => array(
+      '#tag' => 'div',
+      '#attributes' => array(
+        'id' => 'messages',
+       ),
+      '#value' => ''
+    ),
+  ));
+  drupal_add_js(drupal_get_path('module', 'vistas') . '/js/vistas.js', array('weight' => 20));
   drupal_set_title($titulo . $titulo_accion, PASS_THROUGH);
   $output = drupal_get_form('vistas_' . $tipo_contenido . '_form_' . $hash);
   return $output;
 }
 
-function editar_contenido($nid) {
+function editar_contenido($tipo_contenido, $entity_id) {
   $hash = generateHash();
-  $node = node_load($nid);
-  $tipo_contenido = $node->type;
-  switch($tipo_contenido) {
-    case 'matriz':
-      $tipo_contenido_plural = 'matrices';
-      break;
-    case 'actor':
-      $tipo_contenido_plural = 'actores';
-      break;
-    default:
-      $tipo_contenido_plural = $tipo_contenido ."s";
+
+  if ($tipo_contenido == 'discursivo') {
+    $term = taxonomy_term_load($entity_id);
+    $vocabulary = taxonomy_vocabulary_load($term->vid);
+    $tipo_contenido = $vocabulary->machine_name;
+    switch(strtolower($vocabulary->name)) {
+      case 'matriz':
+        $tipo_contenido_plural = 'Matrices';
+        break;
+      case 'actor':
+        $tipo_contenido_plural = 'Actores';
+        break;
+      default:
+        $tipo_contenido_plural = $vocabulary->name ."s";
+    }
+  } else {
+    $tipo_contenido_plural = $tipo_contenido . "s";
   }
+  
   $titulo = theme('html_tag', array(
     'element' => array(
       '#tag' => 'span',
       '#attributes' => array(
         'class' => 'titulo-tipo',
        ),
-      '#value' => $tipo_contenido_plural
+      '#value' => ucfirst($tipo_contenido_plural),
     ),
   ));
   $titulo_accion = theme('html_tag', array(
@@ -104,12 +135,35 @@ function editar_contenido($nid) {
       '#attributes' => array(
         'class' => 'titulo-tipo',
        ),
-      '#value' => ' para agregar'
+      '#value' => ' para editar'
     ),
   ));
-  drupal_set_title($titulo . $titulo_accion);
-  $output = drupal_get_form('vistas_' .$tipo_contenido . '_form_editar_' . $hash, $nid);
+
+  $messages = theme('html_tag', array(
+    'element' => array(
+      '#tag' => 'div',
+      '#attributes' => array(
+        'id' => 'messages',
+       ),
+      '#value' => ''
+    ),
+  ));
+  drupal_add_js(drupal_get_path('module', 'vistas') . '/js/vistas.js', array('weight' => 20));
+  drupal_set_title($titulo . $titulo_accion, PASS_THROUGH);
+  $output = drupal_get_form('vistas_' .$tipo_contenido . '_form_editar_' . $hash, $entity_id);
   return $output;
+}
+
+function tipo_contenido_load($tipo_contenido){
+
+  //tipos validos
+  $tipos_validos = array('nota','area','tema','matriz','actor','medio', 'discursivo');
+  if (in_array($tipo_contenido, $tipos_validos)){
+    return $tipo_contenido;
+  }
+  else {
+    return FALSE;
+  }
 }
 
 

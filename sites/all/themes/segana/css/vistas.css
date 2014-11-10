@@ -86,6 +86,22 @@
 	font-weight: bold;
 }
 
+#vista_elementos_discursivos #notas_asociadas {
+	font-size: 15px;
+	color: #737E86;
+	margin-bottom: 15px;
+	font-weight: bold;
+}
+
+#vista_elementos_discursivos #notas_asociadas a {
+	color: black;
+}
+
+#vista_elementos_discursivos #notas_asociadas img {
+	vertical-align: middle;
+	margin-left: 6px;
+}
+
 #vista_elementos_discursivos #fecha {
 	font-size: 14px;
 	color: #737E86;
@@ -93,4 +109,472 @@
 
 #vista_elementos_discursivos #descripcion {
 	margin-top: 20px;
+}
+
+
+.vistas-nota-form,
+.vistas-discursivo-form {
+	font-family: ubuntu;
+}
+.vistas-nota-form .messages,
+.vistas-discursivo-form .messages {
+	margin: 0;
+}
+
+.vistas-nota-form div#contenedor,
+.vistas-discursivo-form div#contenedor {
+	width: 874px;
+}
+
+.vistas-nota-form fieldset,
+.vistas-discursivo-form fieldset {
+	border: medium none !important;;
+	margin: 0pt;
+	padding: 0pt;
+	background: none !important;
+}
+
+
+.vistas-nota-form #superior {
+	padding: 50px 24px 0pt 99px;
+	background-color: rgba(208, 216, 221, 0.5);
+}
+
+
+.vistas-nota-form #medio {
+	padding: 0 24px 0pt 99px;
+	background-color: rgba(208, 216, 221, 0.5);
+}
+
+
+.vistas-nota-form #titular {
+	padding: 0 24px 0pt 99px;
+	background-color: rgba(208, 216, 221, 0.5);
+}
+.vistas-nota-form label,
+.vistas-discursivo-form label {
+	font-size: 12px;
+	text-transform: uppercase;
+	font-weight: bold;
+	color: #737E86;
+}
+.vistas-nota-form #superior fieldset {
+	border-bottom: 1px solid #8F999F;
+	padding-bottom: 5px;
+}
+
+.vistas-nota-form #superior div.form-item-title {
+	margin-right: 44px;
+}
+
+.vistas-nota-form #superior fieldset div.form-item,
+.vistas-nota-form #superior fieldset div.container-inline-date {
+	margin: 0pt 0pt 2px;
+}
+
+.vistas-nota-form #superior fieldset div.form-item {
+	float: left;
+}
+
+.vistas-nota-form #superior fieldset div.container-inline-date {
+	float: right;
+	clear: none;
+}
+
+
+
+.vistas-nota-form #edit-fecha input {
+	background-color: #E4E6E7;
+	border-color: #D6D9DC;
+	font-family: segan;
+	font-size: 13px;
+	padding-left: 3px;
+	width: 74px;
+}
+.vistas-nota-form .form-item-title label {
+	font-size: 17px;
+	color: #90999F;
+	margin-top: 3px;
+}
+
+.vistas-nota-form input,
+.vistas-discursivo-form input {
+	border-radius: 5px 5px 5px 5px;
+	height: 23px;
+	font-family: ubuntu;
+	background-color: #F6F7F7;
+	border: 1px solid #C7CCCE;
+	font-size: 13px;
+	padding: 3px;
+}
+
+.vistas-nota-form .form-item-title input {
+	border-color: #E6E7E9;
+	width: 487px;
+}
+.vistas-nota-form #superior label {
+	float: left;
+}
+
+.vistas-nota-form #superior #edit-fecha-wrapper label {
+	margin: 2px;
+}
+
+.vistas-nota-form input.date-popup-init {
+	background-color: #E4E6E7;
+	border-color: #D6D9DC;
+	font-family: segan;
+	font-size: 13px;
+	padding-left: 3px;
+	width: 74px;
+}
+
+.vistas-nota-form #edit-fecha {
+	padding: 0;
+}
+
+.vistas-nota-form .form-item-fecha label {
+	line-height: 29px; 
+}
+
+.vistas-nota-form #medio select,
+.vistas-nota-form #titular select {
+	width: 148px;
+	font-family: ubuntu;
+	border: 1px solid #C7CCCE;
+	border-radius: 5px 5px 5px 5px;
+	background-color: #F6F7F7;
+	font-size: 13px;
+	height: 22px;
+}
+
+.vistas-nota-form #medio textarea,
+.vistas-nota-form #titular textarea {
+	background-color: #F6F7F7;
+	border: 1px solid #C7CCCE;
+	font-family: ubuntu;
+	font-size: 14px;
+	height: 103px;
+	resize: none;
+	width: 560px;
+	border-radius: 5px 5px 5px 5px;
+	line-height: 20px;
+}
+
+
+.vistas-nota-form #medio-derecha,
+.vistas-nota-form #medio-izquierda {
+	float: left;
+}
+
+.vistas-nota-form #medio-izquierda {
+	margin-left: 35px;
+}
+
+.vistas-nota-form #medio .form-item-body textarea {
+	height: 382px;
+	width: 559px;
+}
+
+.vistas-nota-form #medio-impreso {
+	clear: both;
+	background-color: rgba(208, 216, 221, 0.5);
+	margin-bottom: 20px;
+}
+
+.vistas-nota-form #medio-impreso fieldset div.fieldset-wrapper div {
+	display: inline-block;
+	margin: 10px 10px 10px 0;
+}
+
+.vistas-nota-form #medio-impreso div#primera_pagina,
+.vistas-nota-form #medio-impreso div#titular_primera_pagina {
+	display: block;
+	margin: 0;
+	background-color: rgba(208, 216, 221, 0.5);
+}
+
+.vistas-nota-form #medio-impreso .form-item-tipo-carga,
+.vistas-nota-form #medio-impreso .form-item-tipo-titulo-primera-pagina {
+	display: block !important;
+}
+
+.vistas-nota-form #inferior fieldset.form-wrapper {
+	background-color: #E0E2E4 !important;;
+	float: left;
+	width: 100%;
+}
+
+.vistas-nota-form #inferior legend {
+	clear: both;
+	float: left;
+	padding-left: 145px;
+	width: 723px;
+	font-family: ubuntu;
+	font-size: 19px;
+	font-weight: bold;
+	color: #6A777F;
+	margin: 53px 0pt 41px;
+}
+
+.vistas-nota-form #inferior div#encabezado {
+	color: #6A777F;
+	display: inline-block;
+	font-family: ubuntu;
+	font-size: 12px;
+	font-weight: bold;
+	width: 752px;
+	border-bottom: 2px solid #BBC0C5;
+	padding-bottom: 5px;
+	margin: 0pt 23px 30px 99px;
+	text-transform: uppercase;
+}
+
+.vistas-nota-form #inferior div#encabezado div {
+	display: inline-block;
+	border-right: 2px solid #BBC0C5;
+	height: 19px;
+	text-align: center;
+}
+
+.vistas-nota-form div.fila_discursivo {
+	clear: both;
+	float: left;
+	padding: 0pt 23px 0pt 99px;
+	width: 752px;
+	border-bottom: 11px solid #EDEEEF;
+}
+
+.vistas-nota-form #tendencia_nota {
+	margin: 0 0 10px 99px;
+	font-size: 12px;
+	font-weight: bold;
+	color: #6A777F;
+	text-transform: uppercase;
+}
+
+.vistas-nota-form #tendencia_nota .contra {
+	color: blue;
+}
+
+.vistas-nota-form #tendencia_nota .favor{
+	color: red;
+}
+
+.vistas-nota-form #tendencia_nota label {
+	float: left;
+}
+
+.vistas-nota-form #tendencia_nota input {
+	background-color: transparent;
+	border-color: transparent;
+	font-weight: bold;
+	padding: 0 7px;
+	line-height: 15px;
+}
+
+.vistas-nota-form #inferior div#encabezado div#tema {
+	width: 140px;
+}
+
+.vistas-nota-form #inferior div#encabezado div#matriz {
+	width: 140px;
+}
+
+.vistas-nota-form #inferior div#encabezado div#tendencia {
+	width: 130px;
+}
+
+.vistas-nota-form #inferior div#encabezado div#cuerpo_argumentativo {
+	width: 182px;
+}
+
+
+.vistas-nota-form #inferior div#encabezado div#actor {
+	width: 140px;
+	border: medium none;
+}
+
+
+.vistas-nota-form #inferior .fila_discursivo div.form-item {
+	float: left;
+	margin: 0pt;
+}
+
+.vistas-nota-form #inferior input[id^=edit-agregar-fila-discursivo] {
+	float: right;
+	position: relative;
+	border: medium none;
+	background-color: transparent;
+	height: 14px;
+	top: -27px;
+	right: 4px;
+	padding: 0;
+}
+
+.vistas-nota-form #inferior #borrar_fila_discursivo  input {
+	float: right;
+	position: relative;
+	border: medium none;
+	background-color: transparent;
+	height: 14px;
+	right: -18px;
+	top: -18px;
+	padding: 0;
+}
+
+.vistas-nota-form #inferior #borrar_fila_discursivo  input:disabled {
+	opacity: 0;
+}
+
+.vistas-nota-form #inferior div.fila_discursivo input.form-text {
+	margin: 0pt 2px;
+	width: 140px;
+}
+
+.vistas-nota-form #inferior div.fila_discursivo select {
+	margin: 0pt 7px;
+	width: 120px;
+	font-size: 13px;
+}
+
+
+.vistas-nota-form #inferior div.fila_discursivo textarea {
+	margin: 0pt 2px;
+	width: 180px;
+	border-radius: 5px 5px 5px 5px;
+	resize: none;
+	border: 1px solid #C7CCCE;
+	background-color: #F6F7F7;
+	font-size: 12px;
+	font-family: ubuntu;
+	height: 84px;
+}
+
+.vistas-nota-form #botones,
+.vistas-discursivo-form #botones {
+	height: 32px;
+	background-color: #C6CACD;
+	position: relative;
+	float: left;
+	width: 874px;
+}
+
+.vistas-nota-form #botones fieldset.form-wrapper,
+.vistas-discursivo-form #botones fieldset.form-wrapper {
+	background-color: #C6CACD;
+	margin: 0pt;
+	height: 32px;
+}
+
+.vistas-nota-form #botones input[type="submit"],
+.vistas-discursivo-form #botones input[type="submit"] {
+	background-image: url("/sites/all/themes/segana/images/busqueda-boton.png");
+	color: white;
+	width: 124px;
+	font-family: ubuntu;
+	font-size: 11px;
+	font-style: italic;
+	font-weight: bold;
+	height: 25px;
+	margin-left: 2px;
+	margin-top: 4px;
+	padding-bottom: 2px;
+	background-color: transparent;
+	border: medium none;
+	float: right;
+}
+.vistas-nota-form #elementos_discursivos {
+	float: left;
+}
+
+.vistas-discursivo-form .form-item {
+	margin: 0;
+}
+
+.vistas-discursivo-form .nombre_discursivo {
+	padding: 50px 24px 20px 99px;
+}
+
+.vistas-discursivo-form .nombre_discursivo .form-item {
+	border-bottom: 1px solid #8F999F;
+}
+
+.vistas-discursivo-form .nombre_discursivo label {
+	color: #90999F;
+	font-size: 17px;
+	float: left;
+	margin-top: 2px;
+	margin-right: 4px;
+	text-transform: uppercase;
+}
+
+.vistas-discursivo-form .nombre_discursivo input {
+	border-color: #E6E7E9;
+	margin-bottom: 9px;
+}
+.vistas-discursivo-form textarea {
+	background-color: #F6F7F7;
+	border: 1px solid #C7CCCE;
+	border-radius: 5px 5px 5px 5px;
+	font-family: ubuntu;
+	font-size: 14px;
+	height: 205px;
+	resize: none;
+	width: 560px;
+	padding: 8px;
+}
+
+.vistas-discursivo-form .rol,
+.vistas-discursivo-form .description,
+.vistas-discursivo-form .fusionar {
+	padding: 30px 24px 30px 99px;
+}
+
+
+html.js .vistas-nota-form input.form-autocomplete,
+html.js .vistas-discursivo-form input.form-autocomplete {
+	background-image: url(/misc/throbber.gif);
+	background-position: 100% 4px;
+	background-repeat: no-repeat;
+}
+
+html.js .vistas-nota-form input.throbbing,
+html.js .vistas-discursivo-form input.throbbing {
+  background-position: 99% 85%; /* tweak this according to your gif */
+}
+
+.vistas-discursivo-form #fusionar input[id^=edit-boton-fusionar] {
+	float: right;
+	position: relative;
+	border: medium none;
+	background-color: transparent;
+	height: 15px;
+	padding: 0;
+	top: 2px;
+}
+
+.vistas-discursivo-form #fusionar .fieldset-wrapper div {
+	display: inline-block;
+}
+
+.vistas-discursivo-form #contenedor {
+	background-color: rgba(208, 216, 221, 0.5);
+}
+
+.vistas-discursivo-form #notas_asociadas {
+	padding-left: 99px;
+	font-size: 13px;
+	text-transform: uppercase;
+	font-weight: bold;
+	color: #737E86;
+}
+
+.vistas-discursivo-form .ver img {
+	vertical-align: middle;
+	margin-left: 6px;
+}
+
+.vistas-discursivo-form #notas_asociadas a {
+	color: black;
 }

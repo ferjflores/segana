@@ -11,6 +11,7 @@ function grafico_lineal($variables, $tipo = NULL, $combinado = NULL, $ejeX = 'ti
 
 		$query = query_area($query, $variables, $tipo);
 		$query = query_discursivo($query, $variables, $tipo);
+		$query = query_tendencia_nota($query, $variables, $tipo);
 		$query = query_medio($query, $variables, $tipo);
 		$query = query_palabra_clave($query, $variables);
 
@@ -30,9 +31,17 @@ function grafico_lineal($variables, $tipo = NULL, $combinado = NULL, $ejeX = 'ti
 		else {
 			$query->condition('ff.field_fecha_value', $variables['fecha_desde'], '=');
 		}
-			
+		
+		// si tipo_informacion no es todos
+		if($variables['tipo_informacion']){
+			$query->join('field_data_field_tipo_informacion', 'fti', 'n.nid = fti.entity_id');
+			$query->condition('fti.field_tipo_informacion_tid', $variables['tipo_informacion']);
+		}
+
 		$query->orderBy('nid_count', 'DESC');
 		$query_tipo = $query;
+
+
 
 
 
@@ -40,6 +49,7 @@ function grafico_lineal($variables, $tipo = NULL, $combinado = NULL, $ejeX = 'ti
 		$query->join('field_data_field_fecha', 'ff', 'n.nid = ff.entity_id');
 		$query = query_area($query, $variables, $tipo);
 		$query = query_discursivo($query, $variables, $tipo);
+		$query = query_tendencia_nota($query, $variables, $tipo);
 		$query = query_medio($query, $variables, $tipo);
 		$query = query_palabra_clave($query, $variables);
 
@@ -69,6 +79,15 @@ function grafico_lineal($variables, $tipo = NULL, $combinado = NULL, $ejeX = 'ti
 		else {
 			$query->addField('ff', 'field_fecha_value', 'fecha');
 		}
+
+
+		// si tipo_informacion no es todos
+		if($variables['tipo_informacion']){
+			$query->join('field_data_field_tipo_informacion', 'fti', 'n.nid = fti.entity_id');
+			$query->condition('fti.field_tipo_informacion_tid', $variables['tipo_informacion']);
+		}
+
+
 
 		// agrupar por tipo
 		if ($tipo) {
@@ -119,11 +138,11 @@ function grafico_lineal($variables, $tipo = NULL, $combinado = NULL, $ejeX = 'ti
 			'#title_color' => '#8797A0',
 			'#title_font_weight' => 'bold',
 			'#font' => 'ubuntu',
-			'#title_font_size' => 18,
+			'#title_font_size' => 18 * $variables['font'],
 			'#dateTimeLabelFormats' => isset($tooltip) ? $tooltip : NULL,
 			'#zoomType' => 'x',
 			'#width' => 1054,
-			'#colors' => $variables['paleta_colores'],
+			'#colors' => ($tipo != 'tendencia_nota') ? $variables['paleta_colores'] : array('red','blue'),
 			'#legend' => ($variables['leyenda_lineal']) ? TRUE : FALSE,
 			'#legend_position' => $variables['leyenda_lineal'],
 		);
@@ -147,10 +166,10 @@ function grafico_lineal($variables, $tipo = NULL, $combinado = NULL, $ejeX = 'ti
 					$plural_tipo = $tipo ."s";
 					break;
 			}
-			$chart['#subtitle'] = t("Principales $plural_tipo");
+			$chart['#subtitle'] = ($tipo != 'tendencia_nota') ? t("Principales $plural_tipo") : 'Tendencias';
 			$chart['#subtitle_color'] = '#8797A0';
 			$chart['#subtitle_font_weight'] = 'normal';
-			$chart['#subtitle_font_size'] = 13;
+			$chart['#subtitle_font_size'] = 13 * $variables['font'];
 		}
 
 
@@ -165,10 +184,13 @@ function grafico_lineal($variables, $tipo = NULL, $combinado = NULL, $ejeX = 'ti
 			
 			// seleccionar los tres primeros
 			//$top_tipo = array_slice($top_tipo, 0, 3, TRUE);
-			
+			if ($tipo == 'tendencia_nota'){
+				//ToDo fijar los colores por la interfaz gráfica y no forzar el orden para que cuadre
+				$top_tipo = array('Positivo' => $top_tipo['Positivo'], 'Negativo' => $top_tipo['Negativo']);
+			}
 
 			foreach ($top_tipo as $tipo_name => $value) {
-					$chart[$tipo_name] = array(
+				$chart[$tipo_name] = array(
 					'#type' => 'chart_data',
 					'#chart_type' => 'spline',
 					'#data' => $serie[$tipo_name],
@@ -189,6 +211,20 @@ function grafico_lineal($variables, $tipo = NULL, $combinado = NULL, $ejeX = 'ti
 			);
 		}
 		else {
+			if ($tipo == 'tendencia_nota'){
+				//ToDo fijar los colores por la interfaz gráfica y no forzar el orden para que cuadre
+				$serie_barra = array('Positivo' => $serie_barra['Positivo'], 'Negativo' => $serie_barra['Negativo']);
+				
+
+				$serieYX = array($serieY[0] => $serieX[0], $serieY[1] => $serieX[1]);
+				//reodernar
+				$serieYX = array('Positivo' => $serieYX['Positivo'], 'Negativo' => $serieYX['Negativo']);
+
+				$serieY = array_keys($serieYX);
+				$serieX = array_values($serieYX);
+
+
+			}
 			$chart['line'] = array(
 				'#type' => 'chart_data',
 				'#chart_type' => 'spline',
@@ -208,7 +244,7 @@ function grafico_lineal($variables, $tipo = NULL, $combinado = NULL, $ejeX = 'ti
 						'#type' => 'chart_data',
 						'#chart_type' => 'column',
 						'#title' => t($title),
-						'#data' => $serie_barra[$title],
+						'#data' => $values,
 						//'#width' => '250px',
 						//'#showInLegend' => FALSE,
 						//'#labels' => array($key),
@@ -233,7 +269,7 @@ function grafico_lineal($variables, $tipo = NULL, $combinado = NULL, $ejeX = 'ti
 							'dataLabels' => array(
 								'distance' => -25,
 								'color' => 'white',
-								'style' => array('fontSize' => 12),
+								'style' => array('fontSize' => 12 * $variables['font']),
 								'connectorWidth' => 0,
 								'inside' => TRUE,
 								'padding' => 0,
@@ -294,7 +330,8 @@ function grafico_lineal($variables, $tipo = NULL, $combinado = NULL, $ejeX = 'ti
 
 function grafico_simple($variables, $tipo) {
 
-	$rango = ($variables['otros']) ? NULL : 8;
+	$rango = ($variables['otros']) ? NULL : $variables['cantidad_simple'];
+
 
 	$query = query_por_tipo($variables, $tipo, $rango);
 
@@ -323,9 +360,10 @@ function grafico_simple($variables, $tipo) {
 	}
 
 	foreach ($resultado as $row) {
-		if ( ($variables['otros']) && $contador > 6) {
-			$serieX[7] = intval((isset($serieX[7]) ? $serieX[7] : NULL) + $row->nid_count);
-			$serieY[7] = $otros;
+		if ( ($variables['otros']) && $contador > ($variables['cantidad_simple'] - 2)) {
+			$indice_otros = ($variables['cantidad_simple'] -1);
+			$serieX[$indice_otros] = intval((isset($serieX[$indice_otros]) ? $serieX[$indice_otros] : NULL) + $row->nid_count);
+			$serieY[$indice_otros] = $otros;
 			$serie[$otros] = intval((isset($serie[$otros]) ? $serie[$otros] : NULL) + intval($row->nid_count));
 		}
 		else {
@@ -342,6 +380,7 @@ function grafico_simple($variables, $tipo) {
 	//subtitulo
 	$tipos = tipos();
 	$tipos[] = 'medio';
+	$tipos[] = 'tendencia_nota';
 
 	$subtitulo = NULL;
 	foreach ($tipos as $value) {
@@ -360,6 +399,17 @@ function grafico_simple($variables, $tipo) {
 		}
 	}
 
+	if ($tipo == 'tendencia_nota') {
+		foreach ($serieY as $key => $value) {
+			if ($value == 'Positivo'){
+				$paleta_tendencia_nota[$key] = 'red';
+			}
+			else {
+				$paleta_tendencia_nota[$key] = 'blue';
+			}
+		}
+	}
+
 
 	// corregir accento del area
 	$tipo = $tipo == 'area' ? 'área' : $tipo;
@@ -369,19 +419,19 @@ function grafico_simple($variables, $tipo) {
 		'#chart_library' => 'highcharts',
 		'#data_labels' => TRUE,
 		'#tooltips' => TRUE,
-		'#colors' => $variables['paleta_colores'],
+		'#colors' => ($tipo != 'tendencia_nota') ? $variables['paleta_colores'] : $paleta_tendencia_nota,
 		
 		'#title_font_style' => 'bold',
 		'#title_color' => '#8797A0',
 		'#title_font_weight' => 'bold',
 		'#font' => 'ubuntu',
-		'#title_font_size' => 18,
+		'#title_font_size' => 18 * $variables['font'],
 		'#width' => 400,
 		'#height' => 450,
 		'#subtitle' => isset($subtitulo) ? $subtitulo : NULL,
 		'#subtitle_color' => '#8797A0',
 		'#subtitle_font_weight' => 'normal',
-		'#subtitle_font_size' => 11,
+		'#subtitle_font_size' => 11 * $variables['font'],
 		'#legend' => ($variables['leyenda']) ? TRUE : FALSE,
 		'#legend_position' => 'bottom',
 		'#legend_width' => 400,
@@ -392,6 +442,7 @@ function grafico_simple($variables, $tipo) {
 		'#legend_symbolWidth' => 10,
 		'#legend_symbolPadding' => 4,
 		'#legend_itemMarginBottom' => 1,
+		'#legend_font_size' => 12 * $variables['font'],
 
 	);
 	$torta['pie'] = array(
@@ -413,7 +464,7 @@ function grafico_simple($variables, $tipo) {
 			'dataLabels' => array(
 				'distance' => (($variables['conectores']) ? 20 : 38),
 				'color' => '#424a52',
-				'style' => array('fontWeight' => 'bold', 'fontSize' => 16),
+				'style' => array('fontWeight' => 'bold', 'fontSize' => 16 * $variables['font']),
 				'connectorPadding' => (($variables['conectores']) ? 0 : -30),
 				'connectorWidth' => (($variables['conectores']) ? 1 : 0),
 				'inside' => TRUE,
@@ -433,19 +484,19 @@ function grafico_simple($variables, $tipo) {
 		'#chart_library' => 'highcharts',
 		'#data_labels' => TRUE,
 		'#tooltips' => FALSE,
-		'#colors' => $variables['paleta_colores'],
+		'#colors' => ($tipo != 'tendencia_nota') ? $variables['paleta_colores'] : $paleta_tendencia_nota,
 		'#title_font_style' => 'bold',
 		'#title_color' => '#8797A0',
 		'#title_font_weight' => 'bold',
 		'#font' => 'ubuntu',
-		'#title_font_size' => 18,
+		'#title_font_size' => 18 * $variables['font'],
 		'#legend' => FALSE,
 		'#width' => 753,
 		'#height' => 450,
 		'#subtitle' => isset($subtitulo) ? $subtitulo : NULL,
 		'#subtitle_color' => '#8797A0',
 		'#subtitle_font_weight' => 'normal',
-		'#subtitle_font_size' => 11,
+		'#subtitle_font_size' => 11 * $variables['font'],
 	);
 
 	/*foreach ($serie as $key => $value) {
@@ -483,7 +534,7 @@ function grafico_simple($variables, $tipo) {
 		'series' => array(
 			'dataLabels' => array(
 				'enabled' => TRUE,
-				'style' => array('fontWeight' => 'bold', 'fontSize' => 15),
+				'style' => array('fontWeight' => 'bold', 'fontSize' => 15 * $variables['font']),
 				//'distance' => 50,
 				'inside' => FALSE,
 			),
@@ -499,7 +550,7 @@ function grafico_simple($variables, $tipo) {
 	$columnas['xaxis'] = array(
 		'#type' => 'chart_xaxis',
 		'#labels' => $serieY,
-		'#labels_font_size' => 12,
+		'#labels_font_size' => 12 * $variables['font'],
 		'#labels_step' => 0,
 		'#maxStaggerLines' => 1,
 
@@ -512,7 +563,7 @@ function grafico_simple($variables, $tipo) {
 		'#labels_color' => 'black',
 		'#title_color' => 'black',
 		'#min' => 0,
-		'#title_font_size' => 14,
+		'#title_font_size' => 14 * $variables['font'],
 		'#allowDecimals' => FALSE,
 	);
 
@@ -532,6 +583,7 @@ function graficos_barras($variables, $tipo, $tipo2) {
 
 	$query = query_area($query, $variables, $tipo);
 	$query = query_discursivo($query, $variables, $tipo);
+	$query = query_tendencia_nota($query, $variables, $tipo);
 	$query = query_medio($query, $variables, $tipo);
 	$query = query_palabra_clave($query, $variables);
 
@@ -551,6 +603,12 @@ function graficos_barras($variables, $tipo, $tipo2) {
 	else {
 		$query->condition('ff.field_fecha_value', $variables['fecha_desde'], '=');
 	}
+
+	// si tipo_informacion no es todos
+	if($variables['tipo_informacion']){
+		$query->join('field_data_field_tipo_informacion', 'fti', 'n.nid = fti.entity_id');
+		$query->condition('fti.field_tipo_informacion_tid', $variables['tipo_informacion']);
+	}
 		
 	$query->orderBy('nid_count', 'DESC');
 	$query_tipo = $query;
@@ -564,6 +622,7 @@ function graficos_barras($variables, $tipo, $tipo2) {
 
 	$query = query_area($query, $variables, $tipo2);
 	$query = query_discursivo($query, $variables, $tipo2);
+	$query = query_tendencia_nota($query, $variables, $tipo2);
 	$query = query_medio($query, $variables, $tipo2);
 	$query = query_palabra_clave($query, $variables);
 
@@ -583,6 +642,12 @@ function graficos_barras($variables, $tipo, $tipo2) {
 	else {
 		$query->condition('ff.field_fecha_value', $variables['fecha_desde'], '=');
 	}
+
+	// si tipo_informacion no es todos
+	if($variables['tipo_informacion']){
+		$query->join('field_data_field_tipo_informacion', 'fti', 'n.nid = fti.entity_id');
+		$query->condition('fti.field_tipo_informacion_tid', $variables['tipo_informacion']);
+	}
 		
 	$query->orderBy('nid_count', 'DESC');
 	$query_tipo2 = $query;
@@ -594,10 +659,20 @@ function graficos_barras($variables, $tipo, $tipo2) {
 
 	$query = query_area($query, $variables, $tipo);
 	$query = query_discursivo($query, $variables, $tipo);
+	$query = query_tendencia_nota($query, $variables, $tipo);
 	$query = query_medio($query, $variables, $tipo);
 	$query = query_palabra_clave($query, $variables);
 
-	$query->join('field_data_field_' . $tipo2, 'tipo2', 'n.nid = tipo2.entity_id');
+	// si los campos a comparar tienen una relación muchos a uno con la nota se debe asegurar que no se mezclen estos campos, 
+	// haciendo el delta del tema igual al campo se garantiza esto.
+	$discursivos = array('actor', 'tema', 'matriz');
+	if (!in_array($tipo, $discursivos) || !in_array($tipo2, $discursivos)) {
+		$query->join('field_data_field_' . $tipo2, 'tipo2', 'n.nid = tipo2.entity_id');
+	}
+	else {
+		$query->join('field_data_field_' . $tipo2, 'tipo2', 'n.nid = tipo2.entity_id AND fm.delta = tipo2.delta');
+	}
+
 	$query->join('taxonomy_term_data', 'ttd2', 'tipo2.field_' . $tipo2 . '_tid = ttd2.tid');
 
 	$query->addJoin('INNER', $query_tipo, 'top_tipo', 'top_tipo.tid = ttd.tid');
@@ -621,6 +696,13 @@ function graficos_barras($variables, $tipo, $tipo2) {
 	else {
 		$query->condition('ff.field_fecha_value', $variables['fecha_desde'], '=');
 	}
+	
+	// si tipo_informacion no es todos
+	if($variables['tipo_informacion']){
+		$query->join('field_data_field_tipo_informacion', 'fti', 'n.nid = fti.entity_id');
+		$query->condition('fti.field_tipo_informacion_tid', $variables['tipo_informacion']);
+	}
+
 	$query->orderBy('ttd.name', 'ASC');
 	$query->orderBy('ttd2.name', 'ASC');
 
@@ -642,6 +724,9 @@ function graficos_barras($variables, $tipo, $tipo2) {
 			break;
 		case 'actor':
 			$titulo = "Número de notas de los principales actores por $tipo";
+			break;
+		case 'tendencia_nota':
+			$titulo = "Número de notas de las tendencias por $tipo";
 			break;
 		default:
 			$titulo = "Número de notas de las principales " . $tipo2 . "s por " .$tipo;
@@ -670,23 +755,35 @@ function graficos_barras($variables, $tipo, $tipo2) {
 			$plural_tipo = $tipo ."s";
 			break;
 	}
+
+	if ($tipo2 == 'tendencia_nota') {
+		foreach (array_keys($serie) as $key => $value) {
+			if ($value == 'Positivo'){
+				$paleta_tendencia_nota[$key] = 'red';
+			}
+			else {
+				$paleta_tendencia_nota[$key] = 'blue';
+			}
+		}
+	}
+
 	$columnas = array(
 		'#type' => 'chart',
 		'#title' => t($titulo),
 		'#chart_library' => 'highcharts',
 		//'#data_labels' => TRUE,
 		'#tooltips' => TRUE,
-		'#colors' => $variables['paleta_colores'],
+		'#colors' => ($tipo2 != 'tendencia_nota') ? $variables['paleta_colores'] : $paleta_tendencia_nota,
 		'#title_font_style' => 'bold',
 		'#title_color' => '#6B7A84',
 		'#title_font_weight' => 'bold',
 		'#font' => 'ubuntu',
-		'#title_font_size' => 18,
+		'#title_font_size' => 18 * $variables['font'],
 		'#legend' => TRUE,
 		'#width' => 1153,
 		'#height' => 450,
 		'#legend_title' => mb_ucfirst($plural_tipo2),
-		'#legend_title_font_size' => 15,
+		'#legend_title_font_size' => 15 * $variables['font'],
 		'#legend_title_font_weight' => 'normal',
 		'#legend_title_color' => '#8797A0',
 		'#legend_itemMarginBottom' => 3,
@@ -721,7 +818,7 @@ function graficos_barras($variables, $tipo, $tipo2) {
 		'series' => array(
 			'dataLabels' => array(
 				'enabled' => FALSE,
-				'style' => array('fontWeight' => 'normal', 'fontSize' => 12),
+				'style' => array('fontWeight' => 'normal', 'fontSize' => 12 * $variables['font']),
 				//'distance' => 50,
 				'inside' => FALSE,
 			),
@@ -737,12 +834,12 @@ function graficos_barras($variables, $tipo, $tipo2) {
 	$columnas['xaxis'] = array(
 		'#type' => 'chart_xaxis',
 		'#labels' => $lista_tipo,
-		'#labels_font_size' => 12,
+		'#labels_font_size' => 12 * $variables['font'],
 		'#labels_step' => 0,
 		'#maxStaggerLines' => 1,
 		'#title' => t(mb_ucfirst($plural_tipo)),
 		'#title_color' => '#8797A0',
-		'#title_font_size' => 13,
+		'#title_font_size' => 13 * $variables['font'],
 
 	);
 
@@ -753,7 +850,7 @@ function graficos_barras($variables, $tipo, $tipo2) {
 		'#labels_color' => 'black',
 		'#title_color' => 'black',
 		'#min' => 0,
-		'#title_font_size' => 14,
+		'#title_font_size' => 14 * $variables['font'],
 		'#title_color' => '#8797A0',
 		'#allowDecimals' => FALSE,
 	);
@@ -809,8 +906,12 @@ function query_palabra_clave(&$query, $variables){
 		$query->join('field_data_body', 'b', 'n.nid = b.entity_id');
 		if ($variables['busqueda_exacta']) {
 			$db_or_be = db_or();
-			$db_or_be->condition('n.title', '%' . db_like($variables['palabra_clave']) .'%', 'LIKE');
-			$db_or_be->condition('b.body_value', '%' . db_like($variables['palabra_clave']) .'%', 'LIKE');
+			$db_or_be->condition('n.title', '% ' . db_like($variables['palabra_clave']) .' %', 'LIKE');
+			$db_or_be->condition('b.body_value', '% ' . db_like($variables['palabra_clave']) .' %', 'LIKE');
+			$db_or_be->condition('n.title', db_like($variables['palabra_clave']) .' %', 'LIKE');
+			$db_or_be->condition('b.body_value', db_like($variables['palabra_clave']) .' %', 'LIKE');
+			$db_or_be->condition('n.title', '% ' . db_like($variables['palabra_clave']), 'LIKE');
+			$db_or_be->condition('b.body_value', '% ' . db_like($variables['palabra_clave']), 'LIKE');
 			$query->condition($db_or_be);
 		}
 		elseif ($variables['cualquiera']) {
@@ -905,6 +1006,18 @@ function query_discursivo(&$query, $variables, $tipo = NULL){
 	return $query;
 }
 
+function query_tendencia_nota(&$query, $variables, $tipo = NULL) {
+	if ($variables['tendencia_nota'] || $tipo == 'tendencia_nota') {
+		$query->join('field_data_field_tendencia_nota', 'fte', 'n.nid = fte.entity_id');
+		if ($tipo == 'tendencia_nota') {
+			$query->join('taxonomy_term_data', 'ttd', 'fte.field_tendencia_nota_tid = ttd.tid');
+		}
+		if ($variables['tendencia_nota']) {
+			$query->condition('fte.field_tendencia_nota_tid', $variables['tendencia_nota']);
+		}
+	}
+	return $query;
+}
 
 function query_por_tipo($variables, $tipo, $rango = NULL){
 	$query = db_select('node', 'n');
@@ -913,6 +1026,7 @@ function query_por_tipo($variables, $tipo, $rango = NULL){
 	$query = query_area($query, $variables, $tipo);
 	$query = query_discursivo($query, $variables, $tipo);
 	$query = query_medio($query, $variables, $tipo);
+	$query = query_tendencia_nota($query, $variables, $tipo);
 	$query = query_palabra_clave($query, $variables);
 
 
@@ -933,6 +1047,12 @@ function query_por_tipo($variables, $tipo, $rango = NULL){
 	else {
 		$query->condition('ff.field_fecha_value', $variables['fecha_desde'], '=');
 	}
+	// si tipo_informacion no es todos
+	if($variables['tipo_informacion']){
+		$query->join('field_data_field_tipo_informacion', 'fti', 'n.nid = fti.entity_id');
+		$query->condition('fti.field_tipo_informacion_tid', $variables['tipo_informacion']);
+	}
+
 	$query->orderBy('nid_count', 'DESC');
 
 	return $query;

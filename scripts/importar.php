@@ -1,7 +1,7 @@
-#!/usr/bin/drush
+#!/usr/bin/drush -r /data/segana7
 <?php
-require('/usr/src/segana7/scripts/funciones.php');
-//require('/data/segana7/scripts/funciones.php');
+//require('/usr/src/segana7/scripts/funciones.php');
+require('/data/segana7/scripts/funciones.php');
 $segana_viejo = new mysqli('udun', 'fflores', 'cbc1560', 'segana');
 //$limit = "limit 10";
 $elementos = "nota";
@@ -497,9 +497,15 @@ if ($elementos == "users" || $elementos == "todo") {
 ///////////nota//////////
 //////////////////////////////////
 if ($elementos == "nota" || $elementos == "todo") {
+	//buscar maximo seganaid
+	$query_max_seganaid = db_select('field_data_field_seganaid', 'fs');
+	$query_max_seganaid->addExpression('MAX(fs.field_seganaid_value)');
+	$resultado = $query_max_seganaid->execute();
+	$seganaid_inicio = "WHERE id_nota >= " . ($resultado->fetchField($column_index) - 15000);
+
 	$inicio = microtime(TRUE);
-	$limit = 'limit 800000, 100000';
-	//$ano = '2009';
+	//$limit = 'limit 864000, 1';
+	$ano = '2011';
 	//$where_ano = "WHERE fecha LIKE '$ano%'";
 	//$where_nota ="WHERE id_nota=29159";
 	$tipo ='nota';
@@ -527,7 +533,7 @@ if ($elementos == "nota" || $elementos == "todo") {
 		}
 	}
 
-	$query_viejo = "SELECT * FROM Notas $where_nota ORDER BY id_nota ASC $limit";
+	$query_viejo = "SELECT * FROM Notas $where_ano $seganaid_inicio ORDER BY id_nota ASC $limit";
 	$resultado_viejo = $segana_viejo->query($query_viejo);
 	$array_viejo = array();
 	drush_print("tiempo carga de nodos y notas:	 ". (microtime(TRUE) - $inicio));
@@ -537,7 +543,7 @@ if ($elementos == "nota" || $elementos == "todo") {
 		$body = check_plain(fixUTF8(forceUTF8(trim($row->cuerpo_texto))));
 		$fecha = strtotime($row->fecha);
 		$fecha  = ($fecha > 0 ? $fecha : 0);
-		drush_print($seganaid." ".$title." ".$tipo_medio." ".$fecha);
+		drush_print($seganaid." ".$title ." ".$fecha);
 
 
 		///////elementos discursivos/////////////
@@ -550,7 +556,10 @@ if ($elementos == "nota" || $elementos == "todo") {
 			$matriz_tid = array();
 			$cuerpo_argumentativo = array();
 			$actor_tid = array();
+			$tendencia_tid = array();
 			$delta = 0;
+			$tendencia_nota = 0;
+			unset($tendencia_nota_tid);
 			while ($row_elementos_discursivos = $resultado_elementos_discursivos->fetch_object()) {
 
 				$tema = $row_elementos_discursivos->id_tema;
@@ -573,7 +582,10 @@ if ($elementos == "nota" || $elementos == "todo") {
 					$matriz_tid[$delta] = $row_matriz->entity_id;
 				}
 
-				$cuerpo_argumentativo[$delta] = fixUTF8(forceUTF8(trim($row_elementos_discursivos->cuerpo_argumento)));
+				if ($row_elementos_discursivos->cuerpo_argumento != 'No Analizada') {
+					$cuerpo_argumentativo[$delta] = fixUTF8(forceUTF8(trim($row_elementos_discursivos->cuerpo_argumento)));
+				}
+
 				
 				$actor = $row_elementos_discursivos->id_actor;
 				if ($actor != 46058){
@@ -585,9 +597,28 @@ if ($elementos == "nota" || $elementos == "todo") {
 					$actor_tid[$delta] = $row_actor->entity_id;
 				}
 
-				drush_print($tema_tid[$delta] ." ". $matriz_tid[$delta] ." ". $actor_tid[$delta]);
+				$tendencia = $row_elementos_discursivos->tendencia;
+				if ($tendencia > 0){
+					$tendencia_tid[$delta] = 1;
+					$tendencia_nota++;
+				}
+				elseif ($tendencia < 0) {
+					$tendencia_tid[$delta] = 2;
+					$tendencia_nota--;
+				}
+				
+
+				drush_print($tema_tid[$delta] ." ". $matriz_tid[$delta] ." ". $actor_tid[$delta] ." ". $tendencia_tid[$delta]);
 				$delta++;
  			}
+ 			if ($tendencia_nota != 0) {
+				if ($tendencia_nota > 0) {
+					$tendencia_nota_tid = 1;
+				}
+				else {
+					$tendencia_nota_tid = 2;
+				}
+			}
 
 		}
 
@@ -696,6 +727,13 @@ if ($elementos == "nota" || $elementos == "todo") {
 				$resultado = $query->execute();
 				$row_cuadrante = $resultado->fetchObject();
 				$cuadrante_tid = $row_cuadrante->entity_id;
+
+				//actualizar el campo versión impresa del medio
+				$medio_term = taxonomy_term_load($medio_tid);
+				if($taxonomy_term != FALSE) {
+					$medio_term->field_version_impresa[LANGUAGE_NONE][0]['value'] = 1;
+					taxonomy_term_save($medio_term);
+				}
 			}
 
 
@@ -720,6 +758,7 @@ if ($elementos == "nota" || $elementos == "todo") {
 			}
 			$node->field_seganaid[$node->language][0][value] = $seganaid;
 			$prueba = "";
+			$tendencia_nota = 0;
 			if ($rows_elementos_discursivos > 0) {
 				for ($i=0; $i <= $delta; $i++) {
 					if ($tema_tid[$i]) {
@@ -737,7 +776,15 @@ if ($elementos == "nota" || $elementos == "todo") {
 					if (!empty($cuerpo_argumentativo[$i])){
 						$node->field_cuerpo_argumentativo[$node->language][$i][value] = $cuerpo_argumentativo[$i];
 					}
+					if ($tendencia_tid[$i]){
+						$node->field_tendencia[$node->language][$i][tid] = $tendencia_tid[$i];
+						$prueba.="tendencia ".$tendencia_tid[$i];
+					}
 				}
+				if (isset($tendencia_nota_tid)) {
+					$node->field_tendencia_nota[$node->language][0][tid] = $tendencia_nota_tid;
+					$prueba.=" tendencia_nota ".$tendencia_nota_tid;
+				}				
 			}
 			drush_print("tm ".$tipo_medio_tid."tt ".$tipo_titulo_tid."ti ".$tipo_informacion_tid."a ".$area_tid. "medio ".$medio_tid." ".$prueba);
 			if($node = node_submit($node)) { // Prepare node for saving
@@ -763,11 +810,14 @@ if ($elementos == "nota" || $elementos == "todo") {
 			unset($elementos_discursivos_nuevo);
 			$delta_viejo = count($node->field_tema[$node->language]);
 			for ($i=0; $i < $delta; $i++) {
-				$elementos_discursivos_nuevo .= $tema_tid[$i] . $matriz_tid[$i] . $actor_tid[$i] . $cuerpo_argumentativo[$i];
+				$elementos_discursivos_nuevo .= $tema_tid[$i] . $matriz_tid[$i] . $actor_tid[$i] . $cuerpo_argumentativo[$i] . $tendencia_tid[$i];
 			}
 			for ($i=0; $i < $delta_viejo; $i++) { 
-				$elementos_discursivos .= $node->field_tema[$node->language][$i][tid] . $node->field_matriz[$node->language][$i][tid] . $node->field_actor[$node->language][$i][tid] . $node->field_cuerpo_argumentativo[$node->language][$i][value];
+				$elementos_discursivos .= $node->field_tema[$node->language][$i][tid] . $node->field_matriz[$node->language][$i][tid] . $node->field_actor[$node->language][$i][tid] . $node->field_cuerpo_argumentativo[$node->language][$i][value] . $node->field_tendencia[$node->language][$i][tid];
 			}
+			$elementos_discursivos_nuevo .=  $tendencia_nota_tid;
+			$elementos_discursivos .= $node->field_tendencia_nota[$node->language][tid];
+
 			$nuevo = md5($title . $body .$elementos_discursivos_nuevo);
 			$actual = md5($array[$seganaid] . $elementos_discursivos);
 			if ($actual != $nuevo){
@@ -789,6 +839,19 @@ if ($elementos == "nota" || $elementos == "todo") {
 						if (!empty($cuerpo_argumentativo[$i])){
 							$node->field_cuerpo_argumentativo[$node->language][$i][value] = $cuerpo_argumentativo[$i];
 						}
+						if ($tendencia_tid[$i]){
+							$node->field_tendencia[$node->language][$i][tid] = $tendencia_tid[$i];
+						}
+						else {
+							unset($node->field_tendencia[$node->language][$i]);
+						}
+					}
+
+					if (isset($tendencia_nota_tid)){
+						$node->field_tendencia_nota[$node->language][0][tid] = $tendencia_nota_tid;
+					}
+					else {
+						unset($node->field_tendencia_nota[$node->language]);
 					}
 				}
 				node_save($node);

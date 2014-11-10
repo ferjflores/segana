@@ -188,3 +188,15 @@ function SEGANA_item_list($variables) {
   }
   return $output;
 }
+
+
+/**
+ * Implements hook_date_popup_process_alter().
+ */
+function SEGANA_date_popup_process_alter(&$element, &$form_state, $context) {
+  unset($element['date']['#description']);
+  unset($element['date']['#title']);
+  unset($element['time']['#description']);
+}
+
+

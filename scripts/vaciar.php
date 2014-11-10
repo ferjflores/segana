@@ -10,6 +10,8 @@ if (drush_get_option('truncate')) {
 			'field_data_field_antetitulo_primera_pagina',
 			'field_data_field_area',
 			'field_data_field_autor',
+			'field_data_field_centimetros',
+			'field_data_field_centimetros_primera_pagina',
 			'field_data_field_cuadrante',
 			'field_data_field_cuerpo_argumentativo',
 			'field_data_field_cuerpo_seccion',
@@ -21,12 +23,15 @@ if (drush_get_option('truncate')) {
 			'field_data_field_localizacion',
 			'field_data_field_matriz',
 			'field_data_field_medio',
+			'field_data_field_nombre',
 			'field_data_field_pagina',
 			'field_data_field_pagina_web',
 			'field_data_field_periodicidad',
 			'field_data_field_rol',
+			'field_data_field_seganaid',
 			'field_data_field_subtitulo',
 			'field_data_field_subtitulo_primera_pagina',
+			'field_data_field_sumario',
 			'field_data_field_sumario_primera_pagina',
 			'field_data_field_tema',
 			'field_data_field_tendencia',
@@ -45,8 +50,6 @@ if (drush_get_option('truncate')) {
 			'field_data_field_version_impresa',
 			'field_data_field_vertical_cm',
 			'field_data_field_vertical_primera_pagina',
-			'field_data_field_seganaid',
-			'field_data_field_nombre',
 			'field_data_ldap_user_current_dn'
 		);
 	$tablas2 = array(

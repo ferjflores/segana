@@ -98,6 +98,15 @@ div.encabezado_notas {
 	border-radius: 4px 4px 4px 4px;
 }
 
+.page-notas input:focus {
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #6B7A84;
+	outline: none;
+}
+
+.page-notas .panel-display  {
+	position: relative;
+}
 .page-notas .filtro {
 	position: absolute;
 	right: 21px;
@@ -231,4 +240,11 @@ div.encabezado_notas {
 	letter-spacing: -0.4px;
 	color: #505E67;
 	margin-bottom: 5px;
+}
+
+.page-notas #edit-actor-wrapper,
+.page-notas #edit-area-wrapper,
+.page-notas #edit-tema-wrapper,
+.page-notas #edit-matriz-wrapper {
+	display: none;
 }

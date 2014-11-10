@@ -11,10 +11,12 @@ function busqueda_form($form, &$form_state) {
 		'#suffix' => '</div>',
 	);
 
+  ed($form['values']['obviar_fecha']);
+  $fecha_deshabilitada = (($form_state['triggering_element']['#name']) && ($form_state['input']['obviar_fecha'])) ? 'disabled' : NULL;
 	$form['fecha'] = array(
 		'#type' => 'fieldset',
 		'#title' => 'FECHA',
-		'#prefix' => '<div id="fecha">',
+		'#prefix' => '<div id="fecha" class="' . $fecha_deshabilitada . '">',
 		'#suffix' => '</div>',
 	);
 	$rango_ano_inicio = 2008 - date('Y');
@@ -26,6 +28,7 @@ function busqueda_form($form, &$form_state) {
 		'#date_year_range' => "$rango_ano_inicio:+0",
 		'#size' => 6,
 		'#default_value' => isset($form_state['storage']['values']['fecha_desde']) ? $form_state['storage']['values']['fecha_desde'] : date('Y-m-d'),
+		'#disabled' => $fecha_deshabilitada,
 	);
 	$form['fecha']['fecha_hasta'] = array(
 		'#type' => 'date_popup',
@@ -35,6 +38,7 @@ function busqueda_form($form, &$form_state) {
 		'#default_value' => isset($form_state['storage']['values']['fecha_hasta']) ? $form_state['storage']['values']['fecha_hasta'] : 0,
 		'#date_year_range' => "$rango_ano_inicio:+0",
 		'#size' => 6,
+		'#disabled' => $fecha_deshabilitada,
 	);
 	$form['busqueda']['opciones'] = array(
 		'#type' => 'fieldset',
@@ -87,16 +91,33 @@ function busqueda_form($form, &$form_state) {
 		'#suffix' => '</div>',
 	 );
 
-	$tipo_informacion =tipo_informacion();
-	$tipo_informacion_default = array_search('Noticia', $tipo_informacion);
+	$tipo_informacion = tipo_informacion();
 	$form['busqueda']['opciones']['izquierda']['tipo_informacion'] = array(
 		'#type' => 'select',
 		'#title' => t('Tipo de Información'),
-		'#default_value' => isset($form_state['storage']['values']['tipo_informacion']) ? $form_state['storage']['values']['tipo_informacion'] : $tipo_informacion_default,
+		'#default_value' => isset($form_state['storage']['values']['tipo_informacion']) ? $form_state['storage']['values']['tipo_informacion'] : 0,
 		'#options' => $tipo_informacion,
 	);
 
+	$tendencia = tendencia();
+	$form['busqueda']['opciones']['izquierda']['tendencia_nota'] = array(
+		'#type' => 'select',
+		'#title' => t('Tendencia de la nota'),
+		'#default_value' => isset($form_state['storage']['values']['tendencia_nota']) ? $form_state['storage']['values']['tendencia_nota'] : 0,
+		'#options' => $tendencia,
+	);
 
+	$form['busqueda']['opciones']['izquierda']['obviar_fecha'] = array(
+			'#type' => 'checkbox',
+			'#title' => t('Obviar el campo fecha'),
+			'#attributes' => (isset($form_state['storage']['values']['obviar_fecha']) && $form_state['storage']['values']['obviar_fecha'] == 1 ) ? array('checked' => 'checked') : NULL,
+			'#ajax' => array(
+				'callback' => 'form_busqueda_obviar_fecha_callback',
+				'wrapper' => 'fecha',
+				'progress' => array('type' => 'none'),
+				'effect' => 'none',
+			),
+	);
 
 
 
@@ -151,11 +172,17 @@ function busqueda_form($form, &$form_state) {
 			'bar' => 'Barras',
 		),
 	);
+	$form['busqueda']['opciones']['opciones_graficos']['opciones_simple']['cantidad_simple'] = array(
+			'#type' => 'select',
+			'#title' => t('Cantidad de elementos'),
+			'#options' => array(2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 10 => 10),
+			'#default_value' => isset($form_state['values']['cantidad_simple']) ? $form_state['values']['cantidad_simple'] : 8,
+	);
 	$form['busqueda']['opciones']['opciones_graficos']['opciones_lineales'] = array(
 		'#type' => 'fieldset',
 		'#title' => 'Gráficos lineales',
 		'#collapsible' => TRUE, 
-	  	'#collapsed' => FALSE,
+	  	'#collapsed' => TRUE,
 	  	'#attributes' => array('id' => 'edit-opciones-lineales'),
 		'#prefix' => '<div id="opciones_lineales">',
 		'#suffix' => '</div>',
@@ -173,7 +200,7 @@ function busqueda_form($form, &$form_state) {
 	$form['busqueda']['opciones']['opciones_graficos']['opciones_lineales']['cantidad_lineal'] = array(
 			'#type' => 'select',
 			'#title' => t('Cantidad de elementos'),
-			'#options' => array(2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7),
+			'#options' => array(2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 10 => 10),
 			'#default_value' => isset($form_state['values']['cantidad_lineal']) ? $form_state['values']['cantidad_lineal'] : 3,
 	);
 	$form['busqueda']['opciones']['opciones_graficos']['opciones_lineales']['leyenda_lineal'] = array(
@@ -214,7 +241,7 @@ function busqueda_form($form, &$form_state) {
 	$form['busqueda']['opciones']['opciones_graficos']['opciones_combinados']['cantidad_combinado'] = array(
 			'#type' => 'select',
 			'#title' => t('Cantidad de elementos'),
-			'#options' => array(2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8),
+			'#options' => array(2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 10 => 10),
 			'#default_value' => isset($form_state['values']['cantidad_combinado']) ? $form_state['values']['cantidad_combinado'] : 5,
 			'#process' => array('ctools_dependent_process'),
 			'#dependency' => array('edit-tipo-combinado' => array('bar', 'column')),
@@ -253,6 +280,18 @@ function busqueda_form($form, &$form_state) {
 			'effect' => 'fade',
 			'progress' => array('type' => 'none'),
 		)
+	);
+	$form['busqueda']['opciones']['opciones_graficos']['font'] = array(
+		'#type' => 'select',
+		'#title' => 'Tamaño de la fuente',
+		'#prefix' => '<div id="font">',
+		'#suffix' => '</div>',
+		'#default_value' => '1',
+		'#options' => array(
+			'0.85' => 'Pequeño',
+			'1' => 'Normal',
+			'1.2' => 'Grande',
+		),
 	);
 	///// fin opciones graficos
 
@@ -331,7 +370,6 @@ function busqueda_form($form, &$form_state) {
 
 	// hash aleatorio para evitar el microcache de la lista del autocomplete cuando las condiciones han cambiado
 	$hash = generateHash();
-
 	$form['busqueda']['opciones']['derecha']['wrapper_area'] = array(
 		'#type' => 'fieldset',
 		'#prefix' => '<div id="edit-opciones-area">',
@@ -557,10 +595,9 @@ function busqueda_form_submit($form, &$form_state) {
 		case (strpos($pressed_button, "agregar_")):
 			$variables = explode('_', $pressed_button);
 			$tipo = $variables[1];
-			$elemento = buscar_elemento_discursivo($form_state['values'][$tipo], $tipo);
+			$elemento = buscar_termino($form_state['values'][$tipo], $tipo);
 			$datos = !empty($form_state['values']['datos_'. $tipo]) ? unserialize(descifrar($form_state['values']['datos_'. $tipo])) : NULL;
 			$form_state['storage']['values']['datos_'. $tipo] = cifrar(serialize((array)$datos + (array)$elemento));
-			ed('prueba '. descifrar($form_state['storage']['values']['datos_'. $tipo]));
 
 			$form_state['rebuild'] = TRUE;
 			break;
@@ -590,7 +627,7 @@ function busqueda_form_submit($form, &$form_state) {
 			foreach ($tipos as $tipo) {
 				$datos = !empty($form_state['values']['datos_'. $tipo]) ? unserialize(descifrar($form_state['values']['datos_'. $tipo])) : NULL;
 				if (!empty($form_state['values'][$tipo])) {
-					$elemento = buscar_elemento_discursivo($form_state['values'][$tipo], $tipo);
+					$elemento = buscar_termino($form_state['values'][$tipo], $tipo);
 					$form_state['values']['datos_'. $tipo] = cifrar(serialize((array)$datos + (array)$elemento));
 					$variables[$tipo] = array_keys((array)$datos + (array)$elemento);
 				}
@@ -598,19 +635,39 @@ function busqueda_form_submit($form, &$form_state) {
 					$variables[$tipo] = !empty($datos) ? array_keys($datos) : NULL;
 				}
 			}
-			$variables['fecha_desde'] = strtotime($form_state['values']['fecha_desde']);
-			$variables['fecha_hasta'] = strtotime($form_state['values']['fecha_hasta']);
+			
+			if ($form_state['values']['obviar_fecha']) {
+				$query_min_fecha = db_select('field_data_field_fecha','ff');
+				$query_min_fecha->addExpression('MIN(field_fecha_value)', 'fecha');
+				$resultado_min_fecha = $query_min_fecha->execute();
+				$variables['fecha_desde'] = $resultado_min_fecha->fetchField();
+
+				$query_max_fecha = db_select('field_data_field_fecha','ff');
+				$query_max_fecha->addExpression('MAX(field_fecha_value)', 'fecha');
+				$resultado_max_fecha = $query_max_fecha->execute();
+				$variables['fecha_hasta'] = $resultado_max_fecha->fetchField();		
+			}
+			else {
+				$variables['fecha_desde'] = strtotime($form_state['values']['fecha_desde']);
+				$variables['fecha_hasta'] = strtotime($form_state['values']['fecha_hasta']);
+			}
+
 			$variables['tipo_localizacion'] = $form_state['values']['tipo_localizacion'];
 			foreach ($form_state['values']['medios'] as $key => $value) {
 				if ($key == $value) {
 					$variables['medio'][] = $value;
 				}
 			}
+ 
+			$variables['tipo_informacion'] = ($form_state['values']['tipo_informacion'] != 0) ? $form_state['values']['tipo_informacion'] : NULL;
+			$variables['tendencia_nota'] = ($form_state['values']['tendencia_nota'] != 0) ? $form_state['values']['tendencia_nota'] : NULL;
 			$variables['palabra_clave'] = $form_state['values']['palabra_clave'];
 			$variables['busqueda_exacta'] = $form_state['values']['busqueda_exacta'];
 			$variables['cualquiera'] = $form_state['values']['cualquiera'];
 			$variables['deshabilitar_graficos'] = $form_state['values']['deshabilitar_graficos'];
 			$variables['tipo-simple'] = $form_state['values']['tipo-simple'];
+			$variables['cantidad_simple'] = $form_state['values']['cantidad_simple'];
+			ed($variables['cantidad_simple']);
 			$variables['cantidad_lineal'] = $form_state['values']['cantidad_lineal'];
 			$variables['leyenda_lineal'] = $form_state['values']['leyenda_lineal'];
 			$variables['barras_lineal'] = $form_state['values']['barras_lineal'];
@@ -621,11 +678,13 @@ function busqueda_form_submit($form, &$form_state) {
 			$variables['conectores'] = $form_state['values']['conectores'];
 			$variables['leyenda'] = $form_state['values']['leyenda'];
 			$variables['otros'] = $form_state['values']['otros'];
+			$variables['font'] = $form_state['values']['font'];
 
 
 			foreach ($form_state['values']['paleta_colores'] as $color) {
 				$variables['paleta_colores'][] = '#' . $color;
 			}
+			ed(serialize($variables));
 			$form_state['values']['variables'] = serialize($variables);
 			$form_state['storage']['values'] = $form_state['values'];
 			$form_state['rebuild'] = TRUE;
@@ -641,7 +700,7 @@ function form_busqueda_tipo_localizacion_callback($form, $form_state) {
 	      ajax_command_replace("#medios-wrapper", render($form['busqueda']['medios'])),
 	      ajax_command_replace("#edit-opciones-izquierda", render($form['busqueda']['opciones']['izquierda']))
     	)
-  	);
+  );
 }
 function form_busqueda_elemento_callback($form, $form_state) {
 	// buscar tipo elemento
@@ -714,4 +773,8 @@ function form_busqueda_palabra_clave_callback($form, $form_state) {
 
 function form_busqueda_reiniciar_colores_callback($form, $form_state) {
 	return $form['busqueda']['opciones']['izquierda']['opciones_graficos']['paleta_colores'];
+}
+
+function form_busqueda_obviar_fecha_callback($form, $form_state) {
+	return $form['fecha'];
 }

@@ -3,43 +3,44 @@
 function vista_notas($nid) {
 	$node = node_load($nid);
 	$titulo = $node->title;
-	$cuerpo_texto = $node->body[$node->language][0]['value'];
+	$language = LANGUAGE_NONE;
+	$cuerpo_texto = $node->body[$language][0]['value'];
 	$uid = $node->uid;
-	$tipo_informacion_tid = $node->field_tipo_informacion[$node->language][0]['tid'];
-	$area_tid = $node->field_area[$node->language][0]['tid'];
+	$tipo_informacion_tid = $node->field_tipo_informacion[$language][0]['tid'];
+	$area_tid = $node->field_area[$language][0]['tid'];
 	
-	$medio_tid = $node->field_medio[$node->language][0]['tid'];
+	$medio_tid = $node->field_medio[$language][0]['tid'];
 	$medio_term = taxonomy_term_load($medio_tid);
 	$medio = $medio_term->name;
-	$localizacion_term = taxonomy_term_load($medio_term->field_localizacion[LANGUAGE_NONE][0]['tid']);
+	$localizacion_term = taxonomy_term_load($medio_term->field_localizacion[$language][0]['tid']);
 	$localizacion = $localizacion_term->name;
 	
-	$autor = $node->field_autor[$node->language][0]['value'];
-	$fecha = $node->field_fecha[$node->language][0]['value'];
+	$autor = $node->field_autor[$language][0]['value'];
+	$fecha = $node->field_fecha[$language][0]['value'];
 
 	$tema = array();
-	foreach ($node->field_tema[$node->language] as $delta => $tid) {
+	foreach ($node->field_tema[$language] as $delta => $tid) {
 		$term = taxonomy_term_load($tid['tid']);
 		$name = $term->name;
 		$tema[$delta] = $name;
 	}
 
 	$matriz = array();
-	foreach ($node->field_matriz[$node->language] as $delta => $tid) {
+	foreach ($node->field_matriz[$language] as $delta => $tid) {
 		$term = taxonomy_term_load($tid['tid']);
 		$name = $term->name;
 		$matriz[$delta] = $name;
 	}
 
 	$actor = array();
-	foreach ($node->field_actor[$node->language] as $delta => $tid) {
+	foreach ($node->field_actor[$language] as $delta => $tid) {
 		$term = taxonomy_term_load($tid['tid']);
 		$name = $term->name;
 		$actor[$delta] = $name;
 	}
 
 	$cuerpo_argumentativo = array();
-	foreach ($node->field_cuerpo_argumentativo[$node->language] as $delta => $value) {
+	foreach ($node->field_cuerpo_argumentativo[$language] as $delta => $value) {
 		$cuerpo_argumentativo[$delta] = $value['value'];
 	}
 
@@ -151,6 +152,7 @@ function vista_elementos_discursivos($tid){
 	$vid = $term->vid;
 	$tipo_vocabulary = taxonomy_vocabulary_load($vid);
 	$tipo = $tipo_vocabulary->name;
+	$tipo_machine = $tipo_vocabulary->machine_name;
 	$descripcion = $term->description;
 	$fecha = $term->field_fecha[LANGUAGE_NONE][0]['value'];
 	$fecha_actualizacion = $term->field_fecha_actualizacion[LANGUAGE_NONE][0]['value'];
@@ -205,13 +207,30 @@ function vista_elementos_discursivos($tid){
 	  ),
 	));
 
+	$nids_count = count(taxonomy_select_nodes($tid, FALSE));
+	$plural = ($nids_count > 1 ? 's' : '');
+	$link = l($nids_count,'notas', array('attributes' => array('class' => 'ver', 'target'=>'_blank', 'title' => 'Ver notas asociadas'), 'query' => array($tipo_machine => $name)));
+
+
+	$link_image = l(theme_image(array('path' => '/sites/all/themes/segana/images/listado.png')),'notas', array('attributes' => array('class' => 'ver',  'target'=>'_blank', 'title' => 'Ver notas asociadas'), 'query' => array($tipo_machine => $name), 'html' => TRUE));
+
+	$notas_asociadas = theme('html_tag', array(
+    'element' => array(
+      '#tag' => 'div',
+      '#attributes' => array(
+        'id' => 'notas_asociadas',
+       ),
+      '#value' => 'Hay '. $link . ' nota' . $plural . ' asociada' . $plural . (($tipo_machine == 'matriz') ? ' a la ' : ' al ') . $tipo_machine . $link_image,
+    ),
+  ));
+
 	$vista_elementos_discursivos = theme('html_tag', array(
 	  'element' => array(
 	    '#tag' => 'div',
 	    '#attributes' => array(
 	      'id' => 'vista_elementos_discursivos',
 	     ),
-	    '#value' => $tipo . $nombre . $fecha . $fecha_actualizacion .$descripcion
+	    '#value' => $tipo . $nombre . $notas_asociadas . $fecha . $fecha_actualizacion .$descripcion
 	  ),
 	));
 

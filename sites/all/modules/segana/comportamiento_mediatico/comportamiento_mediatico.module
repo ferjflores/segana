@@ -9,30 +9,6 @@ function comportamiento_mediatico_menu() {
     'access arguments' => array('access content'),
     'weight' => 0,
   );
-  $items['comportamiento_mediatico/autocomplete_area'] = array(
-    'page callback' => 'autocomplete_busqueda_area',
-    'file' => 'busqueda_autocomplete.inc',
-    'type' => MENU_CALLBACK,
-    'access arguments' => array('access content'),
-  );
-  $items['comportamiento_mediatico/autocomplete_tema'] = array(
-    'page callback' => 'autocomplete_busqueda_tema',
-    'file' => 'busqueda_autocomplete.inc',
-    'type' => MENU_CALLBACK,
-    'access arguments' => array('access content'),
-  );
-  $items['comportamiento_mediatico/autocomplete_matriz'] = array(
-    'page callback' => 'autocomplete_busqueda_matriz',
-    'file' => 'busqueda_autocomplete.inc',
-    'type' => MENU_CALLBACK,
-    'access arguments' => array('access content'),
-  );
-  $items['comportamiento_mediatico/autocomplete_actor'] = array(
-    'page callback' => 'autocomplete_busqueda_actor',
-    'file' => 'busqueda_autocomplete.inc',
-    'type' => MENU_CALLBACK,
-    'access arguments' => array('access content'),
-  );
   $items['comportamiento_mediatico/resultado/%'] = array(
     'title' => 'Data',
     'page callback' => 'comportamiento_mediatico_resultado',
@@ -94,6 +70,9 @@ function comportamiento_mediatico() {
 }
 
 function ed($message) {
+  if ((is_array($message)) || (is_object($message))) {
+    $message = serialize($message);
+  }
   error_log($message."\n\n", 3, '/tmp/segana.log');
 }
 function gqs(SelectQueryInterface $query) {
@@ -170,6 +149,15 @@ function graficos($variables){
       }
     }
 
+    if (!isset($variables['tendencia_nota'])) {
+      if ($variables['multiple_lineal']) {
+        $graficos['items'][] = grafico_lineal($variables, 'tendencia_nota');
+      }
+      if ($variables['barras_lineal']) {
+        $graficos['items'][] = grafico_lineal($variables, 'tendencia_nota', TRUE);
+      }
+    }
+
 
     $graficos['options'] = $opciones_jcarousel;
 
@@ -215,6 +203,9 @@ function graficos($variables){
         if ( (isset($variables['medio']) && count($variables['medio']) != 1) || !isset($variables['medio']) ) {
           $grafico_por_tipo['items'][] = graficos_barras($variables, $tipo, 'medio');
         }
+        if (!isset($variables['tendencia_nota'])) {
+          $grafico_por_tipo['items'][] = graficos_barras($variables, $tipo, 'tendencia_nota');
+        }
         
         $grafico_por_tipo['options'] = $opciones_jcarousel;
         $grafico_por_tipo['identifier'] = 'graficos_tipo';
@@ -240,6 +231,46 @@ function graficos($variables){
     }
   }
 
+  if (!isset($variables['tendencia_nota'])){
+    $tabs['items'][] = array('data' => l('tendencia nota', '', array('fragment' => 'tab-tendencia_nota', 'external' => TRUE)), 'id' => 'tendencia_nota');
+    $tabs['type'] = 'ul';
+
+    //lista de graficos por tipo general(area,tema, matriz, medio)
+    $grafico_por_tipo['items'][] = grafico_simple($variables, 'tendencia_nota');
+
+    if ($variables['tipo-combinado'] != 'ninguno') {
+      foreach ($tipos as $tipo2) {
+        if (count($variables[$tipo2]) != 1) {
+          $grafico_por_tipo['items'][] = graficos_barras($variables, 'tendencia_nota', $tipo2);
+        }
+      }
+      if ( (isset($variables['medio']) && count($variables['medio']) != 1) || !isset($variables['medio']) ) {
+        $grafico_por_tipo['items'][] = graficos_barras($variables, 'tendencia_nota', 'medio');
+      }
+      $grafico_por_tipo['options'] = $opciones_jcarousel;
+      $grafico_por_tipo['identifier'] = 'graficos_tipo';
+
+      $elemento_grafico_por_tipo = theme('jcarousel', $grafico_por_tipo);
+    }
+    else {
+      $grafico_por_tipo['type'] = 'ul';
+      $elemento_grafico_por_tipo = theme('item_list', $grafico_por_tipo);
+    }
+   
+
+    $tendencia_nota = theme('html_tag', array(
+      'element' => array(
+        '#tag' => 'div',
+        '#attributes' => array(
+          'id' => 'tab-tendencia_nota',
+          'class' => 'tabs'
+          ),
+        '#value' => $elemento_grafico_por_tipo,
+      ),
+    ));
+    unset($grafico_por_tipo);
+  }
+
   if (!isset($variables['medio']) || count($variables['medio']) == 0 || count($variables['medio']) > 1){
     $tabs['items'][] = array('data' => l('medios', '', array('fragment' => 'tab-medio', 'external' => TRUE)), 'id' => 'medio');
     $tabs['type'] = 'ul';
@@ -252,6 +283,9 @@ function graficos($variables){
         if (count($variables[$tipo2]) != 1) {
           $grafico_por_tipo['items'][] = graficos_barras($variables, 'medio', $tipo2);
         }
+      }
+      if (!isset($variables['tendencia_nota'])) {
+        $grafico_por_tipo['items'][] = graficos_barras($variables, 'medio', 'tendencia_nota');
       }
       $grafico_por_tipo['identifier'] = 'activo';
     }
@@ -277,7 +311,6 @@ function graficos($variables){
 
 
 
-
   $graficos = theme('html_tag', array(
     'element' => array(
       '#tag' => 'div',
@@ -285,7 +318,7 @@ function graficos($variables){
         'id' => 'tabs_graficos',
         'class' => 'clearfixsegana'
         ),
-      '#value' => theme('item_list', $tabs) . (isset($notas) ? $notas : NULL) . (isset($area) ? $area : NULL) . (isset($tema) ? $tema : NULL) . (isset($matriz) ? $matriz : NULL) . (isset($actor) ? $actor : NULL) . (isset($medio) ? $medio : NULL),
+      '#value' => theme('item_list', $tabs) . (isset($notas) ? $notas : NULL) . (isset($area) ? $area : NULL) . (isset($tema) ? $tema : NULL) . (isset($matriz) ? $matriz : NULL) . (isset($actor) ? $actor : NULL). (isset($tendencia_nota) ? $tendencia_nota : NULL) . (isset($medio) ? $medio : NULL),
     ),
   ));
 
@@ -493,6 +526,7 @@ function comportamiento_mediatico_notas($variables, $tid, $tipo, $return = FALSE
 
   $query = query_area($query, $variables, $tipo);
   $query = query_discursivo($query, $variables, $tipo);
+  $query = query_tendencia_nota($query, $variables, $tipo);
   $query = query_medio($query, $variables, $tipo);
   $query = query_palabra_clave($query, $variables);
 
@@ -512,6 +546,13 @@ function comportamiento_mediatico_notas($variables, $tid, $tipo, $return = FALSE
   else {
     $query->condition('ff.field_fecha_value', $variables['fecha_desde'], '=');
   }
+
+  // si tipo_informacion no es todos
+  if($variables['tipo_informacion']){
+    $query->join('field_data_field_tipo_informacion', 'fti', 'n.nid = fti.entity_id');
+    $query->condition('fti.field_tipo_informacion_tid', $variables['tipo_informacion']);
+  }
+
   $resultado = $query->execute();
   $output = NULL;
 
@@ -585,7 +626,7 @@ function comportamiento_mediatico_resultado_expandido_tab($variables, $tipo) {
   $variables_cifradas = $variables;
   $variables =  unserialize(descifrar(base64_url_decode($variables)));
   /// tabla para el datatable ///
-  $attributes = array('id' => 'resultado_expandido', 'class' => array('resultado_expandido'));
+  $attributes = array('id' => $tipo, 'class' => array('resultado_expandido'));
 
   // Define table columns
   $header = array(

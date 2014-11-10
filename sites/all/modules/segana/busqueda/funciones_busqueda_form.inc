@@ -26,7 +26,7 @@ function medios($tipo_localizacion){
 			return $medios;
 			break;
 		case -1:
-			$query = $query = db_select('taxonomy_term_data', 'ttd');
+			$query = db_select('taxonomy_term_data', 'ttd');
 			$query->join('field_data_field_version_impresa', 'fvi', 'ttd.tid = fvi.entity_id');
 			$query
 				->condition(db_and()->condition('ttd.vid', $vid, '=')->condition('fvi.field_version_impresa_value', 1, '='))
@@ -69,10 +69,26 @@ function tipo_informacion(){
 	foreach($tree as $key => $val){
 		$tipo_informacion[$val->tid] = $val->name;
 	}
+	$tipo_informacion[0] = 'Todos';
 	return $tipo_informacion;
 }
 
-function buscar_elemento_discursivo($elemento = NULL, $tipo = NULL) {
+
+function tendencia(){
+	$tendencia = array();
+	$vocabulary = taxonomy_vocabulary_machine_name_load('tendencia');
+	$vid = $vocabulary->vid;
+	$tree = taxonomy_get_tree($vid);
+	foreach($tree as $key => $val){
+		$tendencia[$val->tid] = $val->name;
+	}
+	$tendencia[0] = "Todas";
+	return $tendencia;
+}
+
+
+/// esta funcion deberia estar con las funciones generales
+function buscar_termino($elemento = NULL, $tipo = NULL) {
 	if ( (!empty($elemento)) && (!empty($tipo)) ) {
 		$vocabulary = taxonomy_vocabulary_machine_name_load($tipo);
 		$vid = $vocabulary->vid;

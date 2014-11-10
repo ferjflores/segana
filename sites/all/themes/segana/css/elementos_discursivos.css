@@ -109,6 +109,16 @@ border: medium none;
 	border: 1px solid #848F96;
 }
 
+ .page-elementos-discursivos input:focus {
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #6B7A84;
+	outline: none;
+}
+
+.page-elementos-discursivos .panel-display  {
+	position: relative;
+}
+
 .page-elementos-discursivos .filtro {
 	position: absolute;
 	right: 2px;

@@ -59,5 +59,4 @@ function tipos() {
   return array('area', 'tema', 'matriz', 'actor');
 }
 
-
 ?>

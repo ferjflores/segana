@@ -194,13 +194,44 @@
 					}
 					jQuery("#tabs_resumen_expandido").tabs({ 
 						active: index,
-						load: function(){
-							$('table.resultado_expandido').once(function(){
+						load: function( event, ui){
+							
+							// se debe aplicar el datatables uno por uno a cada id https://www.datatables.net/forums/discussion/3963/tabletools-on-multiple-tables
+							var index = ui.tab.index();
+							switch (index){
+								case 0:
+									var tipo = 'area';
+									break;
+								case 1:
+									var tipo = 'tema';
+									break;
+								case 2:
+									var tipo =  'matriz';
+									break;
+								case 3:
+									var tipo = 'actor';
+									break;
+								case 4:
+									var tipo = 'medio';
+									break;
+							}
+
+							$('table#' + tipo).once(function(){						
 								$(this).dataTable({
 									dom: 'T<"clear">lfrtip',
 									tableTools: {
 										"sSwfPath": "/sites/all/libraries/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
-										"aButtons": [ "copy", "xls", "pdf" ]
+										"aButtons": [
+											"copy",
+											{
+		                    "sExtends": "xls",
+		                    "sTitle": "Comportamiento mediatico - " + tipo 
+			                },
+											{
+		                    "sExtends": "pdf",
+		                    "sTitle": "Comportamiento mediatico - " + tipo 
+			                }
+										]
 									},
 									"order": [[ 0, "desc" ]],
 									"lengthMenu": [ [15, 25, 50, -1], [15, 25, 50, "All"] ],
