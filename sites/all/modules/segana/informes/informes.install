@@ -1,0 +1,52 @@
+<?php
+/**
+ * Implements hook_schema().
+ */
+function informes_schema() {
+  $schema = array();
+
+  $schema['agenda_informativa'] = array(
+    'description' => 'Tabla base para la entity Agenda informativa',
+    'fields' => array(
+      'aiid' => array(
+        'description' => 'Primary key of the Agenda informativa entity',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'nombre' => array(
+        'description' => 'Nombre de la Agenda informativa',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'created' => array(
+        'description' => 'Unix timestamp de la fecha de creación',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'Unix timestamp de la última fecha de actualización',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+
+
+    ),
+    'primary key' => array('aiid'),
+  );
+
+  return $schema;
+}
+
+function informes_install(){
+	drupal_install_schema('agenda_informativa');
+}
+
+function informes_uninstall(){
+  drupal_uninstall_schema('agenda_informativa');
+}
+
+?>
