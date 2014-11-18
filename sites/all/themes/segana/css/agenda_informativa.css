@@ -1,0 +1,11 @@
+.tabledrag-toggle-weight-wrapper {
+	display: none;
+}
+
+.tabledrag-changed-warning {
+	display: none !important;
+}
+
+.tabledrag-changed {
+	display: none;
+}
