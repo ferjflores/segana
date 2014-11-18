@@ -1,0 +1,198 @@
+<?php
+
+module_load_include('inc', 'informe', 'informe.entity');
+module_load_include('inc', 'informe', 'informe.agenda_informativa');
+
+
+/**
+ * Implements hook_menu().
+ */
+function informe_menu() {
+  $items = array();
+
+  $items['agenda_informativa/%informe'] = array(
+    'title' => t('Agenda Informativa'),
+    'page callback' => 'agenda_informativa',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'description' => t('Agenda Informativa'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['agenda_mediatica'] = array(
+    'page callback' => 'agenda_mediatica',
+    'access arguments' => array('access content'),
+    'description' => t('Agenda Mediática'),
+    'type' => MENU_CALLBACK,
+  );
+
+
+  $items['informe/add'] = array(
+    'title' => 'Add informe',
+    'page callback' => 'informe_admin_add_page',
+    'access arguments' => array('administer informe entities'),
+    'file' => 'informe.admin.inc',
+    'type' => MENU_LOCAL_ACTION,
+    'tab_parent' => 'informe',
+    'tab_root' => 'informe',
+  );
+
+  $informe_uri = 'informe/%informe';
+  $informe_uri_argument_position = 1;
+
+  $items[$informe_uri] = array(
+    'title callback' => 'entity_label',
+    'title arguments' => array('informe', $informe_uri_argument_position),
+    'page callback' => 'informe_view',
+    'page arguments' => array($informe_uri_argument_position),
+    'access callback' => 'entity_access',
+    'access arguments' => array('view', 'informe', $informe_uri_argument_position),
+    'file' => 'informe.pages.inc',
+  );
+
+  $items[$informe_uri . '/view'] = array(
+    'title' => 'View',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+
+  $items[$informe_uri . '/delete'] = array(
+    'title' => 'Delete informe',
+    'title callback' => 'informe_label',
+    'title arguments' => array($informe_uri_argument_position),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('informe_delete_form', $informe_uri_argument_position),
+    'access callback' => 'entity_access',
+    'access arguments' => array('edit', 'informe', $informe_uri_argument_position),
+    'file' => 'informe.admin.inc',
+  );
+
+  $items[$informe_uri . '/edit'] = array(
+    'title' => 'Edit',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('informe_form', $informe_uri_argument_position),
+    'access callback' => 'entity_access',
+    'access arguments' => array('edit', 'informe', $informe_uri_argument_position),
+    'file' => 'informe.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+  );
+
+  foreach (informe_types() as $type => $info) {
+    $items['informe/add/' . $type] = array(
+      'title' => 'Add informe',
+      'page callback' => 'informe_add',
+      'page arguments' => array(2),
+      'access callback' => 'entity_access',
+      'access arguments' => array('create', 'informe', $type),
+      'file' => 'informe.admin.inc',
+    );
+  }
+
+  $items['admin/structure/informe-types/%informe_type/delete'] = array(
+    'title' => 'Delete',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('informe_type_form_delete_confirm', 4),
+    'access arguments' => array('administer informe types'),
+    'weight' => 1,
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'informe.admin.inc',
+  );
+
+  return $items;
+}
+
+
+function agenda_informativa($iid = NULL) {
+  drupal_add_js(drupal_get_path('module', 'informe') . '/js/agenda_informativa.js', array('weight' => 20));
+  $hash = generateHash();
+  $output = drupal_get_form('informe_agenda_informativa_form' .'_'. $hash, $iid, $hash);
+  return $output;
+
+
+}
+
+
+
+function informe_forms($form_id) {
+  $forms = array();
+  if (strpos($form_id, 'informe_agenda_informativa_form_') === 0) {
+    $forms[$form_id] = array(
+      'callback' => 'informe_agenda_informativa_form',
+    );
+  }
+  if (strpos($form_id, 'informe_agenda_mediatica_form_') === 0) {
+    $forms[$form_id] = array(
+      'callback' => 'informe_agenda_mediatica_form',
+    );
+  }
+  return $forms;
+}
+
+function informe_form_alter(&$form, $form_state, $form_id) {
+    if (strpos($form_id, 'informe_agenda_informativa_form') === 0) {
+        $form['#attributes'] = array('class' => 'agenda-informativa informe-form');
+  }
+    if (strpos($form_id, 'informe_agenda_mediatica_form') === 0) {
+        $form['#attributes'] = array('class' => 'agenda-mediatica informe-form');
+  }
+  //$form['#attached']['js'][] = drupal_get_path('module', 'informe') . '/js/disable_show_row_weights.js';
+}
+
+
+
+function informe_theme() {
+  return array(
+    'tabledrag_notas' => array(
+      'render element' => 'element'
+    ),
+  );
+}
+
+
+
+
+
+
+
+
+
+/**
+ * Implements hook_permission().
+ */
+function informe_permission() {
+  $permissions = array(
+    'administer informe types' => array(
+      'title' => t('Administer informe types'),
+      'description' => t('Allows users to configure informe types and their fields.'),
+      'restrict access' => TRUE,
+    ),
+    'create informe entities' => array(
+      'title' => t('Create informes'),
+      'description' => t('Allows users to create informes.'),
+      'restrict access' => TRUE,
+    ),
+    'view informe entities' => array(
+      'title' => t('View informes'),
+      'description' => t('Allows users to view informes.'),
+      'restrict access' => TRUE,
+    ),
+    'edit any informe entities' => array(
+      'title' => t('Edit any informes'),
+      'description' => t('Allows users to edit any informes.'),
+      'restrict access' => TRUE,
+    ),
+    'edit own informe entities' => array(
+      'title' => t('Edit own informes'),
+      'description' => t('Allows users to edit own informes.'),
+      'restrict access' => TRUE,
+    ),
+  );
+
+  return $permissions;
+}
+
+
+
+
+
+?>

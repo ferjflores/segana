@@ -1,0 +1,12 @@
+name = Informes SEGANA
+description = Informes para SEGANA
+package = Segana modules
+version = VERSION
+core = 7.x
+
+dependencies[] = entity
+dependencies[] = views
+
+files[] = informe.controller.inc
+files[] = informe.entity.inc
+files[] = informe.agenda_informativa.inc
