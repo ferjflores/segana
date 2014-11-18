@@ -1,0 +1,307 @@
+<?php
+
+
+function autocomplete_medio($busqueda='') {
+  $matches = array();
+  $tipo = 'medio';
+
+  if (trim($busqueda)) {
+    $vocabulary = taxonomy_vocabulary_machine_name_load($tipo);
+    $vid = $vocabulary->vid;
+
+    $query_medio = db_select('taxonomy_term_data', 'ttd')
+      ->fields('ttd', array('name'))
+      ->condition('ttd.vid', $vid)
+      ->condition('ttd.name', db_like($busqueda) . '%', 'LIKE');
+
+    $resultado_medio = $query_medio->execute();
+
+    if ($resultado_medio->rowCount() < 5) {
+
+      $query_medio2 = db_select('taxonomy_term_data', 'ttd')
+        ->fields('ttd', array('name'))
+        ->condition('ttd.vid', $vid)
+        ->condition('ttd.name', '% ' . db_like($busqueda) . '%', 'LIKE');
+      $query_medio->union($query_medio2);
+      $resultado_medio = $query_medio->execute();
+      
+      if ($resultado_medio->rowCount() < 5) {
+
+        $query_medio3 = db_select('taxonomy_term_data', 'ttd')
+          ->fields('ttd', array('name'))
+          ->condition('ttd.vid', $vid)
+          ->condition('ttd.name', '%' . db_like($busqueda) . '%', 'LIKE');
+
+
+        $query_medio->union($query_medio3);
+        $resultado_medio = $query_medio->execute();
+      }
+    }
+
+
+
+    
+
+    foreach ($resultado_medio as $term) {
+        $matches[$term->name] = check_plain($term->name);
+      }
+  }
+  drupal_json_output($matches);
+}
+
+function autocomplete_elemento($tipo, $fecha_desde = 0, $fecha_hasta = 0, $busqueda='') {
+  $matches = array();
+ed($tipo ." ". $fecha_desde . " " .$fecha_hasta. " ". $busqueda);
+  if (trim($busqueda)) {
+    $busqueda_elementos = str_word_count($busqueda, 2);
+    $matches = array();
+    $vocabulary = taxonomy_vocabulary_machine_name_load($tipo);
+    $vid = $vocabulary->vid;
+
+
+    // si no hay area(s) o tema(s) agregado(s) 
+    $resultado = buscar_terminos_sin_filtros($busqueda_elementos, $vid);
+
+
+    foreach ($resultado as $term) {
+        $matches[$term->name] = check_plain($term->name);
+      }
+  }
+  drupal_json_output($matches);
+}
+
+
+function buscar_terminos_sin_filtros($busqueda_elementos, $vid, $fecha_desde, $fecha_hasta) {
+
+  $query = db_select('taxonomy_term_data', 'ttd')
+    ->fields('ttd', array('name'))
+    ->range(0, 10);
+  if (isset($fecha_desde)) {
+    $query->join('taxonomy_index' , 'ti', 'ttd.tid = ti.tid');
+    $query->join('field_data_field_fecha', 'ff', 'ti.nid = ff.entity_id AND ff.bundle = :bundle AND ff.field_fecha_value = :fecha_desde', array(':bundle' => 'node', ':fecha_desde' => $fecha_desde));
+  }
+  $db_and = db_and();
+  foreach($busqueda_elementos as $key => $elemento){
+    if ($key == 0) {
+      $db_and->condition('ttd.name', db_like($elemento) . '%', 'LIKE');
+    }
+    else {
+      $db_and->condition('ttd.name', '%' . db_like($elemento) . '%', 'LIKE');
+    }
+  }
+  $db_and->condition('ttd.vid', $vid, '=');
+  $query->condition($db_and);
+  
+  $resultado = $query->execute();
+  // si no hay resultados ampliar la busqueda, buscando la primera palabra no solo al comienzo
+  
+  if ($resultado->rowCount() == 0) {
+    //reiniciar las condiciones(WHERE)
+    $conditions =& $query->conditions();
+    $conditions = array('#conjunction' => 'AND');
+
+    $db_and = db_and();
+    foreach($busqueda_elementos as $key => $elemento){
+      $db_and->condition('ttd.name', '%' . db_like($elemento) . '%', 'LIKE');
+    }
+    $db_and->condition('ttd.vid', $vid, '=');
+    $query->condition($db_and);
+    $resultado = $query->execute();
+  }
+
+  // aumentar la cantidad de resultados
+  elseif ($resultado->rowCount() < 10) {
+    $query2 = db_select('taxonomy_term_data', 'ttd')
+      ->fields('ttd', array('name'))
+      ->range(0, (10 - $resultado->rowCount()));
+    $db_and = db_and();
+    foreach($busqueda_elementos as $key => $elemento){
+      if ($key == 0) {
+        $db_and->condition('ttd.name', '%' . db_like($elemento) . '%', 'LIKE');
+        $db_and->condition('ttd.name', db_like($elemento) . '%', 'NOT LIKE');
+      }
+      else {
+        $db_and->condition('ttd.name', '%' . db_like($elemento) . '%', 'LIKE');
+      }
+    }
+    $db_and->condition('ttd.vid', $vid, '=');
+    $query2->condition($db_and);
+    $query->union($query2);
+    $resultado = $query->execute();
+  }
+
+  return $resultado;
+
+}
+
+function buscar_terminos_con_filtros($busqueda_elementos, $vid, $tipo, $areas = 0, $temas = 0, $matrices = 0, $actores = 0){
+
+  $query = db_select('field_data_field_' . $tipo, 'tipo_buscado');
+
+  if ($areas) {
+    $query->join('field_data_field_area', 'fa', 'tipo_buscado.entity_id = fa.entity_id');
+  }
+  if ($temas) {
+    $query->join('field_data_field_tema', 'ft', 'tipo_buscado.entity_id = ft.entity_id');
+  }
+  if ($matrices) {
+    $query->join('field_data_field_matriz', 'fm', 'tipo_buscado.entity_id = fm.entity_id');
+  }
+  if ($actores) {
+    $query->join('field_data_field_actor', 'fac', 'tipo_buscado.entity_id = fac.entity_id');
+  }
+
+
+  $query->join('taxonomy_term_data', 'ttd', 'tipo_buscado.field_' . $tipo . '_tid = ttd.tid');
+
+  $query
+    ->fields('ttd', array('name'))
+    ->distinct()
+    ->range(0, 10);
+
+
+
+  if ($areas) {
+    $areas = explode(',', $areas);
+    $db_or_area = db_or();
+    foreach ($areas as $tid) {
+      $db_or_area->condition('fa.field_area_tid', $tid, '=');
+    }
+    $query->condition($db_or_area);
+  }
+
+  if ($temas) {
+    $temas = explode(',', $temas);
+    $db_or_tema = db_or();
+    foreach ($temas as $tid) {
+      $db_or_tema->condition('ft.field_tema_tid', $tid, '=');
+    }
+    $query->condition($db_or_tema);
+  }
+
+  if ($matrices) {
+    $matrices = explode(',', $matrices);
+    $db_or_matriz = db_or();
+    foreach ($matrices as $tid) {
+      $db_or_matriz->condition('fm.field_matriz_tid', $tid, '=');
+    }
+    $query->condition($db_or_matriz);
+  }
+
+  if ($actores) {
+    $actores = explode(',', $actores);
+    $db_or_actor = db_or();
+    foreach ($actores as $tid) {
+      $db_or_actor->condition('fac.field_actor_tid', $tid, '=');
+    }
+    $query->condition($db_or_tema);
+  }
+
+
+  $db_and = db_and();
+  foreach($busqueda_elementos as $key => $elemento){
+    if ($key == 0) {
+      $db_and->condition('ttd.name', db_like($elemento) . '%', 'LIKE');
+    }
+    else {
+      $db_and->condition('ttd.name', '%' . db_like($elemento) . '%', 'LIKE');
+    }
+  }
+  $db_and->condition('ttd.vid', $vid, '=');
+
+  $query->condition($db_and);
+
+  $resultado = $query->execute(); 
+
+
+  // si no hay resultados ampliar la busqueda, buscando la primera palabra no solo al comienzo
+  if ($resultado->rowCount() == 0) {
+    //reiniciar las condiciones(WHERE)
+    $conditions =& $query->conditions();
+    $conditions = array('#conjunction' => 'AND');
+    if ($areas) {
+      $query->condition($db_or_area);
+    }
+    if ($temas) {
+      $query->condition($db_or_tema);
+    }
+    if ($matrices) {
+      $query->condition($db_or_matriz);
+    }
+    if ($actores) {
+      $query->condition($db_or_actor);
+    }
+
+    $db_and = db_and();
+    foreach($busqueda_elementos as $key => $elemento){
+      $db_and->condition('ttd.name', '%' . db_like($elemento) . '%', 'LIKE');
+    }
+    $db_and->condition('ttd.vid', $vid, '=');
+    $query->condition($db_and);
+
+    $resultado = $query->execute();
+  }
+
+
+  // aumentar la cantidad de resultados
+  elseif ($resultado->rowCount() < 10) {
+
+    $query2 = db_select('field_data_field_' . $tipo, 'tipo_buscado');
+
+    if ($areas) {
+      $query2->join('field_data_field_area', 'fa', 'tipo_buscado.entity_id = fa.entity_id');
+    }
+    if ($temas) {
+      $query2->join('field_data_field_tema', 'ft', 'tipo_buscado.entity_id = ft.entity_id');
+    }
+    if ($matrices) {
+      $query2->join('field_data_field_matriz', 'fm', 'tipo_buscado.entity_id = fm.entity_id');
+    }
+    if ($actores) {
+      $query2->join('field_data_field_actor', 'fac', 'tipo_buscado.entity_id = fac.entity_id');
+    }
+
+
+    $query2->join('taxonomy_term_data', 'ttd', 'tipo_buscado.field_' . $tipo . '_tid = ttd.tid');
+
+    $query2
+      ->fields('ttd', array('name'))
+      ->distinct()
+      ->range(0, (10 - $resultado->rowCount()) );
+
+    if ($areas) {
+      $query2->condition($db_or_area);
+    }
+    if ($temas) {
+      $query2->condition($db_or_tema);
+    }
+    if ($matrices) {
+      $query2->condition($db_or_matriz);
+    }
+    if ($actores) {
+      $query2->condition($db_or_actor);
+    }
+
+    $db_and = db_and();
+    foreach($busqueda_elementos as $key => $elemento){
+      if ($key == 0) {
+        $db_and->condition('ttd.name', '%' . db_like($elemento) . '%', 'LIKE');
+        $db_and->condition('ttd.name', db_like($elemento) . '%', 'NOT LIKE');
+      }
+      else {
+        $db_and->condition('ttd.name', '%' . db_like($elemento) . '%', 'LIKE');
+      }
+    }
+
+    $db_and->condition('ttd.vid', $vid, '=');
+    $query2->condition($db_and);
+
+    $query->union($query2);
+
+    $resultado = $query->execute();
+  }
+
+  return $resultado;
+}
+
+?>
