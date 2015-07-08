@@ -1,0 +1,7 @@
+name = KLogger
+description = log class KLogger
+package = Segana modules
+version = VERSION
+core = 7.x
+
+

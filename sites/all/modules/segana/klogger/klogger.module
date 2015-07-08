@@ -1,0 +1,50 @@
+<?php
+/**
+ * Implements hook_libraries_info().
+ */
+function klogger_libraries_info() {
+  $libraries['KLogger'] = array(
+    'name' => 'KLogger: Simple Logging for PHP',
+    'vendor url' => 'https://github.com/katzgrau/KLogger',
+    'download url' => 'https://github.com/katzgrau/KLogger',
+    'version arguments' => array(
+      'file' => 'vendor/katzgrau/klogger/src/Logger.php',
+      'pattern' => '@version\s+([0-9a-zA-Z\.-]+)@',
+      'lines' => 24,
+    ),
+    'files' => array(
+      'php' => array('vendor/autoload.php'),
+    ),
+  );
+  return $libraries;
+}
+
+ if (!class_exists('Katzgrau\KLogger\Logger')) {
+   $library_path = function_exists('libraries_get_path') ?
+     libraries_get_path('KLogger') : 'sites/all/libraries/KLogger';
+   if (!empty($library_path)) {
+     require_once $library_path . '/vendor/autoload.php';
+   }
+ }
+
+function klogger_log($log_type = NULL)
+{
+
+  if (!isset($logger) && is_null($log_type)) {
+    $logger = new Katzgrau\KLogger\Logger(
+      LOG_DIR,
+      Psr\Log\LogLevel::DEBUG,
+      ['extension' => 'log', 'filename' => 'segana']
+    );
+    return $logger;
+  }
+  elseif($log_type == 'error'){
+    $logger_error = new Katzgrau\KLogger\Logger(
+      LOG_DIR,
+      Psr\Log\LogLevel::DEBUG,
+      ['extension' => 'log', 'filename' => 'segana.error']
+    );
+    return $logger_error;
+  }
+
+}
