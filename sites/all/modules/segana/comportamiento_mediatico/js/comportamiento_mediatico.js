@@ -126,38 +126,18 @@
 			});
 		});
 
+
 		$("div#valores span").click(function() {
-			$(this).parents("div#valores").find("span").removeClass('activo')
+			$(this).parents("div#valores").find("span").removeClass('activo');
 			$(this).addClass('activo');
 			var tid = $(this).attr("id");
+			var tipo = $(this).children('.derecha').attr("id");
 			var variables = $('input[name=variables]').attr("value");
 			var resumen_notas = $(this).parents("div#valores").next("div#resumen_notas");
 			var contenedor_resumen_notas = $(resumen_notas).find("div.mCSB_container");
 
 			$(resumen_notas).mCustomScrollbar("scrollTo","top");
-			$(contenedor_resumen_notas).load('/comportamiento_mediatico/notas/' + variables + "/" + tid, function(){
-				$(".colorbox-notas").colorbox({html: function(){
-				  		var url = $(this).attr('href');
-				  		$.get(url, function (data) {
-			    			return data;
-						});
-			  		},
-			  		"width": "750px", "height": function(){return $(window).height() -100;}, "innerHeight": "700px", "transition": "elastic", "speed": "350", "opacity": "0.90"
-			  	});
-			});
-			
-
-		});
-		$("div#valores span").click(function() {
-			$(this).parents("div#valores").find("span").removeClass('activo')
-			$(this).addClass('activo');
-			var tid = $(this).attr("id");
-			var variables = $('input[name=variables]').attr("value");
-			var resumen_notas = $(this).parents("div#valores").next("div#resumen_notas");
-			var contenedor_resumen_notas = $(resumen_notas).find("div.mCSB_container");
-
-			$(resumen_notas).mCustomScrollbar("scrollTo","top");
-			$(contenedor_resumen_notas).load('/comportamiento_mediatico/notas/' + variables + "/" + tid, function(){
+			$(contenedor_resumen_notas).load('/comportamiento_mediatico/notas/' + variables + "/" + tid + "/" + tipo, function(){
 				$(".colorbox-notas").colorbox({
 					html: function(){
 						var url = $(this).attr('href');
@@ -191,6 +171,12 @@
 					    case 'medio':
 					    	var index = 4;
 					    	break;
+						case 'usuario':
+							var index = 5;
+							break;
+						case 'tendencia_nota':
+							var index = 6;
+							break;
 					}
 					jQuery("#tabs_resumen_expandido").tabs({ 
 						active: index,
@@ -206,7 +192,7 @@
 									var tipo = 'tema';
 									break;
 								case 2:
-									var tipo =  'matriz';
+									var tipo = 'matriz';
 									break;
 								case 3:
 									var tipo = 'actor';
@@ -214,9 +200,15 @@
 								case 4:
 									var tipo = 'medio';
 									break;
+								case 5:
+									var tipo = 'usuario';
+									break;
+								case 5:
+									var tipo = 'medio';
+									break;
 							}
 
-							$('table#' + tipo).once(function(){						
+							$('table#' + tipo).once(function(){
 								$(this).dataTable({
 									dom: 'T<"clear">lfrtip',
 									tableTools: {
@@ -225,11 +217,11 @@
 											"copy",
 											{
 		                    "sExtends": "xls",
-		                    "sTitle": "Comportamiento mediatico - " + tipo 
+		                    "sTitle": "Comportamiento mediatico - " + tipo
 			                },
 											{
 		                    "sExtends": "pdf",
-		                    "sTitle": "Comportamiento mediatico - " + tipo 
+		                    "sTitle": "Comportamiento mediatico - " + tipo
 			                }
 										]
 									},
