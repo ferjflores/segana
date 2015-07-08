@@ -141,5 +141,128 @@ function sin_acentos($text){
         return $text;
 }
 
+function convert_smart_quotes($string) 
+{ 
+    $search = array(chr(145), 
+                    chr(146), 
+                    chr(147), 
+                    chr(148), 
+                    chr(151)); 
+
+    $replace = array("'", 
+                     "'", 
+                     '"', 
+                     '"', 
+                     '-');
+  /*$search = array(
+                  '&',
+                  '<',
+                  '>',
+                  '"',
+                  chr(212),
+                  chr(213),
+                  chr(210),
+                  chr(211),
+                  chr(209),
+                  chr(208),
+                  chr(201),
+                  chr(145),
+                  chr(146),
+                  chr(147),
+                  chr(148),
+                  chr(151),
+                  chr(150),
+                  chr(133)
+                 );
+
+  $replace = array(
+                  '&amp;',
+                  '&lt;',
+                  '&gt;',
+                  '&quot;',
+                  '&#8216;',
+                  '&#8217;',
+                  '&#8220;',
+                  '&#8221;',
+                  '&#8211;',
+                  '&#8212;',
+                  '&#8230;',
+                  '&#8216;',
+                  '&#8217;',
+                  '&#8220;',
+                  '&#8221;',
+                  '&#8211;',
+                  '&#8212;',
+                  '&#8230;'
+                 );*/
+    return str_replace($search, $replace, $string); 
+}
+
+/**
+ *  â€˜  8216  curly left single quote
+ *  â€™  8217  apostrophe, curly right single quote
+ *  â€œ  8220  curly left double quote
+ *  â€  8221  curly right double quote
+ *  â€”  8212  em dash
+ *  â€“  8211  en dash
+ *  â€¦  8230  ellipsis
+ */
+ /*
+$search = array(
+                '&',
+                '<',
+                '>',
+                '"',
+                chr(212),
+                chr(213),
+                chr(210),
+                chr(211),
+                chr(209),
+                chr(208),
+                chr(201),
+                chr(145),
+                chr(146),
+                chr(147),
+                chr(148),
+                chr(151),
+                chr(150),
+                chr(133)
+               );
+
+$replace = array(
+                '&amp;',
+                '&lt;',
+                '&gt;',
+                '&quot;',
+                '&#8216;',
+                '&#8217;',
+                '&#8220;',
+                '&#8221;',
+                '&#8211;',
+                '&#8212;',
+                '&#8230;',
+                '&#8216;',
+                '&#8217;',
+                '&#8220;',
+                '&#8221;',
+                '&#8211;',
+                '&#8212;',
+                '&#8230;'
+               );
+*/
+
+
+
+
+/**
+ * Logging class:
+ * - contains lfile, lwrite and lclose public methods
+ * - lfile sets path and name of log file
+ * - lwrite writes message to the log file (and implicitly opens log file)
+ * - lclose closes log file
+ * - first call of lwrite method will open log file implicitly
+ * - message is written with the following format: [d/M/Y:H:i:s] (script name) message
+ */
+
 ?>
 

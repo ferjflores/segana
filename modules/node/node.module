@@ -773,7 +773,6 @@ function _node_types_build($rebuild = FALSE) {
   asort($_node_types->names);
 
   cache_set($cid, $_node_types);
-
   return $_node_types;
 }
 

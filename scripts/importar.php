@@ -1,10 +1,63 @@
 #!/usr/bin/drush -r /data/segana7
 <?php
+class Logging {
+    // declare log file and file pointer as private properties
+    private $log_file, $fp;
+    // set log file (path and name)
+    public function lfile($path) {
+        $this->log_file = $path;
+    }
+    // write message to the log file
+    public function lwrite($message) {
+        // if file pointer doesn't exist, then open log file
+        if (!is_resource($this->fp)) {
+            $this->lopen();
+        }
+        // define script name
+        $script_name = pathinfo($_SERVER['PHP_SELF'], PATHINFO_FILENAME);
+        // define current time and suppress E_WARNING if using the system TZ settings
+        // (don't forget to set the INI setting date.timezone)
+        $time = @date('[d/M/Y:H:i:s]');
+        // write current time, script name and message to the log file
+        fwrite($this->fp, "$time ($script_name) $message" . PHP_EOL);
+    }
+    // close log file (it's always a good idea to close a file when you're done with it)
+    public function lclose() {
+        fclose($this->fp);
+    }
+    // open log file (private method)
+    private function lopen() {
+        // in case of Windows set default log file
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $log_file_default = 'c:/php/logfile.txt';
+        }
+        // set default log file for Linux and other systems
+        else {
+            $log_file_default = '/tmp/logfile.txt';
+        }
+        // define log file from lfile method or use previously set default
+        $lfile = $this->log_file ? $this->log_file : $log_file_default;
+        // open log file for writing only and place file pointer at the end of the file
+        // (if the file does not exist, try to create it)
+        $this->fp = fopen($lfile, 'a') or exit("Can't open $lfile!");
+    }
+}
+
+// Logging class initialization
+$log = new Logging();
+ 
+// set path and name of log file (optional)
+$log->lfile('/tmp/mylog.txt');
+ 
+// write message to the log file
+$log->lwrite(date('M d H:i:s') . ' Inicio de importación');
+ 
 //require('/usr/src/segana7/scripts/funciones.php');
 require('/data/segana7/scripts/funciones.php');
 $segana_viejo = new mysqli('udun', 'fflores', 'cbc1560', 'segana');
 //$limit = "limit 10";
-$elementos = "nota";
+
+$elementos = (drush_get_option('elementos')) ? drush_get_option('elementos') : 'todo';
 
 
 /*$vocabulary = taxonomy_get_vocabularies();
@@ -14,8 +67,8 @@ foreach ($vocabulary as $item) {
 }*/
 
 if ($elementos == "basica" || $elementos == "todo") {
-	require('/usr/src/segana7/scripts/estructura_constante.inc');
-	require('/usr/src/segana7/scripts/estructura_variable.inc');	
+	require('/data/segana7/scripts/estructura_constante.inc');
+	require('/data/segana7/scripts/estructura_variable.inc');	
 }
 
 
@@ -497,16 +550,32 @@ if ($elementos == "users" || $elementos == "todo") {
 ///////////nota//////////
 //////////////////////////////////
 if ($elementos == "nota" || $elementos == "todo") {
-	//buscar maximo seganaid
-	$query_max_seganaid = db_select('field_data_field_seganaid', 'fs');
-	$query_max_seganaid->addExpression('MAX(fs.field_seganaid_value)');
-	$resultado = $query_max_seganaid->execute();
-	$seganaid_inicio = "WHERE id_nota >= " . ($resultado->fetchField($column_index) - 15000);
+
+	if (drush_get_option('solodia')) {
+		$fecha = date('Y-m-d');
+		$where_query_viejo = "WHERE fecha = '$fecha'";
+	}
+	elseif (drush_get_option('nota')) {
+		drush_print(drush_get_option('nota'));
+		$where_query_viejo = "WHERE id_nota= " . drush_get_option('nota');
+	}
+	elseif (drush_get_option('apartir')) {
+		drush_print(drush_get_option('apartir'));
+		$where_query_viejo = "WHERE id_nota > " . drush_get_option('apartir');
+	}
+	else{
+		//buscar maximo seganaid
+		$query_max_seganaid = db_select('field_data_field_seganaid', 'fs');
+		$query_max_seganaid->addExpression('MAX(fs.field_seganaid_value)');
+		$resultado = $query_max_seganaid->execute();
+		$seganaid_inicio = "WHERE id_nota >= " . ($resultado->fetchField($column_index) - 15000);
+		//$seganaid_inicio = "WHERE id_nota = 959276";
+	}
 
 	$inicio = microtime(TRUE);
 	//$limit = 'limit 864000, 1';
 	$ano = '2011';
-	//$where_ano = "WHERE fecha LIKE '$ano%'";
+	//$where_query_viejo = "WHERE fecha LIKE '$ano%'";
 	//$where_nota ="WHERE id_nota=29159";
 	$tipo ='nota';
 
@@ -533,16 +602,24 @@ if ($elementos == "nota" || $elementos == "todo") {
 		}
 	}
 
-	$query_viejo = "SELECT * FROM Notas $where_ano $seganaid_inicio ORDER BY id_nota ASC $limit";
+	$query_viejo = "SELECT * FROM Notas $where_query_viejo $seganaid_inicio ORDER BY id_nota ASC $limit";
 	$resultado_viejo = $segana_viejo->query($query_viejo);
 	$array_viejo = array();
 	drush_print("tiempo carga de nodos y notas:	 ". (microtime(TRUE) - $inicio));
 	while ($row = $resultado_viejo->fetch_object()) {
 		$seganaid = $row->id_nota;
-		$title = fixUTF8(forceUTF8(trim($row->titulo)));
-		$body = check_plain(fixUTF8(forceUTF8(trim($row->cuerpo_texto))));
+		// reemplazar comillas de Micro$oft
+		drush_print(mb_detect_encoding($row->titulo));
+		$title = trim(html_entity_decode($row->titulo));
+		$body = trim(html_entity_decode($row->cuerpo_texto));
+
+		//$title = fixUTF8(forceUTF8(trim($title)));
+		//$body = check_plain(fixUTF8(forceUTF8(trim($body))));
+		
+
+		
 		$fecha = strtotime($row->fecha);
-		$fecha  = ($fecha > 0 ? $fecha : 0);
+		$fecha = ($fecha > 0 ? $fecha : 0);
 		drush_print($seganaid." ".$title ." ".$fecha);
 
 
@@ -866,4 +943,10 @@ if ($elementos == "nota" || $elementos == "todo") {
 		drush_print();
 	}
 }
+// write message to the log file
+$log->lwrite(date('M d H:i:s') . ' Fin de importación');
+ 
+// close log file
+$log->lclose();
+
 ?>
