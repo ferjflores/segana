@@ -1,6 +1,5 @@
 <?php
 
-
 function autocomplete_medio($busqueda='') {
   $matches = array();
   $tipo = 'medio';
@@ -22,7 +21,7 @@ function autocomplete_medio($busqueda='') {
         ->fields('ttd', array('name'))
         ->condition('ttd.vid', $vid)
         ->condition('ttd.name', '% ' . db_like($busqueda) . '%', 'LIKE');
-      $query_medio->union($query_medio2);
+      $query_medio->union($query_medio2, 'ALL');
       $resultado_medio = $query_medio->execute();
       
       if ($resultado_medio->rowCount() < 5) {
@@ -33,7 +32,7 @@ function autocomplete_medio($busqueda='') {
           ->condition('ttd.name', '%' . db_like($busqueda) . '%', 'LIKE');
 
 
-        $query_medio->union($query_medio3);
+        $query_medio->union($query_medio3, 'ALL');
         $resultado_medio = $query_medio->execute();
       }
     }
@@ -50,10 +49,12 @@ function autocomplete_medio($busqueda='') {
 }
 
 function autocomplete_elemento($tipo, $fecha_desde = 0, $fecha_hasta = 0, $busqueda='') {
+  //bajar los characteres en $busqueda
+  //$busqueda = mb_strtolower($busqueda);
+
   $matches = array();
-ed($tipo ." ". $fecha_desde . " " .$fecha_hasta. " ". $busqueda);
   if (trim($busqueda)) {
-    $busqueda_elementos = str_word_count($busqueda, 2);
+    $busqueda_elementos =  preg_split('/\s+/', $busqueda);
     $matches = array();
     $vocabulary = taxonomy_vocabulary_machine_name_load($tipo);
     $vid = $vocabulary->vid;
@@ -62,23 +63,31 @@ ed($tipo ." ". $fecha_desde . " " .$fecha_hasta. " ". $busqueda);
     // si no hay area(s) o tema(s) agregado(s) 
     $resultado = buscar_terminos_sin_filtros($busqueda_elementos, $vid);
 
-
     foreach ($resultado as $term) {
-        $matches[$term->name] = check_plain($term->name);
+        if ($tipo == 'actor' && !empty($term->field_rol_value)) {
+          $name = $name_rol = check_plain($term->name) . '  <span>[' . $term->field_rol_value . ']</span>';
+        }
+        else {
+          $name = check_plain($term->name);
+        }
+        $matches[$term->name] = $name;
       }
   }
   drupal_json_output($matches);
 }
 
 
-function buscar_terminos_sin_filtros($busqueda_elementos, $vid, $fecha_desde, $fecha_hasta) {
-
+function buscar_terminos_sin_filtros($busqueda_elementos, $vid, $fecha_desde = NULL, $fecha_hasta = NULL) {
   $query = db_select('taxonomy_term_data', 'ttd')
     ->fields('ttd', array('name'))
     ->range(0, 10);
-  if (isset($fecha_desde)) {
+  if ((isset($fecha_desde) &&  $fecha_desde != 0) && (!isset($fecha_hasta) ||  $fecha_hasta != 0)) {
     $query->join('taxonomy_index' , 'ti', 'ttd.tid = ti.tid');
-    $query->join('field_data_field_fecha', 'ff', 'ti.nid = ff.entity_id AND ff.bundle = :bundle AND ff.field_fecha_value = :fecha_desde', array(':bundle' => 'node', ':fecha_desde' => $fecha_desde));
+    $query->join('field_data_field_fecha', 'ff', 'ti.nid = ff.entity_id AND ff.bundle = :bundle AND ff.field_fecha_value = :fecha_desde', array(':bundle' => 'nota', ':fecha_desde' => $fecha_desde));
+  }
+  elseif (isset($fecha_hasta) &&  $fecha_hasta != 0) {
+    $query->join('taxonomy_index' , 'ti', 'ttd.tid = ti.tid');
+    $query->join('field_data_field_fecha', 'ff', 'ti.nid = ff.entity_id AND ff.bundle = :bundle AND ff.field_fecha_value = :fecha_desde AND ff.field_fecha_value = :fecha_hasta', array(':bundle' => 'nota', ':fecha_desde' => $fecha_desde, ':fecha_hasta' => $fecha_hasta));
   }
   $db_and = db_and();
   foreach($busqueda_elementos as $key => $elemento){
@@ -91,10 +100,16 @@ function buscar_terminos_sin_filtros($busqueda_elementos, $vid, $fecha_desde, $f
   }
   $db_and->condition('ttd.vid', $vid, '=');
   $query->condition($db_and);
-  
+
+  // caso actor: el rol se debe mostrar en el autocompletar por ende hacer falta hacer un join contra field_data_field_rol y traerse el campo
+  $vocabulary = taxonomy_vocabulary_load($vid);
+  if ($vocabulary->machine_name == 'actor') {
+    $query->leftJoin('field_data_field_rol', 'fr', 'ttd.tid = fr.entity_id');
+    $query->fields('fr', array('field_rol_value'));
+  }
   $resultado = $query->execute();
+
   // si no hay resultados ampliar la busqueda, buscando la primera palabra no solo al comienzo
-  
   if ($resultado->rowCount() == 0) {
     //reiniciar las condiciones(WHERE)
     $conditions =& $query->conditions();
@@ -106,6 +121,12 @@ function buscar_terminos_sin_filtros($busqueda_elementos, $vid, $fecha_desde, $f
     }
     $db_and->condition('ttd.vid', $vid, '=');
     $query->condition($db_and);
+
+    if ($vocabulary->machine_name == 'actor') {
+      $query->leftJoin('field_data_field_rol', 'fr', 'ttd.tid = fr.entity_id');
+      $query->fields('fr', array('field_rol_value'));
+    }
+
     $resultado = $query->execute();
   }
 
@@ -126,7 +147,13 @@ function buscar_terminos_sin_filtros($busqueda_elementos, $vid, $fecha_desde, $f
     }
     $db_and->condition('ttd.vid', $vid, '=');
     $query2->condition($db_and);
-    $query->union($query2);
+
+    if ($vocabulary->machine_name == 'actor') {
+      $query2->leftJoin('field_data_field_rol', 'fr', 'ttd.tid = fr.entity_id');
+      $query2->fields('fr', array('field_rol_value'));
+    }
+
+    $query->union($query2, 'ALL');
     $resultado = $query->execute();
   }
 
@@ -296,7 +323,7 @@ function buscar_terminos_con_filtros($busqueda_elementos, $vid, $tipo, $areas = 
     $db_and->condition('ttd.vid', $vid, '=');
     $query2->condition($db_and);
 
-    $query->union($query2);
+    $query->union($query2, 'ALL');
 
     $resultado = $query->execute();
   }
