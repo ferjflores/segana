@@ -3,7 +3,7 @@ function vistas_menu() {
   $items = array();
 
 
-  $items['notas/ver/%'] = array(
+  $items['notas/ver/%nid'] = array(
     'page callback' => 'vista_notas',
     'file' => 'vistas.inc',
     'page arguments' => array(2),
@@ -11,7 +11,7 @@ function vistas_menu() {
     'type' => MENU_CALLBACK,
     'access arguments' => array('access content'),
   );
-  $items['notas/autocomplete_medio'] = array(
+   $items['notas/autocomplete_medio'] = array(
     'page callback' => 'autocomplete_medio',
     'page arguments' => array(2),
     'access callback' => TRUE,
@@ -25,7 +25,7 @@ function vistas_menu() {
     'type' => MENU_CALLBACK,
     'access arguments' => array('access content'),
   );
-  $items['elementos_discursivos/ver/%'] = array(
+  $items['elementos_discursivos/ver/%tid'] = array(
     'page callback' => 'vista_elementos_discursivos',
     'file' => 'vistas.inc',
     'page arguments' => array(2),
@@ -33,27 +33,95 @@ function vistas_menu() {
     'type' => MENU_CALLBACK,
     'access arguments' => array('access content'),
   );
-   $items['agregar/%tipo_contenido'] = array(
+  $items['agregar/nota'] = array(
     'page callback' => 'agregar_contenido',
     'page arguments' => array(1),
-    'access arguments' => array('access content'),
+    'access callback' => 'contenido_access',
+    'access arguments' => array(0,1),
     'description' => t('Agregar contenido'),
     'type' => MENU_CALLBACK,
+    'file' => 'vistas.nota.inc'
   );
-  $items['editar/%tipo_contenido/%'] = array(
+  $items['agregar/%taxonomia'] = array(
+     'page callback' => 'agregar_contenido',
+     'page arguments' => array(1),
+     'access callback' => 'contenido_access',
+     'access arguments' => array(0,1),
+     'description' => t('Agregar contenido'),
+     'type' => MENU_CALLBACK,
+     'file' => 'vistas.discursivo.inc'
+  );
+  $items['editar/discursivo/%tid'] = array(
     'page callback' => 'editar_contenido',
     'page arguments' => array(1,2),
-    'access arguments' => array('access content'),
+    'access callback' => 'contenido_access',
+    'access arguments' => array(0,1,2),
     'description' => t('Editar contenido'),
     'type' => MENU_CALLBACK,
+    'file' => 'vistas.discursivo.inc'
   );
+  $items['editar/nota/%nid'] = array(
+    'page callback' => 'editar_contenido',
+    'page arguments' => array(1,2),
+    'access callback' => 'contenido_access',
+    'access arguments' => array(0,1,2,3),
+    'description' => t('Editar contenido'),
+    'type' => MENU_CALLBACK,
+    'file' => 'vistas.nota.inc'
+  );
+
+  $items['borrar/nota/%nid'] = array(
+    'page callback' => 'borrar_contenido',
+    'file' => 'vistas.borrar.inc',
+    'page arguments' => array(1,2),
+    'type' => MENU_CALLBACK,
+    'access callback' => 'contenido_access',
+    'access arguments' => array(0,1,2),
+  );
+  $items['borrar/discursivo/%tid'] = array(
+    'page callback' => 'borrar_contenido',
+    'file' => 'vistas.borrar.inc',
+    'page arguments' => array(1,2),
+    'type' => MENU_CALLBACK,
+    'access callback' => 'contenido_access',
+    'access arguments' => array(0,1,2),
+  );
+  $items['medio/contenido/%tid'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('vistas_medio_admin_form', 1, 2),
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('medio_admin'),
+    'file' => 'vistas.discursivo.inc'
+  );
+  $items['medio/seccion/%tid'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('vistas_medio_admin_form', 1, 2),
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('medio_admin'),
+    'file' => 'vistas.discursivo.inc'
+  );
+  $items['seguimiento'] = array(
+    'title' => 'Notas',
+    'page callback' => 'vistas_notas',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+    'file' => 'vistas.notas.inc',
+  );
+  $items['seguimiento/json'] = array(
+    'title' => 'Notas',
+    'page callback' => 'vistas_notas_json',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+    'file' => 'vistas.notas.inc',
+  );
+
 
   return $items;
 }
 
-module_load_include('inc', 'vistas', 'vistas_form');
 
 function agregar_contenido($tipo_contenido) {
+
   $hash = generateHash();
   switch($tipo_contenido) {
     case 'matriz':
@@ -68,18 +136,14 @@ function agregar_contenido($tipo_contenido) {
   $titulo = theme('html_tag', array(
     'element' => array(
       '#tag' => 'span',
-      '#attributes' => array(
-        'class' => 'titulo-tipo',
-       ),
+      '#attributes' => array('class' => 'titulo-tipo'),
       '#value' => ucfirst($tipo_contenido_plural)
     ),
   ));
   $titulo_accion = theme('html_tag', array(
     'element' => array(
       '#tag' => 'span',
-      '#attributes' => array(
-        'class' => 'titulo-tipo',
-       ),
+      '#attributes' => array('class' => 'titulo-tipo'),
       '#value' => ' para agregar'
     ),
   ));
@@ -94,12 +158,13 @@ function agregar_contenido($tipo_contenido) {
     ),
   ));
   drupal_add_js(drupal_get_path('module', 'vistas') . '/js/vistas.js', array('weight' => 20));
+  drupal_add_js('sites/all/libraries/ExpandingTextareas/expanding.js', array('weight' => 19));
   drupal_set_title($titulo . $titulo_accion, PASS_THROUGH);
   $output = drupal_get_form('vistas_' . $tipo_contenido . '_form_' . $hash);
   return $output;
 }
 
-function editar_contenido($tipo_contenido, $entity_id) {
+function editar_contenido($tipo_contenido, $entity_id, $AnalizarNotas) {
   $hash = generateHash();
 
   if ($tipo_contenido == 'discursivo') {
@@ -119,7 +184,6 @@ function editar_contenido($tipo_contenido, $entity_id) {
   } else {
     $tipo_contenido_plural = $tipo_contenido . "s";
   }
-  
   $titulo = theme('html_tag', array(
     'element' => array(
       '#tag' => 'span',
@@ -139,25 +203,115 @@ function editar_contenido($tipo_contenido, $entity_id) {
     ),
   ));
 
+  $AnalizarNotasAsignadas = NULL;
+  if ($AnalizarNotas) {
+    global $user;
+    $query = db_select('field_data_field_analista_asignado', 'faa');
+    $query->join('field_data_field_fecha','ff', 'faa.entity_id = ff.entity_id');
+    $query->LeftJoin('field_data_field_matriz','fm', 'faa.entity_id = fm.entity_id');
+    $query->LeftJoin('field_data_field_actor','fac', 'faa.entity_id = fac.entity_id');
+    $query
+      ->fields('faa', array('entity_id'))
+      ->condition('faa.field_analista_asignado_target_id', $user->uid)
+      ->condition('ff.field_fecha_value', strtotime(date('Y-m-d')));
+    $query->isNull('fm.field_matriz_tid');
+    $query->isNull('fac.field_actor_tid');
+
+    $resultado = $query->execute();
+    $TotalNotasAsignadasHoy = $resultado->rowCount();
+
+    $query = db_select('field_data_field_analista_asignado', 'faa');
+    $query->LeftJoin('field_data_field_matriz','fm', 'faa.entity_id = fm.entity_id');
+    $query->LeftJoin('field_data_field_actor','fac', 'faa.entity_id = fac.entity_id');
+    $query
+      ->fields('faa', array('entity_id'))
+      ->condition('faa.field_analista_asignado_target_id', $user->uid);
+    $query->isNull('fm.field_matriz_tid');
+    $query->isNull('fac.field_actor_tid');
+
+    $resultado = $query->execute();
+    $TotalNotasAsignadas = $resultado->rowCount();
+
+    $AnalizarNotasAsignadas = theme('html_tag', array(
+      'element' => array(
+        '#tag' => 'span',
+        '#attributes' => array(
+          'class' => 'notas-asignadas',
+        ),
+        '#value' => ' (Notas asignadas pendiente - Hoy: ' . $TotalNotasAsignadasHoy . '   Total: ' . $TotalNotasAsignadas . ')'
+      ),
+    ));
+  }
+  drupal_add_js(drupal_get_path('module', 'vistas') . '/js/vistas.js', array('weight' => 20));
+  drupal_add_js('sites/all/libraries/ExpandingTextareas/expanding.js', array('weight' => 19));
+  drupal_set_title($titulo . $titulo_accion . $AnalizarNotasAsignadas, PASS_THROUGH);
+  $output = drupal_get_form('vistas_' .$tipo_contenido . '_form_editar_' . $hash, $entity_id, $AnalizarNotas);
+  return $output;
+}
+
+function borrar_contenido($tipo_contenido, $entity_id) {
+  $hash = generateHash();
+
+  if ($tipo_contenido == 'discursivo') {
+    $term = taxonomy_term_load($entity_id);
+    $vocabulary = taxonomy_vocabulary_load($term->vid);
+    $tipo_contenido = $vocabulary->machine_name;
+    $nombre = $term->name;
+  }
+  else {
+    $node = node_load($entity_id);
+    $nombre = $node->title;
+  }
+
+
+  $titulo = theme('html_tag', array(
+    'element' => array(
+      '#tag' => 'span',
+      '#attributes' => array(
+        'class' => 'titulo-tipo',
+      ),
+      '#value' => $tipo_contenido . ':',
+    ),
+  ));
+  $titulo_accion = theme('html_tag', array(
+    'element' => array(
+      '#tag' => 'span',
+      '#attributes' => array(
+        'class' => 'titulo-tipo',
+      ),
+      '#value' => 'Borrar '
+    ),
+  ));
+  $nombre = theme('html_tag', array(
+    'element' => array(
+      '#tag' => 'span',
+      '#attributes' => array(
+        'class' => 'titulo-nombre',
+      ),
+      '#value' => '  ' . $nombre,
+    ),
+  ));
+
   $messages = theme('html_tag', array(
     'element' => array(
       '#tag' => 'div',
       '#attributes' => array(
         'id' => 'messages',
-       ),
+      ),
       '#value' => ''
     ),
   ));
   drupal_add_js(drupal_get_path('module', 'vistas') . '/js/vistas.js', array('weight' => 20));
-  drupal_set_title($titulo . $titulo_accion, PASS_THROUGH);
-  $output = drupal_get_form('vistas_' .$tipo_contenido . '_form_editar_' . $hash, $entity_id);
+  drupal_add_js('sites/all/libraries/ExpandingTextareas/expanding.js', array('weight' => 19));
+  drupal_set_title($titulo_accion . $titulo . $nombre, PASS_THROUGH);
+  $output = drupal_get_form('vistas_borrar_' .$tipo_contenido . '_form_' . $hash, $entity_id, $tipo_contenido);
   return $output;
 }
 
-function tipo_contenido_load($tipo_contenido){
+function taxonomia_load($tipo_contenido){
 
   //tipos validos
-  $tipos_validos = array('nota','area','tema','matriz','actor','medio', 'discursivo');
+  $tipos_validos = array('area','tema','matriz','actor','medio', 'discursivo', 'usuario', 'localizacion');
   if (in_array($tipo_contenido, $tipos_validos)){
     return $tipo_contenido;
   }
@@ -166,5 +320,180 @@ function tipo_contenido_load($tipo_contenido){
   }
 }
 
+function nid_load($nid){
+  if (entity_exists($nid, 'node')) {
+    return $nid;
+  }
+  else {
+    return FALSE;
+  }
+}
 
+function tid_load($tid){
+  if (entity_exists($tid, 'taxonomy_term')) {
+    return $tid;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+function campos($entity_type, $bundle_name) {
+  $fields_info = (field_info_instances($entity_type, $bundle_name));
+  //campos a ignorar
+  //$campos_ignorar = array('field_seganaid', 'field_user', 'field_usuario_actualizacion', 'field_usuario_actualizacion', 'field_fecha', 'field_fecha_actualizacion');
+  $campos_restringidos = array('field_debate_publico');
+  global $user;
+  $campos = array();
+  foreach ($fields_info as $field_name => $value) {
+    //si el campo no esta oculto y además el campo no es restringido o es restringido y el usuario tiene el rol coordinador
+    if($value['display']['default']['type'] != 'hidden' && (!in_array($field_name, $campos_restringidos) || (in_array($field_name, $campos_restringidos) && array_search('coordinador', $user->roles)) ) ) {
+      $field_info = field_info_field($field_name);
+      $campos[$field_name]['label'] = $value['label'];
+      $campos[$field_name]['type'] = $field_info['type'];
+      $campos[$field_name]['default_value'] = isset($value['default_value']) ? $value['default_value'] : NULL;
+      $campos[$field_name]['range'] = (isset($value['settings']['min']) && isset($values['settings']['max'])) ? array($value['settings']['min'], $value['settings']['max']) : NULL;
+      $campos[$field_name]['allowed_values'] = isset($field_info['settings']['allowed_values']) ? $field_info['settings']['allowed_values'] : NULL;
+
+      if ($field_info['type'] == 'entityreference' || $field_info['type'] == 'taxonomy_term_reference') {
+        $vocabulary_name = $field_info['settings']['allowed_values'][0]['vocabulary'];
+        $terms = taxonomy_get_terms_by_name($vocabulary_name);
+        foreach($terms as $tid => $term) {
+          $campos[$field_name]['terms'][$tid] = $term->name;
+        }
+      }
+    }
+  }
+  return $campos;
+}
+
+/**
+ * @param $name //nombre del rol
+ * @return mixed //id del rol
+ */
+function get_role_by_name($name) {
+  $roles = user_roles();
+  return array_search($name, $roles);
+}
+
+function vistas_permission() {
+  return array(
+    'acceso edicion variables' => array(
+      'title' => t('Acceso Edición de Variables'),
+      'description' => t('Ejecutar Edición de Variables'),
+    ),
+    'medio_admin' => array(
+      'title' => t('Acceso editar variables actualización automática'),
+      'description' => t('Acceso editar variables actualización automática'),
+    ),
+  );
+}
+
+function contenido_access ($accion, $name, $entity_id = NULL) {
+  /*if (!tipo_contenido_load($name)) {
+    return FALSE;
+  }*/
+  if ($name == 'nota') {
+    if ($accion == 'agregar') {
+      return user_access('create nota content');
+    }
+    elseif ($accion == 'editar') {
+      $node = node_load($entity_id);
+      global $user;
+      if (user_access('edit any nota content') || (user_access('edit own nota content') && $node->uid == $user->uid)) {
+        return TRUE;
+      }
+    }
+    elseif ($accion = 'borrar') {
+      $node = node_load($entity_id);
+      global $user;
+      if (user_access('delete any nota content') || (user_access('delete own nota content') && $node->uid == $user->uid)) {
+        return TRUE;
+      }
+    }
+  }
+  else {
+    if ($accion == 'agregar' || $accion == 'editar') {
+      if ($name == 'discursivo'){
+        $term = taxonomy_term_load($entity_id);
+        $vid = $term->vid;
+      }
+      else {
+        $vocabulary = taxonomy_vocabulary_machine_name_load($name);
+        $vid = $vocabulary->vid;
+      }
+      return user_access("edit terms in $vid");
+    }
+    elseif ($accion = 'borrar') {
+      $term = taxonomy_term_load($entity_id);
+      $vid = $term->vid;
+      return user_access("delete terms in $vid");
+    }
+  }
+  return FALSE;
+}
+
+
+function vistas_forms($form_id, $args) {
+  $forms = array();
+  if (strpos($form_id, 'vistas_nota_form_') === 0) {
+    $forms[$form_id] = array(
+      'callback' => 'vistas_nota_form',
+    );
+  }
+  if (strpos($form_id, 'vistas_borrar_') === 0) {
+    $forms[$form_id] = array(
+      'callback' => 'vistas_borrar_form',
+    );
+  }
+  $elementos_discursivos = array('area','tema','matriz','actor','usuario','medio', 'localizacion');
+  foreach($elementos_discursivos as $elemento_discursivo){
+    if (strpos($form_id, 'vistas_'. $elemento_discursivo .'_form') === 0) {
+      $forms[$form_id] = array(
+        'callback' => 'vistas_discursivo_form',
+        'callback arguments' => array($args[0], $elemento_discursivo),
+      );
+    }
+  }
+
+  return $forms;
+}
+
+function vistas_form_alter(&$form, $form_state, $form_id) {
+  if (strpos($form_id, 'vistas_medio_form_') === 0) {
+    $form['#attributes'] = array('class' => 'vistas-medio-form');
+  }
+  if (strpos($form_id, 'vistas_nota_form_') === 0) {
+    $form['#attributes'] = array('class' => 'vistas-nota-form');
+  }
+  if (strpos($form_id, 'vistas_borrar_') === 0) {
+    $form['#attributes'] = array('class' => 'vistas-borrar-form');
+  }
+  $elementos_discursivos = array('area','tema','matriz','actor','usuario','medio', 'localizacion');
+  foreach($elementos_discursivos as $elemento_discursivo){
+    if (strpos($form_id, 'vistas_'. $elemento_discursivo .'_form') === 0) {
+      $form['#attributes'] = array('class' => 'vistas-discursivo-form');
+    }
+  }
+}
+
+
+// hook_page_alter
+// quitar el encabezado de la pagina medio/contenido
+function vistas_page_alter(&$page) {
+  if (strpos(current_path(),'medio/contenido/') === 0) {
+    foreach ($page as $key => $value) {
+      if ( (strpos($key, '#') !== 0) && ($key != 'content')){
+        unset($page[$key]);
+      }
+    }
+  }
+  if (strpos(current_path(),'medio/seccion/') === 0) {
+    foreach ($page as $key => $value) {
+      if ( (strpos($key, '#') !== 0) && ($key != 'content')){
+        unset($page[$key]);
+      }
+    }
+  }
+}
 ?>

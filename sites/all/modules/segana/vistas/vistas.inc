@@ -150,12 +150,11 @@ function vista_elementos_discursivos($tid){
 	$term = taxonomy_term_load($tid);
 	$nombre = $term->name;
 	$vid = $term->vid;
-	$tipo_vocabulary = taxonomy_vocabulary_load($vid);
-	$tipo = $tipo_vocabulary->name;
-	$tipo_machine = $tipo_vocabulary->machine_name;
+	$vocabulary = taxonomy_vocabulary_load($vid);
 	$descripcion = $term->description;
 	$fecha = $term->field_fecha[LANGUAGE_NONE][0]['value'];
-	$fecha_actualizacion = $term->field_fecha_actualizacion[LANGUAGE_NONE][0]['value'];
+  $fecha_actualizacion = $term->field_fecha_actualizacion[LANGUAGE_NONE][0]['value'];
+  $ultima_actualizacion = $term->field_ultima_actualizacion[LANGUAGE_NONE][0]['value'];
 
 	$tipo = theme('html_tag', array(
 	  'element' => array(
@@ -163,7 +162,7 @@ function vista_elementos_discursivos($tid){
 	    '#attributes' => array(
 	      'id' => 'tipo',
 	     ),
-	    '#value' => $tipo,
+	    '#value' => $vocabulary->name,
 	  ),
 	));
 
@@ -197,6 +196,16 @@ function vista_elementos_discursivos($tid){
 	  ),
 	));
 
+  $ultima_actualizacion = theme('html_tag', array(
+    'element' => array(
+      '#tag' => 'div',
+      '#attributes' => array(
+        'id' => 'fecha',
+      ),
+      '#value' => 'Última actualización de las notas de este medio: ' . date('d/m/Y h:i a', $ultima_actualizacion),
+    ),
+  ));
+
 	$descripcion = theme('html_tag', array(
 	  'element' => array(
 	    '#tag' => 'div',
@@ -207,12 +216,12 @@ function vista_elementos_discursivos($tid){
 	  ),
 	));
 
-	$nids_count = count(taxonomy_select_nodes($tid, FALSE));
+	$nids_count = taxonomy_field_nodes($tid, $vocabulary->name);
 	$plural = ($nids_count > 1 ? 's' : '');
-	$link = l($nids_count,'notas', array('attributes' => array('class' => 'ver', 'target'=>'_blank', 'title' => 'Ver notas asociadas'), 'query' => array($tipo_machine => $name)));
+	$link = l($nids_count,'notas', array('attributes' => array('class' => 'ver', 'target'=>'_blank', 'title' => 'Ver notas asociadas'), 'query' => array($vocabulary->machine_name => $term->name)));
 
 
-	$link_image = l(theme_image(array('path' => '/sites/all/themes/segana/images/listado.png')),'notas', array('attributes' => array('class' => 'ver',  'target'=>'_blank', 'title' => 'Ver notas asociadas'), 'query' => array($tipo_machine => $name), 'html' => TRUE));
+	$link_image = l(theme_image(array('path' => '/sites/all/themes/segana/images/listado.png')),'notas', array('attributes' => array('class' => 'ver',  'target'=>'_blank', 'title' => 'Ver notas asociadas'), 'query' => array($vocabulary->machine_name => $term->name), 'html' => TRUE));
 
 	$notas_asociadas = theme('html_tag', array(
     'element' => array(
@@ -220,7 +229,7 @@ function vista_elementos_discursivos($tid){
       '#attributes' => array(
         'id' => 'notas_asociadas',
        ),
-      '#value' => 'Hay '. $link . ' nota' . $plural . ' asociada' . $plural . (($tipo_machine == 'matriz') ? ' a la ' : ' al ') . $tipo_machine . $link_image,
+      '#value' => 'Hay '. $link . ' nota' . $plural . ' asociada' . $plural . (($vocabulary->machine_name == 'matriz') ? ' a la ' : ' al ') . $vocabulary->machine_name . $link_image,
     ),
   ));
 
@@ -230,7 +239,7 @@ function vista_elementos_discursivos($tid){
 	    '#attributes' => array(
 	      'id' => 'vista_elementos_discursivos',
 	     ),
-	    '#value' => $tipo . $nombre . $notas_asociadas . $fecha . $fecha_actualizacion .$descripcion
+	    '#value' => $tipo . $nombre . $notas_asociadas . $fecha . $fecha_actualizacion . $ultima_actualizacion . $descripcion
 	  ),
 	));
 

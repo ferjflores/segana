@@ -1,0 +1,105 @@
+.page-seguimiento #content {
+    width: 1155px !important;
+}
+
+.page-seguimiento h1.page__title {
+    padding-right: 0;
+    width: 1038px;
+}
+
+.page-seguimiento #content div.dataTables_wrapper {
+    font-family: ubuntu, sans-serif;
+    background-color: rgba(208, 216, 221, 0.5);
+}
+
+
+.page-seguimiento .dataTables_length {
+    margin: 13px 0 5px 9px;
+}
+
+.page-seguimiento table.dataTable thead tr th,
+.page-seguimiento table.dataTable tfoot tr th {
+    padding: 0 0 6px 4px;
+    text-align: left;
+    line-height: 17px;
+    font-size: 14px;
+    color: #455560;
+    letter-spacing: -0.5px;
+    border-color: #69777f;
+}
+
+.page-seguimiento table.dataTable thead tr th:first-child,
+.page-seguimiento table.dataTable tfoot tr th:first-child {
+    padding-left: 9px;
+}
+
+.page-seguimiento table.dataTable tbody tr td {
+    font-size: 14px;
+    font-family: ubuntu, sans-serif;
+    letter-spacing: -0.5px;
+    color: #070808;
+    padding: 3px 2px 24px 4px;
+    line-height: 16px;
+    border-color: #69777f;
+}
+.page-seguimiento table.dataTable tbody tr td:first-child {
+    padding-left: 9px;
+}
+
+.page-seguimiento table.dataTable.no-footer {
+    border-color: #69777f;
+}
+
+.page-seguimiento table tfoot input {
+    font-size: 12px;
+}
+
+.page-seguimiento .area,
+.page-seguimiento .area input {
+    width: 78px;
+}
+
+.page-seguimiento .title,
+.page-seguimiento .title input {
+    width: 210px;
+}
+
+.page-seguimiento .etiqueta,
+.page-seguimiento .etiqueta input {
+    width: 116px;
+}
+
+.page-seguimiento .medio,
+.page-seguimiento .medio input {
+    width: 88px;
+}
+
+.page-seguimiento .fecha {
+    width: 70px;
+}
+
+.page-seguimiento .tema,
+.page-seguimiento .tema input {
+    width: 124px;
+}
+
+.page-seguimiento .matriz,
+.page-seguimiento .matriz input {
+    width: 125px;
+}
+
+.page-seguimiento .actor,
+.page-seguimiento .actor input {
+    width: 91px;
+}
+
+.page-seguimiento .usuario,
+.page-seguimiento .usuario input {
+    width: 92px;
+}
+.page-seguimiento .fecha_actualizacion {
+    width: 84px;
+}
+.page-seguimiento .fecha input {
+    width: 120px;
+}
