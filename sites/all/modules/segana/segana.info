@@ -1,0 +1,8 @@
+name = Segana
+description = Modulo segana
+package = Segana modules
+core = 7.x
+
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "segana"

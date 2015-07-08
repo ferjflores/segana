@@ -1,0 +1,115 @@
+<?php
+
+function taxonomy_field_nodes ($tid, $vocabulary_name) {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'nota')
+    ->fieldCondition('field_' . $vocabulary_name, 'tid', $tid);
+  $resultado = $query->execute();
+  return count($resultado['node']);
+}
+
+
+function taxonomy_get_terms_by_vid($vid) {
+  $query = new EntityFieldQuery();
+  $result = $query
+    ->entityCondition('entity_type', 'taxonomy_term')
+    ->propertyCondition('vid', (int) $vid, '=')
+    ->execute();
+  return entity_load('taxonomy_term', array_keys($result['taxonomy_term']));
+}
+
+
+function taxonomy_get_terms_by_name($vocabulary_name) {
+  $vocabulary = taxonomy_vocabulary_machine_name_load($vocabulary_name);
+  $vid = $vocabulary->vid;
+  return taxonomy_get_terms_by_vid($vid);
+}
+
+function entity_exists($entity_id, $entity_type) {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', $entity_type)
+    ->entityCondition('entity_id', $entity_id);
+  $result = $query->execute();
+  return (empty($result) ? FALSE : TRUE);
+}
+
+
+function fusionar_elementos ($vocabulary_machine_name, $tids, $tid_reemplazo, $fecha_desde = NULL, $fecha_hasta = NULL) {
+  $field_name = 'field_' .$vocabulary_machine_name;
+  $query = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition($field_name . '.bundle', 'nota');
+
+  $query->join('field_data_' . $field_name, $field_name, 'n.nid = '. $field_name . '.entity_id AND ' . $field_name . '.bundle = :bundle' , array(':bundle' => 'nota'));
+  $query->join('field_data_field_fecha', 'ff', 'ff.entity_id = n.nid AND ff.bundle = :bundle', array(':bundle' => 'nota'));
+
+
+  $db_or = db_or();
+  foreach($tids as $tid) {
+    $db_or->condition($field_name . '.' . $field_name . '_tid', $tid);
+  }
+  $query->condition($db_or);
+
+  //fecha
+  if (!empty($fecha_hasta)) {
+    $query->condition('ff.field_fecha_value', strtotime($fecha_hasta), '<=');
+    if (!empty($fecha_desde)) {
+      $query->condition('ff.field_fecha_value', strtotime($fecha_desde), '>=');
+    }
+  }
+  elseif(!empty($fecha_desde)) {
+    $query->condition('ff.field_fecha_value', strtotime($fecha_desde), '>=');
+  }
+
+  $resultado = $query->execute();
+  $cantidad_notas = $resultado->rowCount();
+
+  // usando db_update
+
+  $query_update = db_update('field_data_' . $field_name)
+    ->fields(array(
+      $field_name .'_tid' => $tid_reemplazo
+    ))
+    ->condition($field_name . '_tid ', $tids, 'IN');
+  if (!empty($fecha_desde) || !empty($fecha_hasta)) {
+    $query_update->condition('entity_id ',  $resultado->fetchCol(), 'IN');
+  }
+  $filas_discursivas = $query_update->execute();
+  foreach($resultado->fetchCol() as $nid) {
+    cache_clear_all('field:node:' . $nid, 'cache_field');
+  }
+  //limpiar el cache de las paginas del tid_reemplazo
+  cache_clear_all('editar/discursivo/' . $tid_reemplazo, 'cache_page');
+  cache_clear_all('elementos_discursivos/ver/' . $tid_reemplazo, 'cache_page');
+
+  if ((empty($fecha_desde) && empty($fecha_hasta)) && (empty($fecha_desde) && empty($fecha_hasta))) {
+    foreach($tids as $tid) {
+      taxonomy_term_delete($tid);
+    }
+  }
+  // finalizado usando db_update
+
+  //usando drupal api para actualizar los nodos(lento)
+  /*
+  $filas_discursivas = 0;
+  if ($cantidad_notas > 0) {
+    $nodes = entity_load('node', $resultado->fetchCol());
+    foreach($nodes as $node) {
+      $temas = $node->{$field_name}[LANGUAGE_NONE];
+      foreach($temas as $delta => $values) {
+        if(in_array($values['tid'], $tids)) {
+          $node->{$field_name}[LANGUAGE_NONE][$delta]['tid'] = $tid_reemplazo;
+          $filas_discursivas++;
+        }
+      }
+      field_attach_presave('node', $node);
+      field_attach_update('node', $node);
+      entity_get_controller('node')->resetCache(array($node->nid));
+    }
+  }*/
+
+  return (array('cantidad_notas' => $cantidad_notas, 'filas_discursivas' => $filas_discursivas));
+}
+
+?>
