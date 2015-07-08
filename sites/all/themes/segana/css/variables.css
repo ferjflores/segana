@@ -1,15 +1,15 @@
-.page-elementos-discursivos h1.page__title {
+.page-variables h1.page__title {
 	padding-bottom: 22px;
 }
 
-.page-elementos-discursivos .principal {
+.page-variables .principal {
 	background-color: rgba(208, 216, 221, 0.5);
 }
 
-.page-elementos-discursivos #quicktabs-container-elementos_discursivos .principal {
+.page-variables #quicktabs-container-variables .principal {
 	background: none;
 }
-#quicktabs-elementos_discursivos {
+#quicktabs-variables {
 	padding-left: 101px;
 	padding-right: 22px;
 }
@@ -20,7 +20,7 @@ ul.quicktabs-tabs {
 	padding-left: 7px;
 	margin-bottom: 45px;
 }
-.page-elementos-discursivos .quicktabs-tabs li {
+.page-variables .quicktabs-tabs li {
 	margin-right: 7px;
 }
 
@@ -32,12 +32,12 @@ ul.quicktabs-tabs li {
 	white-space: nowrap;
 }
 
-.page-elementos-discursivos li.active a.active {
+.page-variables li.active a.active {
 	color: #C70000;
 }
 
 
-.page-elementos-discursivos a.active {
+.page-variables a.active {
 	font-family: ubuntu;
 	text-decoration: none;
 	font-weight: bold;
@@ -49,7 +49,7 @@ ul.quicktabs-tabs li {
 	border-right: 1px solid #B8C1C6;
 	font-size: 18px;
 }
-.page-elementos-discursivos li.last a.active {
+.page-variables li.last a.active {
 border: medium none;
 }
 
@@ -63,20 +63,20 @@ border: medium none;
 
 
 
-.page-elementos-discursivos .views-exposed-form {
+.page-variables .views-exposed-form {
 	float: right;
 }
 
 
-.page-elementos-discursivos .views-exposed-widgets {
+.page-variables .views-exposed-widgets {
 	margin: 0;
 }
-.page-elementos-discursivos .views-exposed-form .views-exposed-widget {
+.page-variables .views-exposed-form .views-exposed-widget {
 	padding: 0;
 	float: none;
 }
 
-.page-elementos-discursivos .views-exposed-form .views-exposed-widget label {
+.page-variables .views-exposed-form .views-exposed-widget label {
 	float: left;
 	font-family: Ubuntu;
 	font-style: italic;
@@ -86,21 +86,21 @@ border: medium none;
 	right: 10px;
 }
 
-.page-elementos-discursivos .views-exposed-form .views-exposed-widget:focus label {
+.page-variables .views-exposed-form .views-exposed-widget:focus label {
 	display: none;
 }
 
-/*.page-elementos-discursivos .views-exposed-form .views-widget {
+/*.page-variables .views-exposed-form .views-widget {
 	float: left;
 	width: 229px;
 }*/
 
-.page-elementos-discursivos .views-exposed-form .form-item-name {
+.page-variables .views-exposed-form .form-item-name {
 	float: right;
 	/*margin-top: -1px;*/
 	border-radius: 4px 4px 4px 4px;
 }
-.page-elementos-discursivos .views-exposed-form .form-item-name #edit-name {
+.page-variables .views-exposed-form .form-item-name #edit-name {
 	padding-left: 28px;
 	width: 230px;
 	background: url("/sites/all/themes/segana/images/lupa.png") no-repeat scroll 8px 50% #F4F5F7;
@@ -109,17 +109,17 @@ border: medium none;
 	border: 1px solid #848F96;
 }
 
- .page-elementos-discursivos input:focus {
+ .page-variables input:focus {
 	border-radius: 5px 5px 5px 5px;
 	border: 1px solid #6B7A84;
 	outline: none;
 }
 
-.page-elementos-discursivos .panel-display  {
+.page-variables .panel-display  {
 	position: relative;
 }
 
-.page-elementos-discursivos .filtro {
+.page-variables .filtro {
 	position: absolute;
 	right: 2px;
 	top: -76px
@@ -149,7 +149,7 @@ div.encabezado_ed {
 	width: 160px;
 }
 
-.page-elementos-discursivos .agregar a {
+.page-variables .agregar a {
 	font-family: ubuntu;
 	font-style: italic;
 	font-weight: bold;
@@ -162,57 +162,57 @@ div.encabezado_ed {
 	font-size: 15px;
 	width: 82px;
 }
-.page-elementos-discursivos .agregar {
+.page-variables .agregar {
 	position: absolute;
 	right: 8px;
 	top: -43px;
 }
 
-.page-elementos-discursivos .principal .view-content {
+.page-variables .principal .view-content {
 	margin-top: 0;
 }
-.page-elementos-discursivos #quicktabs-elementos_discursivos .views-row {
+.page-variables #quicktabs-variables .views-row {
 	padding: 5px 7px 4px 8px;
 	border-bottom: 1px solid #AAB3B9;
 }
 
-.page-elementos-discursivos #quicktabs-elementos_discursivos .views-row div {
+.page-variables #quicktabs-variables .views-row div {
 	width: 450px;
 	display: inline-block;
 	margin-right: -4px;
 	vertical-align: top;
 }
 
-.page-elementos-discursivos #quicktabs-elementos_discursivos .views-row .views-field-name {
+.page-variables #quicktabs-variables .views-row .views-field-name {
 	width: 294px;
 }
 
-.page-elementos-discursivos #quicktabs-elementos_discursivos .views-row span {
+.page-variables #quicktabs-variables .views-row span {
 	color: black;
 	font-family: ubuntu;
 	font-size: 14px;
 }
 
-.page-elementos-discursivos #quicktabs-elementos_discursivos .views-row .views-field-name div {
+.page-variables #quicktabs-variables .views-row .views-field-name div {
 	width: 100%;
 }
 
-.page-elementos-discursivos #quicktabs-elementos_discursivos .views-row div a {
+.page-variables #quicktabs-variables .views-row div a {
 	text-decoration: none;
 	font-family: ubuntu;
 	font-weight: bold;
 	font-size: 14px;
 	color: black;
 }
-.page-elementos-discursivos #quicktabs-elementos_discursivos .views-row span.field-content div.ver-editar {
+.page-variables #quicktabs-variables .views-row span.field-content div.ver-editar {
 	display: block;
 	height: 24px;
 }
 
-.page-elementos-discursivos #quicktabs-elementos_discursivos .views-row div.ver-editar a {
+.page-variables #quicktabs-variables .views-row div.ver-editar a {
 	display: none;
 }
-.page-elementos-discursivos #quicktabs-elementos_discursivos .views-row:hover div.ver-editar a {
+.page-variables #quicktabs-variables .views-row:hover div.ver-editar a {
     display: block;
     float: left;
     font-family: ubuntu;
@@ -223,28 +223,28 @@ div.encabezado_ed {
     margin-right: 10px;
 }
 
-.page-elementos-discursivos #quicktabs-elementos_discursivos .views-row .views-field-field-fecha {
+.page-variables #quicktabs-variables .views-row .views-field-field-fecha {
 	width: 160px;
 	margin-left: 100px;
 }
 
-.page-elementos-discursivos #quicktabs-elementos_discursivos .views-row .views-field-field-fecha-actualizacion {
+.page-variables #quicktabs-variables .views-row .views-field-field-fecha-actualizacion {
 	width: 160px;
 }
-.page-elementos-discursivos #quicktabs-elementos_discursivos .views-row .usuario {
+.page-variables #quicktabs-variables .views-row .usuario {
 	color: black;
 	font-family: ubuntu;
 	font-size: 14px;
 }
 
 
-.page-elementos-discursivos ul.pager {
+.page-variables ul.pager {
 	float: left;
 	display: block;
 	padding: 0pt;
 	margin: 21px 11px 0pt 7px;
 }
-.page-elementos-discursivos li.pager-previous {
+.page-variables li.pager-previous {
 	background-image: url("../images/scroll-izq.png");
 	background-repeat: no-repeat;
 	background-position: left center;
@@ -254,10 +254,10 @@ div.encabezado_ed {
 	display: inline-block;
 }
 
-.page-elementos-discursivos li.pager-current {
+.page-variables li.pager-current {
 	display: none;
 }
-.page-elementos-discursivos li.pager-next {
+.page-variables li.pager-next {
 	background-image: url("../images/scroll-der.png");
 	background-repeat: no-repeat;
 	background-position: right center;
@@ -267,21 +267,21 @@ div.encabezado_ed {
 	display: inline-block;
 }
 
-.page-elementos-discursivos li.pager-next a {
+.page-variables li.pager-next a {
 	color: transparent;
 	padding: 0pt;
 }
-.page-elementos-discursivos li.pager-next a {
+.page-variables li.pager-next a {
 	color: transparent;
 	padding: 0pt;
 }
-.page-elementos-discursivos li.pager-previous a {
+.page-variables li.pager-previous a {
 	color: transparent;
 	padding: 0pt;
 }
 
 
-.page-elementos-discursivos .view-footer {
+.page-variables .view-footer {
 	padding: 5px;
 	margin-top: 11px;
 	font-family: ubuntu;
@@ -290,4 +290,23 @@ div.encabezado_ed {
 	letter-spacing: -0.4px;
 	color: #505E67;
 	margin-bottom: 5px;
+}
+
+.page-variables #edit-field-tipo-localizacion-tid-wrapper {
+	position: absolute;
+	right: 112px;
+	width: 257px;
+	top: 34px;
+}
+
+.page-variables #edit-field-tipo-localizacion-tid-wrapper label {
+	float: left;
+	position: initial;
+}
+
+.page-variables #edit-field-tipo-localizacion-tid-wrapper select {
+	width: 108px !important;
+	float: right;
+	font-size: 13px;
+	font-family: ubuntu, sans-serif;
 }

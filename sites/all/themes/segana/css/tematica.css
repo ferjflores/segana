@@ -1,0 +1,440 @@
+.page-tematica .tematica div#fecha {
+	position: absolute;
+	background-image: url("/sites/all/themes/segana/images/fecha-fondo.png");
+	width: 348px;
+	height: 33px;
+	background-repeat: no-repeat;
+	top: 69px;
+	right: 303px;
+}
+
+.page-tematica div#fecha legend {
+	float: left;
+	color: white;
+	margin: 6px 0pt 0pt 8px;
+}
+.page-tematica legend {
+	font-family: ubuntu;
+	font-weight: bold;
+	text-decoration: none;
+	clear: none;
+	color: #6B7A84;
+	text-transform: uppercase;
+	font-size: 12px;
+}
+
+.page-tematica fieldset {
+	-webkit-margin-start: 0;
+	-webkit-margin-end: 0;
+	-webkit-padding-before: 0;
+	-webkit-padding-start: 0;
+	-webkit-padding-end: 0;
+	-webkit-padding-after: 0;
+	border: medium none;
+	margin: 0pt;
+	padding: 0pt;
+}
+
+.page-tematica .container-inline-date {
+	float: left;
+	clear: none;
+	position: relative;
+	left: 0pt;
+	display: block;
+	width: 141px;
+	margin: 0pt;
+}
+
+.page-tematica .form-item-fecha-desde,
+.page-tematica .form-item-fecha-hasta {
+	width: 139px;
+	margin: 6px 8px 8px;
+	height: 19px;
+}
+
+.page-tematica .form-item-fecha-desde label[for^=edit-fecha-desde],
+.page-tematica .form-item-fecha-hasta label[for^=edit-fecha-hasta] {
+	color: white;
+	float: left;
+	font-size: 12px;
+	font-style: italic;
+	text-transform: none;
+	margin-right: 5px;
+}
+
+.page-tematica .form-item-fecha-desde {
+	border-right: 1px solid white;
+}
+
+.page-tematica .container-inline-date div.date-padding,
+.page-tematica .container-inline-date div.date-padding div.form-item {
+	width: 74px;
+	padding: 0;
+}
+
+.page-tematica div.date-padding input[id^=edit-fecha] {
+	float: left;
+	color: white;
+	font-size: 14px;
+	background-color: transparent;
+	border: medium none;
+	width: 75px;
+	margin-top: 3px;
+}
+
+.page-tematica .form-item-fecha-hasta label[for^=edit-fecha-hasta] {
+	margin-left: 9px;
+}
+
+
+.page-tematica #superior {
+	background-color: #e9ecee;
+	padding-left: 101px;
+	width: 773px;
+	padding-top: 13px;
+}
+
+.page-tematica .form-text,
+.page-tematica .form-select {
+	color: black;
+	font-family: ubuntu;
+	font-size: 13px;
+	background-color: #F0F2F4;
+}
+
+.page-tematica label {
+	font-family: ubuntu;
+	font-weight: bold;
+	text-decoration: none;
+	clear: none;
+	color: #6B7A84;
+	text-transform: uppercase;
+	font-size: 12px;
+}
+
+.page-tematica  #superior .form-type-textfield label[for^=edit-titulo],
+.page-tematica  #superior .form-type-textfield label[for^=edit-tema],
+.page-tematica  #superior .form-type-textfield label[for^=edit-area],
+.page-tematica  #superior .form-type-textfield label[for^=edit-palabra-clave],
+.page-tematica  #superior .form-type-select label[for^=edit-tendencia-nota] {
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.page-tematica  #superior .form-type-textfield {
+	display: inline-block;
+	margin: 17px 0 0;
+}
+
+.page-tematica  #superior .form-type-textfield input {
+	background-color: #f4f5f7;
+	border-radius: 4px;
+	border: 1px #ced2d6 solid;
+	padding: 3px 8px;
+	color: #36424a;
+	outline: none;
+}
+
+.page-tematica  #superior div.form-item select {
+	color: #8897A0;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #A9B6BB;
+}
+
+body.page-tematica input.form-autocomplete {
+	background-position: 100% 6px;
+}
+
+body.page-tematica input.throbbing {
+	background-position: 100% -14px;
+}
+
+form.tematica #inferior {
+	width: 1155px;
+}
+
+form.tematica #inferior #busqueda {
+	position: relative;
+}
+
+form.tematica #busqueda .form-item-busqueda-marcar-todo {
+	position: absolute;
+	top: 107px;
+}
+
+form.tematica #busqueda .encabezado div {
+	display: table-cell;
+	font-size: 13px;
+	text-transform: uppercase;
+	padding-left: 5px;
+	color: #616c74;
+	border-bottom: 1px #d7dadc solid;
+	font-weight: bold;
+	letter-spacing: -0.3px;
+}
+
+form.tematica #busqueda .encabezado {
+	font-size: 0;
+}
+
+form.tematica #busqueda div.area{
+	width: 90px;
+	padding-left: 0;
+}
+
+form.tematica #busqueda .encabezado .area{
+	padding-left: 26px;
+}
+
+form.tematica #busqueda .title{
+	width: 255px;
+	background-color: #F2F2F2;
+}
+
+form.tematica #busqueda .autor{
+	width: 95px;
+}
+
+form.tematica #busqueda .medio{
+	width: 95px;
+	background-color: #F2F2F2;
+}
+
+form.tematica #busqueda .fecha{
+	width: 73px;
+}
+
+form.tematica #busqueda .tema{
+	width: 150px;
+	background-color: #F2F2F2;
+}
+
+form.tematica #busqueda .matriz{
+	width: 150px;
+}
+form.tematica #busqueda .actor{
+	width: 100px;
+	background-color: #F2F2F2;
+}
+form.tematica #busqueda .tendencia_nota{
+	width: 80px;
+}
+
+
+.page-tematica #superior tr {
+	background-color: transparent;
+	border: none;
+}
+
+.page-tematica table {
+	color: #616c74;
+	font-size: 12px;
+}
+
+.page-tematica tbody {
+	border: none;
+}
+
+.page-tematica td.tema {
+	width: 200px;
+	left: 100px;
+	font-size: 12px;
+	color: #616c74;
+	font-weight: bold;
+	font-family: ubuntu;
+	line-height: 14px;
+	text-transform: uppercase;
+	padding-right: 10px;
+}
+
+.page-tematica td input.borrar_tema {
+	float: right;
+}
+
+.page-tematica td input.borrar_nota {
+	margin-left: 10px;
+	display: none;
+}
+
+.page-tematica td.title:hover input.borrar_nota {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+
+.page-tematica #busqueda .encabezado div.titulo_busqueda {
+	font-size: 20px;
+	text-transform: uppercase;
+	margin-top: 43px;
+	padding-bottom: 35px;
+	padding-left: 10px;
+	color: #616c74;
+	border-bottom: 1px #d7dadc solid;
+	display: block;
+	width: 1150px;
+	font-weight: normal;
+}
+
+.page-tematica #busqueda .nota {
+	border-bottom: 1px #d7dadc solid;
+	padding: 0;
+}
+
+.page-tematica #busqueda .titulo_nota {
+	color: #424a52;
+	font-size: 0;
+	width: 1129px;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+
+.page-tematica #busqueda .titulo_nota div {
+	padding: 4px 0 4px 5px;
+	vertical-align: middle;
+	display: table-cell;
+	text-transform: none;
+	font-size: 11px;
+	font-weight: bold;
+	letter-spacing: -0.8px;
+	line-height: 17px;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: break-word;
+	-ms-word-break: break-all;
+	-webkit-hyphens: auto;
+   -moz-hyphens: auto;
+    -ms-hyphens: auto;
+        hyphens: auto;
+}
+
+.page-tematica #busqueda_exacta,
+.page-tematica #cualquiera {
+	font-family: ubuntu;
+	font-weight: bold;
+	text-decoration: none;
+	clear: none;
+	color: #6B7A84;
+	text-transform: uppercase;
+	font-size: 11px;
+	display: inline-block;
+	margin-right: 20px;
+}
+
+.page-tematica #busqueda_exacta {
+	margin-left: 120px; 
+}
+
+/* SQUARED FOUR */
+.page-tematica .form-type-checkbox  {
+	width: 20px;	
+	margin: 0;
+	position: relative;
+	vertical-align: middle;
+	height: 15px;
+	display: inline-block;
+}
+
+.page-tematica .form-type-checkbox input[type=checkbox] {
+	visibility: hidden;
+}
+
+.page-tematica .form-type-checkbox  label {
+	cursor: pointer;
+	position: absolute;
+	width: 14px;
+	height: 14px;
+	top: 0;
+	left: 0;
+	border-radius: 4px;
+
+	-webkit-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
+	-moz-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
+	box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
+	background: #fbfbfc;
+
+	background: -webkit-linear-gradient(top, #fbfbfc 0%, #eaecee 40%, #d5dade 100%);
+	background: -moz-linear-gradient(top, #fbfbfc 0%, #eaecee 40%, #d5dade 100%);
+	background: -o-linear-gradient(top, #fbfbfc 0%, #eaecee 40%, #d5dade 100%);
+	background: -ms-linear-gradient(top, #fbfbfc 0%, #eaecee 40%, #d5dade 100%);
+	background: linear-gradient(top, #fbfbfc 0%, #eaecee 40%, #d5dade 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfff4', endColorstr='#d5dade',GradientType=0 );
+}
+
+.page-tematica .form-type-checkbox  label:after {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	filter: alpha(opacity=0);
+	opacity: 0;
+	content: '';
+	position: absolute;
+	width: 11px;
+	height: 4px;
+	background: transparent;
+	top: 2px;
+	left: 4px;
+	border: 2px solid #333;
+	border-top: none;
+	border-right: none;
+
+	-webkit-transform: rotate(-60deg);
+	-moz-transform: rotate(-60deg);
+	-o-transform: rotate(-60deg);
+	-ms-transform: rotate(-60deg);
+	transform: rotate(-60deg);
+}
+
+.page-tematica .form-type-checkbox  label:hover::after {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
+	filter: alpha(opacity=30);
+	opacity: 0.5;
+}
+
+.page-tematica .form-type-checkbox  input[type=checkbox]:checked + label:after {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	filter: alpha(opacity=100);
+	opacity: 1;
+}
+
+
+/*** bloques *****/
+.page-tematica .sidebar .block {
+	width: 261px;
+	background-color: #d3d8dc;
+	padding: 9px 5px 1px;
+	margin: 0;
+	height: 470px;
+	overflow: hidden;
+}
+
+.page-tematica .sidebar .block h2 {
+	background-color: #545e66;
+	color: #fc0000;
+	text-transform: uppercase;
+	font-size: 12px;
+	padding: 9px;
+	border-radius: 4px;
+	margin-bottom: 5px;
+}
+
+#block-informe-tematica #informe {
+	padding: 0px 0 0px 9px;
+}
+#block-informe-tematica #informe a {
+	color: #aab3b9;
+	text-decoration: none;
+	font-size: 15px;
+	font-weight: bold;
+	letter-spacing: -0.6px;
+	line-height: 17px;
+	display: block;
+	margin-bottom: 3px;
+}
+
+#block-informe-tematica #informe ol {
+	margin-top: 0px;
+	color: #616c74;
+	font-size: 12px;
+	font-weight: bold;
+	letter-spacing: -0.3px;
+	line-height: 12px;
+}

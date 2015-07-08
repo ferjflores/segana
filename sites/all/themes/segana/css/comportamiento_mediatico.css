@@ -112,6 +112,7 @@
 .page-comportamiento-mediatico .form-item-busqueda-exacta label.option,
 .page-comportamiento-mediatico .form-item-cualquiera label.option,
 .page-comportamiento-mediatico .form-item-obviar-fecha label.option,
+.page-comportamiento-mediatico .form-item-debate-publico label.option,
 .page-comportamiento-mediatico #primera_pagina label {
 	font-style: italic;
 	font-weight: bold;
@@ -288,6 +289,18 @@
 	color: #8897A0;
 	text-transform: uppercase;
 	padding: 0 15px 0 1px;
+}
+.page-comportamiento-mediatico #edit-opciones-derecha .chosen-choices {
+	float: right;
+	height: 23px;
+	color: #8897A0;
+	text-transform: uppercase;
+	padding: 0 15px 0 1px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #A9B6BB;
+	font-family: ubuntu;
+	font-size: 13px;
+	background-color: #F0F2F4;
 }
 
 html.js .page-comportamiento-mediatico input.form-autocomplete {
@@ -526,7 +539,7 @@ form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos .fieldset-wr
 
 form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos .fieldset-wrapper a,
 form.busqueda-form-comportamiento-mediatico #edit-opciones-graficos .fieldset-wrapper label {
-	font-size: 11px;
+	font-size: 12px;
 	letter-spacing: -0.4px;
 	text-transform: none;
 }
@@ -619,12 +632,12 @@ form.busqueda-form-comportamiento-mediatico #tabs_graficos {
 
 form.busqueda-form-comportamiento-mediatico #tabs_graficos ul {
 	background: transparent url("/sites/all/themes/segana/images/graficos-tabs-fondo.png");
-	width: 1054px;
+	width: 1126px;
 	margin-right: 0pt;
 	margin-bottom: 0pt;
 	margin-left: 0pt;
 	height: 28px;
-	padding: 0 0 0 99px;
+	padding: 0 0 0 27px;
 	border: none;
 	border-radius: 0;
 }
@@ -667,26 +680,16 @@ form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#notas {
 	width: 169px;
 }
 
-form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#area {
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#area,
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#tema{
 	background-image: url("/sites/all/themes/segana/images/graficos-tab-area.png");
 	width: 119px;
 }
 
-form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#tema {
-	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio.png");
-	width: 141px;
-}
-
-form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#matriz {
-	background-image: url("/sites/all/themes/segana/images/graficos-tab-matriz.png");
-	width: 147px;
-}
-
-form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#actor {
-	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio.png");
-	width: 141px;
-}
-form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#medio {
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#matriz,
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#actor,
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#medio,
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#usuario {
 	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio.png");
 	width: 141px;
 }
@@ -702,30 +705,20 @@ form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#notas:hover {
 }
 
 form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#area.ui-state-active,
-form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#area:hover{
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#area:hover,
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#tema.ui-state-active,
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#tema:hover{
 	background-image: url("/sites/all/themes/segana/images/graficos-tab-area-active.png");
 }
 
-form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#tema.ui-state-active,
-form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#tema:hover {
-	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio-active.png");
-	width: 141px;
-}
-
 form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#matriz.ui-state-active,
-form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#matriz:hover {
-	background-image: url("/sites/all/themes/segana/images/graficos-tab-matriz-active.png");
-	width: 147px;
-}
-
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#matriz:hover,
 form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#actor.ui-state-active,
-form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#actor:hover {
-	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio-active.png");
-	width: 141px;
-}
-
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#actor:hover,
 form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#medio.ui-state-active,
-form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#medio:hover {
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#medio:hover,
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#usuario.ui-state-active,
+form.busqueda-form-comportamiento-mediatico #tabs_graficos ul li#usuario:hover {
 	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio-active.png");
 	width: 141px;
 }
@@ -885,14 +878,13 @@ form.busqueda-form-comportamiento-mediatico #resumen canvas {
 	background-color: #505E67;
 	vertical-align: top;
 	height: 19px;
-	text-transform: capitalize;
 	line-height: 19px;
 	font-weight: bold;
 	font-family: ubuntu;
 }
 
 
-.page-comportamiento-mediatico #resumen h3.resumen div span {
+.page-comportamiento-mediatico #resumen h3.resumen div span.expandir {
 	float: right;
 	margin: 2px 2px 0pt 0pt;
 	display: none;
@@ -903,8 +895,14 @@ form.busqueda-form-comportamiento-mediatico #resumen canvas {
 }
 
 
-.page-comportamiento-mediatico #resumen h3.ui-state-active div span {
+.page-comportamiento-mediatico #resumen h3.ui-state-active div span.expandir {
 	display: block;
+}
+
+.page-comportamiento-mediatico #resumen h3.resumen div span.total {
+	margin-left: 4px;
+	color: lightgray;
+	font-weight: normal;
 }
 
 .page-comportamiento-mediatico #resumen #contenido {
@@ -972,6 +970,9 @@ form.busqueda-form-comportamiento-mediatico #resumen canvas {
 }
 .page-comportamiento-mediatico #resumen  #contenido #valores span.odd div {
 	background-color: #D1D9DD;
+}
+.page-comportamiento-mediatico #resumen  #contenido #valores span.total div {
+	background-color: #F8E6E0;
 }
 
 form.busqueda-form-comportamiento-mediatico div#valores .mCSB_container {
@@ -1186,19 +1187,28 @@ form.busqueda-form-comportamiento-mediatico #resumen #contenido div#resumen_nota
 	margin-bottom: 0pt;
 	margin-left: 0pt;
 	height: 28px;
-	padding: 0 0 0 99px;
+	padding: 0 0 0 14px;
 	border: none;
 	border-radius: 0;
 }
 
 
 .page-comportamiento-mediatico #tabs_resumen_expandido ul li#area.ui-state-active, 
-.page-comportamiento-mediatico #tabs_resumen_expandido ul li#area:hover {
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#area:hover,
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#tema.ui-state-active,
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#tema:hover,
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#actor.ui-state-active,
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#actor:hover,
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#medio.ui-state-active,
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#medio:hover {
 	background-image: url("/sites/all/themes/segana/images/graficos-tab-area-active.png");
 }
 
-.page-comportamiento-mediatico #tabs_resumen_expandido ul li#area {
-	background-image: url("/sites/all/themes/segana/images/graficos-tab-area.png");
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#area,
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#tema,
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#actor,
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#medio {
+background-image: url("/sites/all/themes/segana/images/graficos-tab-area.png");
 	width: 119px;
 }
 .page-comportamiento-mediatico #tabs_resumen_expandido ul.ui-tabs-nav li {
@@ -1212,44 +1222,26 @@ form.busqueda-form-comportamiento-mediatico #resumen #contenido div#resumen_nota
 	border-radius: 0;
 }
 
-.page-comportamiento-mediatico #tabs_resumen_expandido ul li#tema.ui-state-active,
-.page-comportamiento-mediatico #tabs_resumen_expandido ul li#tema:hover {
-	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio-active.png");
-	width: 141px;
-}
-
-.page-comportamiento-mediatico #tabs_resumen_expandido ul li#tema {
-	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio.png");
-	width: 141px;
-}
-
-.page-comportamiento-mediatico #tabs_resumen_expandido ul li#matriz.ui-state-active,
-.page-comportamiento-mediatico #tabs_resumen_expandido ul li#matriz:hover {
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#tendencia_nota.ui-state-active,
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#tendencia_nota:hover {
 	background-image: url("/sites/all/themes/segana/images/graficos-tab-matriz-active.png");
 	width: 147px;
 }
-.page-comportamiento-mediatico #tabs_resumen_expandido ul li#matriz {
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#tendencia_nota {
 	background-image: url("/sites/all/themes/segana/images/graficos-tab-matriz.png");
 	width: 147px;
 }
 
-.page-comportamiento-mediatico #tabs_resumen_expandido ul li#actor.ui-state-active,
-.page-comportamiento-mediatico #tabs_resumen_expandido ul li#actor:hover {
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#matriz.ui-state-active,
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#matriz:hover,
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#usuario.ui-state-active,
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#usuario:hover {
 	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio-active.png");
 	width: 141px;
 }
 
-.page-comportamiento-mediatico #tabs_resumen_expandido ul li#actor {
-	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio.png");
-	width: 141px;
-}
-
-.page-comportamiento-mediatico #tabs_resumen_expandido ul li#medio.ui-state-active,
-.page-comportamiento-mediatico #tabs_resumen_expandido #tabs_graficos ul li#medio:hover {
-	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio-active.png");
-	width: 141px;
-}
-.page-comportamiento-mediatico #tabs_resumen_expandido ul li#medio {
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#matriz,
+.page-comportamiento-mediatico #tabs_resumen_expandido ul li#usuario {
 	background-image: url("/sites/all/themes/segana/images/graficos-tab-medio.png");
 	width: 141px;
 }

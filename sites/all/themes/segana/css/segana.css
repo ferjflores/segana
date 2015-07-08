@@ -45,10 +45,10 @@ input::-moz-focus-inner {
 }
 
 #content {
-	width: 874px;
+	width: 874px !important;
 	margin-top: 28px;
 }
-#page #navigation {
+#page .region-navigation {
 	height: 28px;
 	background-image: url("../images/menu-fondo.png");
 }
@@ -72,6 +72,17 @@ h1.page__title {
 	width: 735px;
 	line-height: 77px;
 	letter-spacing: -1px;
+}
+
+h1.page__title .titulo-nombre {
+	font-size: 20px;
+	text-overflow: ellipsis;
+	max-width: 586px;
+	display: inline-block;
+	max-height: 46px;
+	white-space: nowrap;
+	overflow: hidden;
+	color: lightgray;
 }
 
 #block-block-3 {
@@ -431,8 +442,6 @@ html.js input.throbbing {
 	position: fixed;
 	top: 50%;
 	left: 50%;
-	margin-top: ;
-	margin-left: ;
 }
  .ajax-progress-throbber {
 	width: 100%;
@@ -457,15 +466,21 @@ html.js input.throbbing {
   background: #292929;
   color: #F0F0F0;
   border-color: #6D6D6D;
-  padding: 5px 5px 4px 3px;
+  padding: 4px 4px 3px 3px;
   white-space: normal;
   line-height: 12px;
-  letter-spacing: -0.1px
+  letter-spacing: -0.4px
 }
 
 #autocomplete li.selected {
   background: rgb(107, 122, 132);;
   color: #F0F0F0;
+}
+
+#autocomplete li span {
+	font-size: 12px;
+	color: lightsalmon;
+	letter-spacing: -1px;
 }
 
 
@@ -502,6 +517,10 @@ html[xmlns] .clearfixsegana {
 	background: rgba(208, 216, 221, 0.5);
 	padding-right: 22px;
 }
+.inline-messages a {
+	color: red;
+}
+
 div.inline-messages:empty {
 	padding: 0;
 }
@@ -512,6 +531,11 @@ div.inline-messages:empty {
 	color: #E1E2E3 !important;
 	font-weight: bold;
 }
+
+.form-item input.error {
+	color: black !important;
+}
+
 
 .messages--error {
 	background-image: url("/sites/all/themes/segana/images/error.png") !important;
@@ -527,10 +551,64 @@ div.inline-messages:empty {
 
 .error a,
 .messages--error a {
-	color: white;
+	color: salmon;
+}
+
+div.error {
+	font-size: 16px;
+	text-transform: none;
 }
 
 input.error,
 input.messages--error {
 	background-color: #F6F7F7 !important;
+}
+
+
+.region-sidebar-second {
+	margin-top: 28px;
+}
+
+
+/* botones */ 
+
+#botones {
+	height: 32px;
+	background-color: #C6CACD;
+	position: relative;
+	/*float: left;*/
+	width: 859px;
+	padding-right: 15px;
+}
+
+#botones fieldset.form-wrapper {
+	background-color: #C6CACD;
+	margin: 0pt;
+	height: 32px;
+}
+
+#botones input[type="submit"] {
+	background-image: url("/sites/all/themes/segana/images/busqueda-boton.png");
+	color: white;
+	width: 124px;
+	font-family: ubuntu;
+	font-size: 11px;
+	font-style: italic;
+	font-weight: bold;
+	height: 25px;
+	margin-left: 2px;
+	margin-top: 4px;
+	padding-bottom: 2px;
+	background-color: transparent;
+	border: medium none;
+	float: right;
+}
+
+
+.messages, .messages--status, .messages--warning, .messages--error {
+	margin: 0 !important;
+}
+
+.page-node h1#page-title {
+    font-size: 20px;
 }

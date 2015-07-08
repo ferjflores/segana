@@ -1,0 +1,123 @@
+.page-edicion-variables div#fecha {
+	position: absolute;
+	background-image: url("/sites/all/themes/segana/images/fecha-fondo.png");
+	width: 348px;
+	height: 33px;
+	background-repeat: no-repeat;
+	top: 69px;
+	right: 303px;
+}
+
+
+.page-edicion-variables div#fecha legend {
+	float: left;
+	color: white;
+	margin: 6px 0pt 0pt 8px;
+}
+
+.page-edicion-variables .container-inline-date {
+	float: left;
+	clear: none;
+	position: relative;
+	left: 0pt;
+	display: block;
+	width: 141px;
+	margin: 0pt;
+}
+
+.page-edicion-variables .form-item-fecha-desde {
+	border-right: 1px solid white;
+}
+.page-edicion-variables .form-item-fecha-desde label[for^=edit-fecha-desde],
+.page-edicion-variables .form-item-fecha-hasta label[for^=edit-fecha-hasta] {
+	color: white;
+	float: left;
+	font-size: 12px;
+	font-style: italic;
+	text-transform: none;
+	margin-right: 5px;
+}
+.page-edicion-variables .form-item-fecha-hasta label[for^=edit-fecha-hasta] {
+	margin-left: 9px;
+}
+.page-edicion-variables  .form-item-fecha-desde,
+.page-edicion-variables  .form-item-fecha-hasta {
+	width: 139px;
+	margin: 6px 8px 8px;
+	height: 19px;
+}
+
+.page-edicion-variables .container-inline-date div.date-padding,
+.page-edicion-variables .container-inline-date div.date-padding div.form-item {
+	width: 74px;
+	padding: 0;
+}
+
+.page-edicion-variables div.date-padding label[for^=edit-fecha] {
+	display: none;
+}
+
+.page-edicion-variables .container-inline-date .description {
+	display: none;
+}
+
+.page-edicion-variables div.date-padding input[id^=edit-fecha] {
+	float: left;
+	color: white;
+	font-size: 14px;
+	background-color: transparent;
+	border: medium none;
+	width: 75px;
+	margin-top: 3px;
+}
+
+.page-edicion-variables legend,
+.page-edicion-variables fieldset ,
+.page-edicion-variables label {
+	font-family: ubuntu;
+	font-weight: bold;
+	text-decoration: none;
+	clear: none;
+	color: #6B7A84;
+	text-transform: uppercase;
+	font-size: 12px;
+}
+
+.page-edicion-variables fieldset {
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+    -webkit-padding-before: 0;
+    -webkit-padding-start: 0;
+    -webkit-padding-end: 0;
+    -webkit-padding-after: 0;
+    border: medium none;
+    margin: 0pt;
+    padding: 0pt;
+}
+
+
+.page-edicion-variables div#contenedor {
+    width: 874px;
+}
+.page-edicion-variables #superior {
+	padding: 50px 24px 0pt 99px;
+	background-color: rgba(208, 216, 221, 0.5);
+}
+
+.page-edicion-variables #elemento {
+    display: inline-block;
+}
+
+.page-edicion-variables #borrar {
+    display: inline-block;
+    width: 19px;
+}
+
+.page-edicion-variables #borrar input {
+    margin-bottom: 40px;
+    margin-left: 8px;
+}
+
+.page-edicion-variables #borrar input.ultimo_boton {
+    margin-bottom: 0;
+}

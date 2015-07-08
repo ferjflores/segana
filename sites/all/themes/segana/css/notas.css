@@ -44,13 +44,11 @@ div.encabezado_notas {
 	position: relative;
 	top: 46px;
 	color: #505E67;
-	right: 19px;
 }
 
 .encabezado_notas-fecha-creacion {
-	width: 160px;
-	margin-right: 39px;
-	margin-left: 609px;
+	width: 90px;
+	margin-left: 510px;
 }
 
 .page-notas .views-exposed-form {
@@ -123,12 +121,12 @@ div.encabezado_notas {
 	display: inline-block;
 	vertical-align: top;
 	margin-right: 10px;
-	width: 563px;
+	width: 461px;
 }
 .page-notas .views-row span {
 	color: black;
 	font-family: ubuntu;
-	font-size: 14px;
+	font-size: 13px;
 }
 
 .page-notas .views-row a {
@@ -138,19 +136,25 @@ div.encabezado_notas {
 	font-weight: bold;
 	font-size: 14px;
 }
-.page-notas .views-row .views-field-nothing {
-	margin-right: 10px;
+.page-notas .views-row .views-field-nothing,
+.page-notas .views-row .views-field-php {
+	margin-right: 26px;
 	display: inline-block;
 }
 
+.page-notas .views-row .views-field-field-usuario-actualizacion {
+	display: inline-block;
+}
+
+
 .page-notas .views-row .views-field-nothing .fecha_creacion,
-.page-notas .views-row .views-field-nothing .fecha_actualizacion {
+.page-notas .views-row .views-field-field-usuario-actualizacion .fecha_actualizacion {
 	width: 81px;
 }
 
 .page-notas .views-row .views-field-nothing .usuario,
-.page-notas .views-row .views-field-nothing .usuario {
-	width: 162px;
+.page-notas .views-row .views-field-field-usuario-actualizacion .usuario {
+	width: 116px;
 	font-size: 13px;
 	letter-spacing: -0.5px;
 	text-overflow: ellipsis;
@@ -242,9 +246,47 @@ div.encabezado_notas {
 	margin-bottom: 5px;
 }
 
+.page-notas #edit-field-medio-tid-wrapper {
+	position: absolute;
+	right: 210px;
+	width: 296px;
+}
+.page-notas #edit-field-medio-tid-wrapper .chosen-container {
+	width: 245px !important;
+	float: right;
+}
+
+.page-notas #edit-field-medio-tid-wrapper label {
+	float: left;
+	position: initial;
+}
+.page-notas #edit-field-fecha-value-wrapper {
+	position: absolute;
+	right: 510px;
+	width: 183px;
+}
+
+.page-notas #edit-field-fecha-value-wrapper input {
+    width: 115px;
+    padding-left: 11px;
+    border: 1px solid #E2E6E9;
+    border-radius: 4px 4px 4px 4px;
+    background-color: #F4F5F7;
+}
+.page-notas #edit-field-fecha-value-wrapper .container-inline-date {
+    clear: none;
+}
+
+.page-notas #edit-field-fecha-value-wrapper label {
+    position: initial;
+    margin-right: 10px;
+}
+
+
 .page-notas #edit-actor-wrapper,
 .page-notas #edit-area-wrapper,
 .page-notas #edit-tema-wrapper,
-.page-notas #edit-matriz-wrapper {
+.page-notas #edit-matriz-wrapper,
+.page-notas #edit-medio-wrapper {
 	display: none;
 }

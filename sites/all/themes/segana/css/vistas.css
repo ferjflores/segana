@@ -13,6 +13,7 @@
 
 #vista_notas #cuerpo_texto {
 	font-size: 14px;
+    white-space: pre-line;
 }
 
 #vista_notas #fecha_medio {
@@ -121,13 +122,16 @@
 	margin: 0;
 }
 
+
+
 .vistas-nota-form div#contenedor,
 .vistas-discursivo-form div#contenedor {
 	width: 874px;
 }
 
 .vistas-nota-form fieldset,
-.vistas-discursivo-form fieldset {
+.vistas-discursivo-form fieldset,
+.vistas_medio_admin_form fieldset {
 	border: medium none !important;;
 	margin: 0pt;
 	padding: 0pt;
@@ -158,6 +162,10 @@
 	font-weight: bold;
 	color: #737E86;
 }
+.vistas-discursivo-form .form-type-radio label {
+	vertical-align: top;
+}
+
 .vistas-nota-form #superior fieldset {
 	border-bottom: 1px solid #8F999F;
 	padding-bottom: 5px;
@@ -189,7 +197,7 @@
 	font-family: segan;
 	font-size: 13px;
 	padding-left: 3px;
-	width: 74px;
+	width: 78px;
 }
 .vistas-nota-form .form-item-title label {
 	font-size: 17px;
@@ -201,6 +209,27 @@
 .vistas-discursivo-form input {
 	border-radius: 5px 5px 5px 5px;
 	height: 23px;
+	font-family: ubuntu;
+	background-color: #F6F7F7;
+	border: 1px solid #C7CCCE;
+	font-size: 13px;
+	padding: 3px;
+}
+
+/*.vistas-nota-form #inferior #elementos_discursivos input:focus {
+	position: absolute;
+	width: 752px;
+	border: 21px solid #C7CCCE;
+	height: 61px;
+	left: 76px;
+	right: 0;
+	margin: auto;
+	outline: none;
+	top: -117px;
+}*/
+
+.vistas-nota-form .chosen-container-multi .chosen-choices {
+	border-radius: 5px 5px 5px 5px;
 	font-family: ubuntu;
 	background-color: #F6F7F7;
 	border: 1px solid #C7CCCE;
@@ -254,7 +283,7 @@
 	border: 1px solid #C7CCCE;
 	font-family: ubuntu;
 	font-size: 14px;
-	height: 103px;
+	/*height: 103px;*/
 	resize: none;
 	width: 560px;
 	border-radius: 5px 5px 5px 5px;
@@ -268,11 +297,16 @@
 }
 
 .vistas-nota-form #medio-izquierda {
-	margin-left: 35px;
+	margin-left: 34px;
+}
+
+.vistas-nota-form #medio .form-item-body,
+.vistas-nota-form #medio .form-item-sumario {
+	width: 559px;
 }
 
 .vistas-nota-form #medio .form-item-body textarea {
-	height: 382px;
+	height: 472px;
 	width: 559px;
 }
 
@@ -343,6 +377,7 @@
 	padding: 0pt 23px 0pt 99px;
 	width: 752px;
 	border-bottom: 11px solid #EDEEEF;
+	position: relative;
 }
 
 .vistas-nota-form #tendencia_nota {
@@ -457,7 +492,7 @@
 	background-color: #C6CACD;
 	position: relative;
 	float: left;
-	width: 874px;
+	padding: 0;
 }
 
 .vistas-nota-form #botones fieldset.form-wrapper,
@@ -486,6 +521,10 @@
 }
 .vistas-nota-form #elementos_discursivos {
 	float: left;
+}
+
+.vistas-nota-form .chosen-container-multi {
+	width: 157px !important;
 }
 
 .vistas-discursivo-form .form-item {
@@ -527,7 +566,8 @@
 
 .vistas-discursivo-form .rol,
 .vistas-discursivo-form .description,
-.vistas-discursivo-form .fusionar {
+.vistas-discursivo-form .fusionar,
+.vistas-discursivo-form #opciones-admin {
 	padding: 30px 24px 30px 99px;
 }
 
@@ -577,4 +617,88 @@ html.js .vistas-discursivo-form input.throbbing {
 
 .vistas-discursivo-form #notas_asociadas a {
 	color: black;
+}
+
+.vistas-discursivo-form .campos_adicionales {
+	padding-left: 99px;
+	margin-bottom: 12px;
+}
+h1.title .notas-asignadas {
+	font-size: 19px;
+	margin-left: 14px;
+	color: lightcoral;
+}
+
+.vistas-discursivo-form .form-item .description {
+	padding: 0;
+}
+
+.page-medio-contenido #content,
+.page-medio-seccion #content {
+    width: 687px !important;
+    max-width: 687px !important;
+    margin: 0 !important;
+}
+
+.page-medio-contenido #navigation,
+.page-medio-seccion #navigation {
+    display: none;
+}
+
+.vistas_medio_admin_form {
+	font-family: ubuntu, sans-serif;
+	font-size: 13px;
+}
+
+.vistas_medio_admin_form ul {
+	font-family: verdana, arial, helvetica, sans-serif;
+	margin: 0;
+}
+.vistas_medio_admin_form ul li{
+	line-height: 13px;
+}
+
+.vistas_medio_admin_form .form-item {
+	margin: 3px 0;
+}
+.vistas_medio_admin_form label {
+    font-size: 13px;
+    line-height: 14px;
+}
+
+.vistas_medio_admin_form .description {
+    font-size: 10px !important;
+    line-height: 12px;
+    font-family: monospace;
+}
+
+.vistas_medio_admin_form iframe {
+    width: 683px;
+    height: 1000px;
+}
+.vistas_medio_admin_form input[id^=edit-superior-probar],
+.vistas_medio_admin_form input[id^=edit-superior-elementos-probar],
+.vistas_medio_admin_form input[id^=edit-superior-elementos-seccion-probar] {
+    float: right;
+    margin-top: 20px;
+}
+
+.vistas_medio_admin_form .form-type-textfield {
+    float: left;
+    width: 537px;
+    font-size: 15px;
+    line-height: 14px;
+}
+
+.vistas_medio_admin_form .form-type-textfield input{
+    font-family: monospace;
+}
+
+.vistas_medio_admin_form #resultado {
+    max-width: 683px;
+}
+
+
+.vistas-discursivo-form #opciones-admin textarea {
+    width: 700px;
 }

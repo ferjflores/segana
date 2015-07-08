@@ -130,3 +130,22 @@
 	height: 49px;
 	width: 6px;
 }
+
+.page-alertas  .views-row span.field-content div.ver-editar {
+	display: block;
+	height: 24px;
+}
+
+.page-alertas  .views-row div.ver-editar a {
+	display: none;
+}
+.page-alertas  .views-row:hover div.ver-editar a {
+    display: block;
+    float: left;
+    font-family: ubuntu;
+    font-style: italic;
+    color: #AAB6BE;
+    font-size: 13px;
+    font-weight: normal;
+    margin-right: 10px;
+}
