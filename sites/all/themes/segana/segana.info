@@ -59,7 +59,12 @@ stylesheets[all][] = css/elementos_discursivos.css
 stylesheets[all][] = css/comportamiento_mediatico.css
 stylesheets[all][] = css/vistas.css
 stylesheets[all][] = css/agenda_informativa.css
+stylesheets[all][] = css/tematica.css
+stylesheets[all][] = css/variables.css
 stylesheets[all][] = css/styles.css
+stylesheets[all][] = css/edicion_variables.css
+stylesheets[all][] = css/distribucion_notas.css
+stylesheets[all][] = css/notas_asignadas.css
 
 ; Built-in conditional stylesheet support has been removed from Zen 7.x-5.x.
 ; Instead, Zen now adds conditional-comment-included classes to the html
