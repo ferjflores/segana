@@ -1,0 +1,317 @@
+<?php
+function edicion_variables_menu() {
+  $items = array();
+
+  $items['edicion_variables'] = array(
+    'title' => 'Edición de variables',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('edicion_variables_form'),
+    'access arguments' => array('acceso edicion variables'),
+    'weight' => 0,
+  );
+  return $items;
+}
+
+function edicion_variables_form($form, &$form_state) {
+  $form = array();
+
+  $form["wrapper"] = array("#markup" => "<div class='inline-messages'></div>");
+
+  $form['fecha'] = array(
+    '#type' => 'fieldset',
+    '#prefix' => '<div id="fecha">',
+    '#suffix' => '</div>',
+  );
+  if ($form_state['values']['seleccionar_fecha']) {
+    $form['fecha']['#title'] = 'FECHA';
+
+    $rango_ano_inicio = 2008 - date('Y');
+    $form['fecha']['fecha_desde'] = array(
+      '#type' => 'date_popup',
+      '#title' => t('desde el'),
+      '#attributes' => array('autocomplete' =>'off'),
+      '#date_format' => 'd-m-Y',
+      '#date_year_range' => "$rango_ano_inicio:+0",
+      '#size' => 6,
+      '#default_value' => isset($form_state['values']['fecha_desde']) ? $form_state['values']['fecha_desde'] : (isset($fecha_desde) ? date('Y-m-d', $fecha_desde) : 0),
+      '#ajax' => array(
+        'event' => 'change',
+        'callback' => 'form_ediccion_variables_fecha_callback',
+        'wrapper' => 'contenedor',
+        'progress' => array('type' => 'none'),
+        'effect' => 'none',
+      ),
+    );
+    $form['fecha']['fecha_hasta'] = array(
+      '#type' => 'date_popup',
+      '#title' => t('hasta el'),
+      '#attributes' => array('autocomplete' =>'off'),
+      '#date_format' => 'd-m-Y',
+      '#default_value' => isset($form_state['values']['fecha_hasta']) ? $form_state['values']['fecha_hasta'] : (isset($fecha_hasta) ? date('Y-m-d', $fecha_hasta) : 0),
+      '#date_year_range' => "$rango_ano_inicio:+0",
+      '#size' => 6,
+      '#ajax' => array(
+        'event' => 'change',
+        'callback' => 'form_ediccion_variables_fecha_callback',
+        'wrapper' => 'contenedor',
+        'progress' => array('type' => 'none'),
+        'effect' => 'none',
+      ),
+    );
+  }
+
+
+  $form['contenedor'] = array(
+    '#type' => 'fieldset',
+    '#prefix' => '<div id="contenedor">',
+    '#suffix' => '</div>',
+  );
+  $form['contenedor']['superior'] = array(
+    '#type' => 'fieldset',
+    '#prefix' => '<div id="superior">',
+    '#suffix' => '</div>',
+  );
+  $tipo_elemento = array('area' => 'Área', 'tema' => 'Tema', 'matriz' => 'Matriz', 'actor' => 'Actor');
+  $form['contenedor']['superior']['tipo_elemento'] = array(
+    '#type' => 'select',
+    '#title' => t('Tipo de elemento'),
+    //'#default_value' => $tipo_localizacion_opcion,
+    '#options' => $tipo_elemento,
+    '#ajax' => array(
+      'callback' => 'form_ediccion_variables_tipo_elemento_callback',
+      'wrapper' => 'contenedor',
+      'progress' => array('type' => 'throbber'),
+      'effect' => 'fade',
+    ),
+    '#empty_option' => 'Seleccionar',
+  );
+
+  $form['contenedor']['superior']['seleccionar_fecha'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Seleccionar por fecha'),
+    //'#default_value' => $tipo_localizacion_opcion,
+    '#ajax' => array(
+      'callback' => 'form_ediccion_variables_seleccionar_fecha_callback',
+      'wrapper' => 'fecha',
+      'progress' => array('type' => 'throbber'),
+      'effect' => 'fade',
+    ),
+  );
+
+  if (isset($form_state['cantidad_elementos']) && $form_state['triggering_element']['#name'] == 'tipo_elemento') {
+    unset($form_state['values']['elemento']);
+    unset($form_state['input']['elemento']);
+    unset($form_state['cantidad_elementos']);
+    unset($form_state['values']['elemento_reemplazar']);
+    unset($form_state['input']['elemento_reemplazar']);
+  }
+
+  if (!empty($form_state['values']['tipo_elemento'])) {
+    if (empty($form_state['cantidad_elementos'])) {
+      $form_state['cantidad_elementos'] = 1;
+    }
+
+    $form['contenedor']['superior']['elementos'] = array(
+      '#type' => 'fieldset',
+      '#title' => 'Elementos a reemplazar',
+      '#prefix' => '<div id="elementos">',
+      '#suffix' => '</div>',
+    );
+    $form['contenedor']['superior']['elementos']['elemento'] = array(
+      '#type' => 'fieldset',
+      '#prefix' => '<div id="elemento">',
+      '#suffix' => '</div>',
+      '#tree' => TRUE,
+    );
+    $form['contenedor']['superior']['elementos']['borrar'] = array(
+      '#type' => 'fieldset',
+      '#prefix' => '<div id="borrar">',
+      '#suffix' => '</div>',
+    );
+    //$fecha_desde = (!empty($form_state['values']['fecha_desde'])
+    for ($i = 0; $i < $form_state['cantidad_elementos']; $i++) {
+      $form['contenedor']['superior']["elementos"]['elemento'][$i] = array(
+        '#type' => 'textfield',
+        '#title' => ucfirst($form_state['values']['tipo_elemento']) . ' ' . ($i+1) .':',
+        '#attributes' => array('autocomplete' =>'off'),
+        '#size' => 20,
+        '#maxlength' => 255,
+        '#default_value' => isset($form_state['values']['elemento'][$i]) ? $form_state['values']['elemento'][$i] : NULL,
+        '#autocomplete_path' => 'notas/autocomplete/'. $form_state['values']['tipo_elemento'] .'/0/0',
+        '#required' => TRUE,
+      );
+      $form['contenedor']['superior']["elementos"]['borrar'][$i] = array(
+        '#type' => 'image_button',
+        '#description' => 'Borrar elemento ' .$i,
+        '#name' => "borrar_elemento_$i",
+        '#src' => 'sites/all/themes/segana/images/delete.png',
+        '#return_value' => $i,
+        '#ajax' => array(
+          'event' => 'click',
+          'callback' => 'form_ediccion_variables_agregar_elemento_callback',
+          'wrapper' => 'elementos',
+          'method' => 'replace',
+          'effect' => 'fade',
+          'progress' => array('type' => 'none'),
+        ),
+        '#limit_validation_errors' => array(array('tipo_elemento')),
+        '#submit' => array('edicion_variables_borrar_elemento'),
+      );
+      if (($i+1) == $form_state['cantidad_elementos']) {
+        $form['contenedor']['superior']["elementos"]['borrar'][$i]['#attributes'] = array('class' => array('ultimo_boton'));
+      }
+    }
+    $form['contenedor']['superior']['agregar_elemento'] = array(
+      '#type' => 'image_button',
+      '#description' => 'Agregar otro elemento',
+      '#name' => 'agregar_tema',
+      '#src' => 'sites/all/themes/segana/images/add.png',
+      '#return_value' => 'agregar_elemento',
+      '#prefix' => '<div id="agregar_elemento">Agregar otro elemento',
+      '#suffix' => '</div>',
+      '#ajax' => array(
+        'event' => 'click',
+        'callback' => 'form_ediccion_variables_agregar_elemento_callback',
+        'wrapper' => 'elementos',
+        'method' => 'replace',
+        'effect' => 'fade',
+        'progress' => array('type' => 'none'),
+      ),
+      '#limit_validation_errors' => array(array('tipo_elemento')),
+      '#submit' => array('edicion_variables_agregar_elemento'),
+    );
+    $form['contenedor']['superior']['elemento_reemplazar'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Reemplazar por ' . $form_state['values']['tipo_elemento'] .':',
+      '#attributes' => array('autocomplete' =>'off'),
+      '#size' => 20,
+      '#maxlength' => 255,
+      '#autocomplete_path' => 'notas/autocomplete/'. $form_state['values']['tipo_elemento'] .'/0/0',
+      '#required' => TRUE,
+    );
+
+    $form['contenedor']['botones'] = array(
+      '#type' => 'fieldset',
+      '#prefix' => '<div id="botones">',
+      '#suffix' => '</div>',
+    );
+
+    $form['contenedor']['botones']['reset'] = array(
+      '#type' => 'submit',
+      '#value' => t('Reset'),
+      '#name' => t('Reset'),
+      '#limit_validation_errors' => array(),
+      '#submit' => array('edicion_variables_form_submit'),
+    );
+
+    $form['contenedor']['botones']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Ejecutar'),
+      '#name' => t('Ejecutar'),
+      '#submit' => array('edicion_variables_form_submit'),
+      '#ajax' => array(
+        'event' => 'click',
+        'callback' => 'forma_edicion_variables_submit_callback',
+        'wrapper' => 'formwrapper',
+        'method' => 'replace',
+        'effect' => 'fade',
+        'progress' => array('type' => 'throbber'),
+        //'prevent' => 'submit click mousedown',
+      ),
+    );
+  }
+
+  $form['#prefix'] = '<div id="formwrapper">';
+  $form['#suffix'] = '</div>';
+
+  return $form;
+}
+
+
+function edicion_variables_form_submit($form, &$form_state) {
+  $pressed_button = check_plain($form_state['triggering_element']['#value']);
+  switch ($pressed_button) {
+    case 'Reiniciar':
+      for ($i = 0; $i < $form_state['cantidad_elementos']; $i++) {
+        unset($form_state['values']['elemento'][$i]);
+      }
+      unset($form_state['cantidad_elementos']);
+      $form_state['rebuild'] = TRUE;
+      break;
+    case 'Ejecutar':
+      $tid_reemplazo = key(buscar_termino($form_state['values']['elemento_reemplazar'], $form_state['values']['tipo_elemento']));
+      $fecha_desde = $form_state['values']['fecha_desde'];
+      $fecha_hasta = $form_state['values']['fecha_hasta'];
+
+      $tids = array();
+      for ($i = 0; $i < $form_state['cantidad_elementos']; $i++) {
+        $tid = key(buscar_termino($form_state['values']['elemento'][$i], $form_state['values']['tipo_elemento']));
+        $tids[] = $tid;
+      }
+
+      $fusion = fusionar_elementos($form_state['values']['tipo_elemento'], $tids, $tid_reemplazo, $fecha_desde, $fecha_hasta);
+      drupal_set_message("Se alteraron " . $fusion['cantidad_notas'] . " notas");
+      drupal_set_message("Se alteraron " . $fusion['filas_discursivas'] . " filas discursivas");
+      $form_state['rebuild'] = TRUE;
+      break;
+  }
+}
+
+
+function edicion_variables_form_validate($form, &$form_state) {
+  if ($form_state['triggering_element']['#value'] == 'Ejecutar') {
+    for ($i = 0; $i < $form_state['cantidad_elementos']; $i++) {
+      $tid = buscar_termino($form_state['values']['elemento'][$i], $form_state['values']['tipo_elemento']);
+      if (empty($tid)) {
+        form_set_error("elemento][$i", "El valor '" . $form_state['values']['elemento'][$i] . "' es invalido para el campo " . $form['contenedor']['superior']['elementos']['elemento'][$i]['#title']);
+      }
+    }
+    //validar reemplazar por tema
+    $tid = buscar_termino($form_state['values']['elemento_reemplazar'], $form_state['values']['tipo_elemento']);
+    if (empty($tid)) {
+      form_set_error("elemento_reemplazar", "El valor '" . $form_state['values']['elemento_reemplazar'] . "' es invalido para el campo " . $form['contenedor']['superior']['elemento_reemplazar']['#title']);
+    }
+  }
+}
+
+function forma_edicion_variables_submit_callback($form, &$form_state) {
+  $messages = theme('status_messages');
+  if($messages){
+    $form["wrapper"] = array("#markup" => "<div class='inline-messages'>$messages</div>");
+  }
+  return $form;
+}
+
+function form_ediccion_variables_tipo_elemento_callback($form, &$form_state) {
+  return $form['contenedor'];
+}
+
+function form_ediccion_variables_seleccionar_fecha_callback($form, &$form_state) {
+  return $form['fecha'];
+}
+
+function form_ediccion_variables_fecha_callback($form, &$form_state) {
+  return $form['contenedor'];
+}
+
+function form_ediccion_variables_agregar_elemento_callback($form, $form_state) {
+  return $form['contenedor']['superior']['elementos'];
+}
+
+function edicion_variables_agregar_elemento($form, &$form_state) {
+  $form_state['cantidad_elementos']++;
+  $form_state['rebuild'] = TRUE;
+}
+
+function edicion_variables_borrar_elemento($form, &$form_state) {
+  if ($form_state['cantidad_elementos'] > 1) {
+    $form_state['cantidad_elementos']--;
+  }
+  $elemento = $form_state['triggering_element']['#return_value'];
+  unset($form_state['input']['elemento'][$elemento]);
+  $form_state['input']['elemento'] = array_values($form_state['input']['elemento']);
+  unset($form_state['values']['elemento'][$elemento]);
+  $form_state['input']['values'] = array_values($form_state['values']['elemento']);
+  $form_state['rebuild'] = TRUE;
+}
+
