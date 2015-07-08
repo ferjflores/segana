@@ -2,6 +2,8 @@
 
 module_load_include('inc', 'informe', 'informe.entity');
 module_load_include('inc', 'informe', 'informe.agenda_informativa');
+module_load_include('inc', 'informe', 'informe.tematica');
+module_load_include('inc', 'informe', 'informe.block');
 
 
 /**
@@ -9,8 +11,15 @@ module_load_include('inc', 'informe', 'informe.agenda_informativa');
  */
 function informe_menu() {
   $items = array();
+  $items['agenda_informativa'] = array(
+    'title' => t('Agenda Informativa'),
+    'page callback' => 'agenda_informativa',
+    'access arguments' => array('access content'),
+    'description' => t('Agenda Informativa'),
+    'type' => MENU_CALLBACK,
+  );
 
-  $items['agenda_informativa/%informe'] = array(
+  $items['agenda_informativa/%'] = array(
     'title' => t('Agenda Informativa'),
     'page callback' => 'agenda_informativa',
     'page arguments' => array(1),
@@ -18,13 +27,57 @@ function informe_menu() {
     'description' => t('Agenda Informativa'),
     'type' => MENU_CALLBACK,
   );
-  $items['agenda_mediatica'] = array(
-    'page callback' => 'agenda_mediatica',
+  $items['agenda_informativa/preview/%'] = array(
+    //'title' => t('Agenda Informativa'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('informe_agenda_informativa_preview_form', 2),
     'access arguments' => array('access content'),
-    'description' => t('Agenda Mediática'),
+    'description' => t('Agenda Informativa'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['agenda_informativa/export/%'] = array(
+    //'title' => t('Agenda Informativa'),
+    'page callback' => 'informe_agenda_informativa_export',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'file' => 'informe.agenda_informativa_export.inc',
+    'description' => t('Agenda Informativa'),
     'type' => MENU_CALLBACK,
   );
 
+ $items['tematica'] = array(
+    'title' => t('Temática'),
+    'page callback' => 'tematica',
+    'access arguments' => array('access content'),
+    'description' => t('Temática'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['tematica/%'] = array(
+    'title' => t('Tematica'),
+    'page callback' => 'tematica',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'description' => t('Temática'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['tematica/preview/%'] = array(
+    //'title' => t('Agenda Informativa'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('informe_tematica_preview_form', 2),
+    'access arguments' => array('access content'),
+    'description' => t('Temática'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['tematica/export/%'] = array(
+    //'title' => t('Agenda Informativa'),
+    'page callback' => 'informe_tematica_export',
+    'page arguments' => array(2),
+    'access arguments' => array('access content'),
+    'file' => 'informe.tematica_export.inc',
+    'description' => t('Temática'),
+    'type' => MENU_CALLBACK,
+  );
 
   $items['informe/add'] = array(
     'title' => 'Add informe',
@@ -97,7 +150,6 @@ function informe_menu() {
     'type' => MENU_NORMAL_ITEM,
     'file' => 'informe.admin.inc',
   );
-
   return $items;
 }
 
@@ -107,11 +159,24 @@ function agenda_informativa($iid = NULL) {
   $hash = generateHash();
   $output = drupal_get_form('informe_agenda_informativa_form' .'_'. $hash, $iid, $hash);
   return $output;
-
-
 }
 
+function tematica($iid = NULL) {
+  //drupal_add_js(drupal_get_path('module', 'informe') . '/js/agenda_informativa.js', array('weight' => 20));
+  $hash = generateHash();
+  $output = drupal_get_form('informe_tematica_form' .'_'. $hash, $iid, $hash);
+  return $output;
+}
 
+function informe_page_alter(&$page) {
+  if (strpos(current_path(),'agenda_informativa/preview/') === 0) { 
+    foreach ($page as $key => $value) {
+      if ( (strpos($key, '#') !== 0) && ($key != 'content')){
+        unset($page[$key]);
+      }
+    }
+  }
+} 
 
 function informe_forms($form_id) {
   $forms = array();
@@ -120,35 +185,78 @@ function informe_forms($form_id) {
       'callback' => 'informe_agenda_informativa_form',
     );
   }
-  if (strpos($form_id, 'informe_agenda_mediatica_form_') === 0) {
+  if (strpos($form_id, 'informe_tematica_form_') === 0) {
     $forms[$form_id] = array(
-      'callback' => 'informe_agenda_mediatica_form',
+      'callback' => 'informe_tematica_form',
     );
   }
   return $forms;
 }
 
 function informe_form_alter(&$form, $form_state, $form_id) {
-    if (strpos($form_id, 'informe_agenda_informativa_form') === 0) {
+  if (strpos($form_id, 'informe_agenda_informativa_form') === 0) {
         $form['#attributes'] = array('class' => 'agenda-informativa informe-form');
   }
-    if (strpos($form_id, 'informe_agenda_mediatica_form') === 0) {
-        $form['#attributes'] = array('class' => 'agenda-mediatica informe-form');
+  if (strpos($form_id, 'informe_tematica_form') === 0) {
+        $form['#attributes'] = array('class' => 'tematica informe-form');
   }
   //$form['#attached']['js'][] = drupal_get_path('module', 'informe') . '/js/disable_show_row_weights.js';
 }
 
 
 
-function informe_theme() {
+function informe_theme($existing, $type, $theme, $path) {
   return array(
     'tabledrag_notas' => array(
       'render element' => 'element'
     ),
+    'tabledrag_orden_temas' => array(
+      'render element' => 'element'
+    ),
+    'tabledrag_temas' => array(
+      'render element' => 'element'
+    ),
+    'tabledrag_notas_tematica' => array(
+      'render element' => 'element'
+    ),
+    'indentation_agenda_informativa' => array(
+      'variables' => array('size' => 1, 'hidden' => NULL),
+    ),
+
   );
 }
 
 
+
+function theme_indentation_agenda_informativa($variables) {
+  $output = '';
+  switch ($variables['size']) {
+    case 0:
+      $tipo_noticia = 'GUIA';
+      break;
+    case 1:
+      $tipo_noticia = 'SUBNOTICIA';
+      break;
+    case 2:
+      $tipo_noticia = 'PUBLICADO TAMBIÉN EN';
+      break;
+  }
+  $tipo_noticia = theme('html_tag', array(
+    'element' => array(
+      '#tag' => 'div',
+      '#attributes' => array(
+        'class' => 'tipo_noticia',
+        ),
+      '#value' => !($variables['hidden']) ? $tipo_noticia : '',
+    ),
+  ));
+  $output .= $tipo_noticia;
+  
+  for ($n = 0; $n < $variables['size']; $n++) {
+    $output .= '<div class="indentation">&nbsp;</div>';
+  }
+  return $output;
+}
 
 
 

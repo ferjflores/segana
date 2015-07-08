@@ -38,9 +38,22 @@ class InformeController extends EntityAPIController {
 
     return parent::buildContent($entity, $view_mode, $langcode, $content);
   }
+
+  /**
+  * Override the save method.
+  */
+
+  public function save($entity, DatabaseTransaction $transaction = NULL) {
+   if (isset($entity->is_new)) {
+     $entity->created = REQUEST_TIME;
+   }
+   $entity->changed = REQUEST_TIME;
+   return parent::save($entity, $transaction);
+  }
+
 }
 
- class InformeTypeController extends EntityAPIControllerExportable {
+class InformeTypeController extends EntityAPIControllerExportable {
    public function create(array $values = array()) {
     $values += array(
       'label' => '',

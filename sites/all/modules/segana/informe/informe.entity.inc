@@ -135,8 +135,8 @@ function informe_access($op, $informe, $account = NULL, $entity_type = NULL) {
 /**
  * Load a informe.
  */
-function informe_load($iid, $reset = FALSE) {
-  $informes = informe_load_multiple(array($iid), array(), $reset);
+function informe_load($iid, $conditions = array(), $reset = FALSE) {
+  $informes = informe_load_multiple(array($iid), $conditions, $reset);
   return reset($informes);
 }
 
@@ -225,6 +225,5 @@ function informe_views_api() {
     'path' => drupal_get_path('module', 'informe'),
   );
 }
-
 
 ?>

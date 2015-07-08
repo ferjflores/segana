@@ -27,6 +27,7 @@ function hook_informe_load(array $entities) {
   }
 }
 
+
 /**
  * Responds when a $informe is inserted.
  *
@@ -254,4 +255,21 @@ function hook_default_informe_type() {
  */
 function hook_default_informe_type_alter(array &$defaults) {
   $defaults['main']->name = 'custom name';
+}
+
+
+/**
+ * Determines whether a informe hook exists.
+ * 
+ * @param $informe
+ *   A informe object or a string containing the informe type.
+ * @param $hook
+ *   A string containing the name of the hook.
+ * 
+ * @return
+ *   TRUE if the $hook exists in the informe type of $informe.
+ */
+function informe_hook($informe, $hook) {
+  $base = informe_type_get_base($informe);
+  return module_hook($base, $hook);
 }
