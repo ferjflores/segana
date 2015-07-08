@@ -73,11 +73,12 @@ function _charts_highcharts_populate_chart_options($chart, $chart_definition) {
   $chart_definition['title']['style']['fontSize'] = $chart['#title_font_size'];
   $chart_definition['title']['verticalAlign'] = $chart['#title_position'] === 'in' ? 'top' : NULL;
   $chart_definition['title']['y'] = $chart['#title_position'] === 'in' ? 24: NULL;
+  $chart_definition['title']['useHTML'] = isset($chart['#title_useHTML']) ? $chart['#title_useHTML'] : NULL;
   $chart_definition['subtitle']['text'] = isset($chart['#subtitle']) ? $chart['#subtitle'] : NULL;
   $chart_definition['subtitle']['style']['color'] = isset($chart['#subtitle_color']) ? $chart['#subtitle_color'] : NULL;
   $chart_definition['subtitle']['style']['fontWeight'] = isset($chart['#subtitle_font_weight']) ? $chart['#subtitle_font_weight'] : NULL;
   $chart_definition['subtitle']['style']['fontStyle'] = isset($chart['#subtitle_font_style']) ? $chart['#subtitle_font_style'] : NULL;
-  $chart_definition['subtitle']['style']['fontSize'] = isset($chart['#subtitle_font_size']) ? $chart['#subtitle_font_size'] : NULL;
+  $chart_definition['subtitle']['style']['fontSize'] = isset($chart['#subtitle_font_size']) ? $chart['#subtitle_font_size']: NULL;
   $chart_definition['subtitle']['verticalAlign'] = isset($chart['#subtitle_position']) && $chart['#subtitle_position'] === 'in' ? 'top' : NULL;
   $chart_definition['subtitle']['y'] = isset($chart['#subtitle_position']) && $chart['#subtitle_position'] === 'in' ? 24: NULL;
   $chart_definition['colors'] = $chart['#colors'];
@@ -117,13 +118,16 @@ function _charts_highcharts_populate_chart_options($chart, $chart_definition) {
   $chart_definition['legend']['title']['style']['fontSize'] = $chart['#legend_title_font_size'];
   $chart_definition['legend']['title']['style']['color'] = isset($chart['#legend_title_color']) ? $chart['#legend_title_color'] : NULL;
   $chart_definition['legend']['itemMarginBottom'] = isset($chart['#legend_itemMarginBottom']) ? $chart['#legend_itemMarginBottom'] : NULL;
+  $chart_definition['legend']['itemMarginTop'] = isset($chart['#legend_itemMarginTop']) ? $chart['#legend_itemMarginTop'] : NULL;
   $chart_definition['legend']['itemWidth'] = isset($chart['#legend_itemWidth']) ? $chart['#legend_itemWidth'] : NULL;
+  $chart_definition['legend']['padding'] = isset($chart['#legend_padding']) ? $chart['#legend_padding'] : NULL;
   $chart_definition['legend']['width'] = isset($chart['#legend_width']) ? $chart['#legend_width'] : NULL;
   $chart_definition['legend']['itemStyle'] = isset($chart['#legend_itemStyle']) ? $chart['#legend_itemStyle'] : NULL;
   $chart_definition['legend']['symbolRadius'] = isset($chart['#legend_symbolRadius']) ? $chart['#legend_symbolRadius'] : NULL;
   $chart_definition['legend']['symbolHeight'] = isset($chart['#legend_symbolHeight']) ? $chart['#legend_symbolHeight'] : NULL;
   $chart_definition['legend']['symbolWidth'] = isset($chart['#legend_symbolWidth']) ? $chart['#legend_symbolWidth'] : NULL;
   $chart_definition['legend']['symbolPadding'] = isset($chart['#legend_symbolPadding']) ? $chart['#legend_symbolPadding'] : NULL;
+  $chart_definition['legend']['useHTML'] = isset($chart['#legend_useHTML']) ? $chart['#legend_useHTML'] : NULL;
 
   if ($chart['#legend_position'] === 'bottom') {
     $chart_definition['legend']['verticalAlign'] = 'bottom';
@@ -138,13 +142,15 @@ function _charts_highcharts_populate_chart_options($chart, $chart_definition) {
     $chart_definition['legend']['verticalAlign'] = 'middle';
     $chart_definition['legend']['layout'] = 'vertical';
   }
-  $chart_definition['legend']['itemStyle']['fontWeight'] = $chart['#legend_font_weight'];
+  /*$chart_definition['legend']['itemStyle']['fontWeight'] = $chart['#legend_font_weight'];
   $chart_definition['legend']['itemStyle']['fontStyle'] = $chart['#legend_font_style'];
-  $chart_definition['legend']['itemStyle']['fontSize'] = $chart['#legend_font_size'];
+  $chart_definition['legend']['itemStyle']['fontSize'] = $chart['#legend_font_size'];*/
   $chart_definition['chart']['width'] = isset($chart['#width']) ? $chart['#width'] : NULL;
   $chart_definition['chart']['height'] = isset($chart['#height']) ? $chart['#height'] : NULL;
-  $chart_definition['chart']['zoomType'] = isset($chart['#zoomType']) ? $chart['#zoomType'] : NULL; 
+  $chart_definition['chart']['zoomType'] = isset($chart['#zoomType']) ? $chart['#zoomType'] : NULL;
   $chart_definition['credits']['enabled'] = FALSE;
+  $chart_definition['NoData'] = isset($chart['NoData']) ? '<span>No hay resultados para generar este gráfico</span>' : NULL;
+
   return $chart_definition;
 }
 
@@ -167,12 +173,14 @@ function _charts_highcharts_populate_chart_axes($chart, $chart_definition) {
       $axis['title']['style']['color'] = $chart[$key]['#title_color'];
       $axis['title']['style']['fontWeight'] = $chart[$key]['#title_font_weight'];
       $axis['title']['style']['fontStyle'] = $chart[$key]['#title_font_style'];
-      $axis['title']['style']['fontSize'] = $chart[$key]['#title_font_size'];
+      $axis['title']['style']['fontSize'] = $chart[$key]['#title_font_size'] .'px';
+      $axis['title']['useHTML'] = isset($chart[$key]['#title_useHTML']) ? $chart[$key]['#title_useHTML'] : NULL;
       $axis['categories'] = $chart[$key]['#labels'];
-      $axis['labels']['style']['color'] = $chart[$key]['#labels_color'];
+      $axis['labels']['style'] = $chart[$key]['#labels_style'];
+      /*$axis['labels']['style']['color'] = $chart[$key]['#labels_color'];
       $axis['labels']['style']['fontWeight'] = $chart[$key]['#labels_font_weight'];
-      $axis['labels']['style']['fontStyle'] = $chart[$key]['#labels_font_style'];
-      $axis['labels']['style']['fontSize'] = $chart[$key]['#labels_font_size'];
+      $axis['labels']['style']['fontStyle'] = $chart[$key]['#labels_font_style'];*/
+      $axis['labels']['style']['fontSize'] = $chart[$key]['#labels_style']['fontSize'];
       $axis['labels']['rotation'] = $chart[$key]['#labels_rotation'];
       $axis['labels']['staggerLines'] = isset($chart[$key]['#labels_staggerLines']) ? $chart[$key]['#labels_step'] : NULL;
       $axis['labels']['step'] = isset($chart[$key]['#labels_step']) ? $chart[$key]['#labels_step'] : NULL;

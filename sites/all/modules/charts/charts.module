@@ -395,7 +395,7 @@ function charts_cast_element_integer_values(&$element) {
   // Cast options to integers to avoid redundant library fixing problems.
   $integer_options = array(
     // Chart options.
-    '#title_font_size',
+    //'#title_font_size',
     '#font_size',
     '#legend_title_font_size',
     '#legend_font_size',
@@ -403,7 +403,7 @@ function charts_cast_element_integer_values(&$element) {
     '#height',
 
     // Axis options.
-    '#title_font_size',
+    //'#title_font_size',
     '#labels_font_size',
     '#labels_rotation',
     '#max',

@@ -29,7 +29,19 @@ Drupal.behaviors.chartsHighcharts.attach = function(context, settings) {
         decimalPoint: ',',
         thousandsSep: '.',
 		} });
-      $(this).highcharts(config);
+      //console.log(config);
+      $(this).highcharts(config/*,
+        function (chart) { // on complete
+          if (config.NoData) {
+            chart.renderer.text(config.NoData, 40, 150)
+                .css({
+                  color: 'black',
+                  fontSize: '18px'
+                })
+                .add();
+          }
+        }*/
+      );
     }
   });
 };
