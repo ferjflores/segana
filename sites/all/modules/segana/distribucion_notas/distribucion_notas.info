@@ -1,0 +1,8 @@
+name = Distribución de notas
+description = Herramientas y vistas relacionadas a la asignación de las notas a los analistas para analizar
+package = Segana modules
+core = 7.x
+
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "segana"

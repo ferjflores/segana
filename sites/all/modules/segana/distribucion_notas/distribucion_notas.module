@@ -1,0 +1,48 @@
+<?php
+function distribucion_notas_menu() {
+  $items = array();
+
+  $items['distribucion_notas'] = array(
+    'title' => 'Distribución de notas',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('distribucion_notas_form'),
+    'access arguments' => array('acceso distribucion notas'),
+    'weight' => 0,
+    //'file' => 'distribucion_notas.form.inc',
+  );
+  $items['distribucion_notas2'] = array(
+    'title' => 'Distribución de notas',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('distribucion_notas_form2'),
+    'access arguments' => array('acceso distribucion notas'),
+    'weight' => 0,
+    'file' => 'distribucion_notas.form2.inc',
+  );
+  $items['notas_asignadas'] = array(
+    'title' => 'Notas asignadas',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('distribucion_notas_form', 'NotasAsignadas'),
+    'access callback' => 'contenido_access',
+    'access arguments' => array('editar','nota'),
+    'weight' => 0,
+  );
+  return $items;
+}
+
+module_load_include('inc', 'distribucion_notas', 'distribucion_notas.form');
+
+function distribucion_notas_permission() {
+  return array(
+    'acceso distribucion notas' => array(
+      'title' => t('Acceso a la herramienta de distribución de notas'),
+    ),
+  );
+}
+
+function distribucion_notas_theme($existing, $type, $theme, $path) {
+  return array(
+    'tabla_notas' => array(
+      'render element' => 'element'
+    ),
+  );
+}
