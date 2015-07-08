@@ -110,6 +110,22 @@ function buscar_termino($elemento = NULL, $tipo = NULL) {
 	}
 }
 
+function buscar_termino_por_vid($elemento, $vid) {
+
+  $query = db_select('taxonomy_term_data', 'ttd')
+	->fields('ttd', array('name', 'tid'))
+	->condition(db_and()->condition('ttd.vid', $vid, '=')->condition('ttd.name', $elemento, '= BINARY'));
+
+  $resultado = $query->execute();
+  if ($row = $resultado->fetchObject()) {
+	$tid = $row->tid;
+	$name = $row->name;
+	return array($tid => $name);
+  }
+  else {
+	return NULL;
+  }
+}
 
 function lista_elementos($lista_elementos,$tipo){
 	if (!empty($lista_elementos)){

@@ -5,7 +5,7 @@ function autocomplete_busqueda_area($busqueda='') {
 	$tipo = 'area';
 
 	if (trim($busqueda)) {
-		$busqueda_elementos = str_word_count($busqueda, 2);
+		$busqueda_elementos = preg_split('/\s+/', $busqueda);
 		$matches = array();
 		$vocabulary = taxonomy_vocabulary_machine_name_load($tipo);
 		$vid = $vocabulary->vid;
@@ -27,7 +27,7 @@ function autocomplete_busqueda_tema($areas = NULL, $hash, $busqueda='') {
 	$matches = array();
 	$tipo = 'tema';
 	if (trim($busqueda)) {
-		$busqueda_elementos = str_word_count($busqueda, 2);
+		$busqueda_elementos = preg_split('/\s+/', $busqueda);
 		$vocabulary = taxonomy_vocabulary_machine_name_load($tipo);
 		$vid = $vocabulary->vid;
 
@@ -62,7 +62,7 @@ function autocomplete_busqueda_matriz($areas = NULL, $temas = NULL, $hash, $busq
 	$matches = array();
 	$tipo = 'matriz';
 	if (trim($busqueda)) {
-		$busqueda_elementos = str_word_count($busqueda, 2);
+		$busqueda_elementos = preg_split('/\s+/', $busqueda);
 		$vocabulary = taxonomy_vocabulary_machine_name_load($tipo);
 		$vid = $vocabulary->vid;
 
@@ -81,10 +81,6 @@ function autocomplete_busqueda_matriz($areas = NULL, $temas = NULL, $hash, $busq
 		}
 
 		foreach ($resultado as $term) {
-
-			// In the simplest case (see user_autocomplete), the key and the value are
-			// the same. Here we'll display the uid along with the username in the
-			// dropdown.
 			$matches[$term->name] = check_plain($term->name);
 		}
 	}
@@ -104,7 +100,7 @@ function autocomplete_busqueda_actor($areas = NULL, $temas = NULL, $matrices = N
 	$tipo = 'actor';
 
 	if (trim($busqueda)) {
-		$busqueda_elementos = str_word_count($busqueda, 2);
+		$busqueda_elementos = preg_split('/\s+/', $busqueda);
 		$vocabulary = taxonomy_vocabulary_machine_name_load($tipo);
 		$vid = $vocabulary->vid;
 
@@ -121,11 +117,14 @@ function autocomplete_busqueda_actor($areas = NULL, $temas = NULL, $matrices = N
 
 
 		foreach ($resultado as $term) {
+			if (!empty($term->field_rol_value)) {
+				$name = $name_rol = check_plain($term->name) . '  <span>[' . $term->field_rol_value . ']</span>';
+			}
+			else {
+				$name = check_plain($term->name);
+			}
 
-			// In the simplest case (see user_autocomplete), the key and the value are
-			// the same. Here we'll display the uid along with the username in the
-			// dropdown.
-			$matches[$term->name] = check_plain($term->name);
+			$matches[$term->name] =$name;
 		}
 	}
 	drupal_json_output($matches);
