@@ -1,0 +1,223 @@
+#!/usr/bin/env php
+<?php
+
+require_once 'vendor/autoload.php';
+
+use PicoFeed\Client\Grabber;
+use PicoFeed\Reader\Reader;
+use PicoFeed\Logging\Logger;
+use PicoFeed\PicoFeedException;
+
+Logger::enable();
+
+function get_feed($url, $disable_filtering = false)
+{
+    try {
+
+        $reader = new Reader;
+        $resource = $reader->discover($url);
+
+        $parser = $reader->getParser(
+            $resource->getUrl(),
+            $resource->getContent(),
+            $resource->getEncoding()
+        );
+
+        if ($disable_filtering) {
+            $parser->disableContentFiltering();
+        }
+
+        return $parser->execute();
+    }
+    catch (PicoFeedException $e) {
+        echo 'Exception thrown ===> "'.$e->getMessage().'"'.PHP_EOL;
+        return false;
+    }
+}
+
+function get_item($feed, $item_id)
+{
+    foreach ($feed->items as $item) {
+        if ($item->getId() === $item_id) {
+            echo $item;
+            echo "============= CONTENT ================\n";
+            echo $item->getContent();
+            echo "\n============= CONTENT ================\n";
+            break;
+        }
+    }
+}
+
+function dump_feed($url)
+{
+    $feed = get_feed($url);
+    echo $feed;
+}
+
+function debug_feed($url)
+{
+    get_feed($url);
+    print_r(Logger::getMessages());
+}
+
+function dump_item($url, $item_id)
+{
+    $feed = get_feed($url);
+
+    if ($feed !== false) {
+        get_item($feed, $item_id);
+    }
+}
+
+function nofilter_item($url, $item_id)
+{
+    $feed = get_feed($url, true);
+
+    if ($feed !== false) {
+        get_item($feed, $item_id);
+    }
+}
+
+function grabber($url)
+{
+    $grabber = new Grabber($url);
+    $grabber->download();
+    $grabber->parse();
+
+    print_r(Logger::getMessages());
+    echo "============= CONTENT ================\n";
+    echo $grabber->getContent().PHP_EOL;
+    echo "============= FILTERED ================\n";
+    echo $grabber->getFilteredContent().PHP_EOL;
+}
+
+// Parse command line arguments
+if ($argc === 4) {
+    switch ($argv[1]) {
+        case 'item':
+            dump_item($argv[2], $argv[3]);
+            die;
+        case 'nofilter':
+            nofilter_item($argv[2], $argv[3]);
+            die;
+    }
+}
+else if ($argc === 3) {
+    switch ($argv[1]) {
+        case 'feed':
+            dump_feed($argv[2]);
+            die;
+        case 'debug':
+            debug_feed($argv[2]);
+            die;
+        case 'grabber':
+            grabber($argv[2]);
+            die;
+    }
+}
+
+printf("Usage:\n");
+printf("%s feed <feed-url>\n", $argv[0]);
+printf("%s debug <feed-url>\n", $argv[0]);
+printf("%s item <feed-url> <item-id>\n", $argv[0]);
+printf("%s nofilter <feed-url> <item-id>\n", $argv[0]);
+printf("%s grabber <url>\n", $argv[0]);
+
+
+
+
+function tidyHTML5($buffer)
+{
+  $buffer = str_replace('<menu', '<mytag', $buffer);
+  $buffer = str_replace('menu>', 'mytag>', $buffer);
+  $tidy = new tidy();
+  $options = array(
+    'hide-comments'         => true,
+    //'tidy-mark'             => false,
+    //'indent'                => true,
+    //'indent-spaces'         => 4,
+    'new-blocklevel-tags'   => 'menu,mytag,article,header,footer,section,nav',
+    'new-inline-tags'       => 'video,audio,canvas,ruby,rt,rp',
+    //'doctype'               => '<!DOCTYPE HTML>',
+    //'sort-attributes'     => 'alpha',
+    //'vertical-space'        => false,
+    //'output-xhtml'          => true,
+    //'wrap'                  => 180,
+    //'wrap-attributes'       => false,
+    //'break-before-br'       => false,
+    'char-encoding'         => 'utf8',
+    'input-encoding'        => 'utf8',
+    'output-encoding'       => 'utf8',
+    'show-body-only' => true
+  );
+
+  $tidy->parseString($buffer, $options, 'utf8');
+  $tidy->cleanRepair();
+
+  //$html = '<!DOCTYPE HTML>' . PHP_EOL . $tidy->html();
+  $html = $tidy->html();
+  $html = str_replace('<html lang="en" xmlns="http://www.w3.org/1999/xhtml">', '<html>', $html);
+  $html = str_replace('<html xmlns="http://www.w3.org/1999/xhtml">', '<html>', $html);
+
+  //Hackish stuff starts here
+  //We use regex to parse html, which is usually a bad idea
+  //But currently there is no alternative to it, since tidy is not MENU TAG friendly
+  preg_match_all('/\<mytag(?:[^\>]*)\>\s*\<ul>/', $html, $matches);
+  foreach($matches as $m) {
+    $mo = $m;
+    $m = str_replace('mytag', 'menu', $m);
+    $m = str_replace('<ul>', '', $m);
+    $html = str_replace($mo, $m, $html);
+  }
+  $html = str_replace('<mytag', '<menu', $html);
+  $html = str_replace('</ul></mytag>', '</menu>', $html);
+  $html = str_replace('mytag>', 'menu>', $html);
+  return $html;
+}
+
+
+
+function traducirFecha($fecha) {
+  $traducciones = array(
+    'ene' => 'jan',
+    'ago' => 'aug',
+    'abr' => 'apr',
+    'dic' => 'dec',
+    'enero' => 'january',
+    'febrero' => 'february',
+    'marzo' => 'march',
+    'mayo'=> 'may',
+    'junio'=> 'june',
+    'julio' => 'july',
+    'agosto' => 'august',
+    'septiembre' => 'september',
+    'octubre' => 'october' ,
+    'noviembre' => 'november',
+    'diciembre' => 'december',
+    'lunes' => 'monday',
+    'martes' => 'tuesday',
+    'miércoles' => 'wednesday',
+    'jueves' => 'thursday',
+    'viernes' => 'friday',
+    'sábado' => 'saturday',
+    'domingo' => 'sunday',
+    'lun' => 'mon',
+    'mié' => 'wed',
+    'mie' => 'wed',
+    'mar,' => 'tue',
+    'mi' => 'wed',
+    'jue' => 'thu',
+    'vie' => 'fri',
+    'sab' => 'sat',
+    'sáb' => 'sat',
+    'dom' => 'sun',
+    'de ' => ' ',
+    'hoy' => 'today',
+    '/' => '-',
+    ',' => '',
+    '- ' => '',
+  );
+
+  return str_ireplace(array_keys($traducciones), array_values($traducciones), $fecha);
+
+}
