@@ -1,0 +1,875 @@
+<?php
+function feeder_menu() {
+  $items = array();
+
+  $items['feeder/url/%/%'] = array(
+    'page callback' => 'feeder_url',
+    'page arguments' => array(2,3),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+  );
+  return $items;
+}
+
+/*function feeder_autoload_info() {
+  $path = libraries_get_path('picoFeed');
+  return array(
+    'picoFeedClass' => array(
+      'file' => 'vendor/autoload.php',
+      'file path' => $path,
+    ),
+  );
+}*/
+
+/**
+ * Implements hook_libraries_info().
+ */
+function feeder_libraries_info() {
+  $libraries['cronHelper'] = array(
+    'name' => 'Cron Job Helper/Wrapper',
+    'vendor url' => 'http://abhinavsingh.com/blog/2009/12/how-to-use-locks-in-php-cron-jobs-to-avoid-cron-overlaps/',
+    'download url' => 'https://gist.github.com/bbrink68/d7724bf994ccbee4f580',
+    'version' => '1.0',
+    /*'version arguments' => array(
+      'file' => 'cron.helper.php',
+      'pattern' => '@version\s+([0-9a-zA-Z\.-]+)@',
+      'lines' => 15,
+    ),*/
+    'files' => array(
+      'php' => array('cron.helper.php'),
+    ),
+  );
+  return $libraries;
+}
+
+
+
+$path = 'sites/all/libraries/picoFeed/';
+require $path . 'vendor/autoload.php';
+
+use PicoFeed\Config\Config;
+use PicoFeed\Scraper\Scraper;
+define("MAX_TIME_NOTA", 24*3600);
+define('LOCK_DIR', 'temporary:///');
+define('LOCK_SUFFIX', '.lock');
+define('LOG_DIR', '/var/log/segana/');
+define('LOG_FILE', 'segana.log');
+define('LOG_ERROR', 'segana.error.log');
+
+
+module_load_include('inc', 'feeder', 'feeder.cron');
+module_load_include('inc', 'feeder', 'feeder.rss');
+module_load_include('inc', 'feeder', 'feeder.seccion');
+
+
+
+
+function feeder($tid, $tipo) {
+  $logger = klogger_log();
+  //chequear que no se encuentra corriendo el parsing de este medio
+  if (!class_exists('cronHelper')) {
+    libraries_load('cronHelper');
+  }
+  try {
+    if (($pid = cronHelper::lock($tid)) === FALSE) {
+      throw new Exception("Este medio se esta corriendo actualmente en el cron");
+    }
+
+    switch($tipo) {
+      case 'rss':
+        feeder_rss_medio($tid);
+        break;
+      case 'seccion':
+        feeder_seccion_medio($tid);
+        break;
+    }
+    cronHelper::unlock($tid);
+
+  } catch (Exception $e) {
+    $logger->notice($e->getMessage());
+  }
+}
+
+function feeder_config($tipo = 'contenido') {
+  $config = new Config;
+  $config
+    ->setTimezone('America/Caracas')
+    ->setClientUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.118 Safari/537.36')
+    ->setClientTimeout(20)
+    ->setGrabberTimeout(60)
+    ->setGrabberUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.118 Safari/537.36')
+    ->setMaxRedirections(20)
+    ->setMaxBodySize(10485760)
+    ->setFilterIframeWhitelist(['http://www.youtube.com', 'http://www.vimeo.com'])
+    ->setGrabberRulesFolder(drupal_get_path('module', 'feeder') . "/rules");
+
+  if ($tipo == 'seccion') {
+    $config->setFilterWhitelistedTags(['img' => ['src', 'title', 'id', 'alt', 'name', 'hspace'], 'span' => ['class', 'id'], 'div' => ['class', 'id', 'title'], 'p' => ['class', 'id', 'title'], 'figure' => ['class', 'id', 'title'], 'article' => ['class', 'id', 'title'], 'h2' => ['class', 'id', 'title'], 'br', 'small' => ['class', 'title'], 'a' => ['class', 'title', 'alt', 'href'], 'dl' => ['class'], 'dt' ]);
+  }
+  else {
+    $config->setFilterWhitelistedTags(
+      [
+        'img' => ['src', 'title', 'id', 'alt', 'name', 'hspace', '_mce_src', 'data-src', 'width', 'height'],
+        'span' => ['class', 'id', 'data-etiquetas'],
+        'div' => ['class', 'id', 'title'],
+        'p' => ['class', 'id', 'title'],
+        'figure' => ['class', 'id', 'title'],
+        'article' => ['class', 'id', 'title'],
+        'h2' => ['class', 'id', 'title'],
+        'br',
+        'small' => ['class', 'title'],
+        'ul' => ['class', 'id'],
+        'li' => ['class', 'id'],
+        'strong',
+        'blockquote' => ['class'],
+        'td' => ['class', 'id'],
+        'samp' => ['class', 'id'],
+        'dd' => ['class', 'id'],
+        'time' => ['datetime', 'itemprop'],
+        'dl' => ['class'],
+        'section' => ['class']
+      ]
+    );
+  }
+
+  return $config;
+}
+
+
+function feeder_url($url, $raw = FALSE, $tipo = 'seccion', $RawAndFiltered = FALSE) {
+  $logger = klogger_log();
+  if ($raw) {
+    $url = base64_decode($url);
+  }
+  $config = feeder_config($tipo);
+  try {
+    $grabber = new Scraper($config);
+    $grabber->setUrl($url);
+    $grabber->execute();
+
+  }
+  catch (Exception $e) {
+    $logger->error($e->getMessage());
+  }
+
+  if ($RawAndFiltered) {
+    return $contenido = [
+      'filtered' => $grabber->getFilteredContent(),
+      'raw' => $grabber->getRawContent()
+    ];
+  }
+
+
+  if ($raw) {
+    echo $grabber->getRawContent();
+  }
+  else {
+    //chequear si el contenido es xml
+    if (strpos($grabber->getRawContent(), '<?xml') !== FALSE) {
+      return $grabber->getRawContent();
+    }
+    return $grabber->getFilteredContent();
+  }
+}
+
+function feeder_extraer($contenido_html, $elementos = NULL) {
+  //chequear si es un xml
+  if (strpos($contenido_html, '<?xml') !== FALSE) {
+    $xml =  new SimpleXMLElement($contenido_html);
+    $resultado = array();
+    if ($contenido = $xml->xpath('//'.$elementos)) {
+      foreach ($contenido as $elemento) {
+        $resultado[] = strip_tags($elemento);
+      }
+    }
+    $resultado = implode(PHP_EOL, $resultado);
+    return $resultado;
+  }
+  if (!empty($elementos) && !empty($contenido_html)) {
+    $resultado = NULL;
+    //separar selectores a borrar
+    $elementos = explode('[]', $elementos);
+    $elementos_borrar = isset($elementos[1]) ? $elementos[1] : NULL;
+    $elementos = $elementos[0];
+    $resultado_final = NULL;
+    // ciclar por cada elemento separado por '&&'
+    foreach(explode('&&', $elementos) as $elemento) {
+      $contenido = new simple_html_dom();
+      $contenido->load($contenido_html);
+      //extraer las variables de elemento:
+      //0: selector,
+      //1: el numero del elemento, * si son todos, o "last" si se quiere el ultimo elemento
+      //2: el atributo que se quiere extraer
+      //3: a que nivel se encuentra el elemento del padre
+      //4: delimitador para separa el varios campos el resultado final
+      //5: el campo o los campos que se quieren despues de separados (cada valor separado por
+      //6: si es verdadero el implode se hace usando PHP_EOL
+      //7: alternativo, solo si el anterior $elemento resulto ser nulo
+      //8: cadena de caracteres a borrar
+      //9: cadena a buscar
+      //10: strip_tags
+      //se puede escapar los elementos usando \
+      $elemento = preg_split('~(?<!\\\)' . preg_quote(',', '~') . '~', $elemento);
+
+      //extraer el delimitador antes de limpiar el selector, ya que si el delimitador es un espacio este queda empty
+      $delimitador = (isset($elemento[4]) && !empty($elemento[4])) ? str_replace('\\', '', $elemento[4]) : NULL;
+
+      array_walk($elemento, 'limpiar_elemento');
+      $selector = $elemento[0];
+      $posicion = $elemento[1];
+      $atributo = (isset($elemento[2]) && !empty($elemento[2])) ? $elemento[2] : 'plaintext';
+      $nivel = (isset($elemento[3]) && !empty($elemento[3])) ? $elemento[3] : NULL;
+      $campos = (isset($elemento[5]) && ($elemento[5] == 0 || !empty($elemento[5]))) ? $campos = explode(';', $elemento[5]) : NULL;
+      $delimitador_implode = (isset($elemento[6]) && ($elemento[6] == 0 || !empty($elemento[6]))) ? PHP_EOL : ' ';
+      $alternativo = (isset($elemento[7]) && !empty($elemento[7])) ? $elemento[7] : NULL;
+      $cadena_borrar = (isset($elemento[8]) && !empty($elemento[8])) ? str_replace('\\', '', $elemento[8]) : NULL;
+      $cadena_buscar = (isset($elemento[9]) && !empty($elemento[9])) ? $elemento[9] : NULL;
+      $strip_tags = (isset($elemento[10]) && !empty($elemento[10])) ? $elemento[10] : NULL;
+
+      //chequear si el elemento anterior fue nulo
+      if (!empty($resultado_final) && isset($alternativo)) {
+        continue;
+      }
+
+      if (isset($nivel)) {
+        for ($i = 1; $i <= $elemento[3]; $i++) {
+          $selectores = explode(' ', $selector);
+          $html = NULL;
+          $children = ($contenido->find($selectores[0], 0)) ? $contenido->find($selectores[0], 0)->children() : NULL;
+          foreach ($children as $child) {
+            if ($child->tag == $selectores[1]) {
+              $html .= $child->outertext;
+            }
+          }
+          $contenido = new simple_html_dom();
+          $contenido->load($html);
+          unset($selectores[0]);
+          $selector = implode(' ', $selectores);
+        }
+      }
+
+      if ($posicion == '*' || $posicion == 'last') {
+        foreach ($contenido->find($selector) as $item) {
+          $PreResultado = trim($item->$atributo);
+          if (isset($delimitador)) {
+            $valores = explode($delimitador, $PreResultado);
+            $PreResultado = array();
+            foreach($campos as $campo) {
+              if (isset($cadena_buscar)){
+                if (isset($valores[$campo]) && strpos($valores[$campo], $cadena_buscar) !== FALSE) {
+                   $PreResultado[] = $valores[$campo];
+                }
+              }
+              else {
+                $PreResultado[] = isset($valores[$campo]) ? $valores[$campo] : NULL;
+              }
+            }
+            $resultado .= implode(' ', $PreResultado) . PHP_EOL;
+          }
+          else {
+            if (isset($cadena_buscar)){
+              if(strpos($PreResultado, $cadena_buscar) !== FALSE) {
+                $resultado .= $PreResultado . PHP_EOL;
+              }
+            }
+            else {
+              $resultado .= $PreResultado . PHP_EOL;
+            }
+          }
+        }
+        if ($posicion == 'last') {
+          $resultado = explode(PHP_EOL, trim($resultado));
+          $resultado = end($resultado);
+        }
+      }
+      else {
+        $resultado = $contenido->find($selector, $posicion)->$atributo;
+      }
+
+      if (isset($delimitador) && ($posicion != '*' && $posicion != 'last')) {
+        $valores = explode($delimitador, $resultado);
+        $resultado = array();
+        if ($campos[0] == '*' || $campos[0] == 'last') {
+          $resultado = $valores;
+          if (isset($cadena_buscar)){
+            foreach ($resultado as $key => $valor) {
+              if (strpos($valor, $cadena_buscar) === FALSE) {
+                unset($resultado[$key]);
+              }
+            }
+          }
+          if ($campos[0] == 'last') {
+            $resultado = array(end($resultado));
+          }
+        }
+        else {
+          foreach ($campos as $campo) {
+            if (isset($cadena_buscar)){
+              if (isset($valores[$campo]) && strpos($valores[$campo], $cadena_buscar) !== FALSE) {
+                $resultado[] = $valores[$campo];
+              }
+            }
+            else {
+              $resultado[] = isset($valores[$campo]) ? $valores[$campo] : NULL;
+            }
+          }
+        }
+        $resultado = implode($delimitador_implode, $resultado);
+      }
+
+      //borrar
+      if (isset($elementos_borrar)) {
+        // ciclar por cada elemento separado por '&&'
+        foreach(explode('&&', $elementos_borrar) as $elemento_borrar) {
+          $resultado_borrar = preg_split('/\r\n|[\r\n]/', feeder_extraer($contenido_html, $elemento_borrar));
+          $resultado = str_replace($resultado_borrar, '', $resultado);
+        }
+      }
+      $resultado_final .= (isset($resultado) && !empty($resultado)) ? trim($resultado) . PHP_EOL : NULL;
+      unset($resultado, $PreResultado);
+    }
+
+    if (isset($cadena_borrar)) {
+      $resultado_final = str_replace($cadena_borrar, '', $resultado_final);
+    }
+
+    if (isset($strip_tags)) {
+      $resultado_final = strip_tags($resultado_final);
+    }
+    return trim($resultado_final);
+  }
+}
+
+
+
+function feeder_notas($notas, $medio_tid, $area_tid, $medio_name) {
+  $logger = klogger_log();
+  $logger_error = klogger_log('error');
+
+  $vocabulary_etiqueta = taxonomy_vocabulary_machine_name_load('etiqueta');
+  foreach($notas as $NotaId => $values) {
+    try {
+      //tomar para el campo fecha la fecha mas actual entre: fecha_rss, fecha_seccion y fecha
+      //debido a que algunos medio usan fechas como "sábado, 06:46PM" esto puede devolver diferentes fechas cuando
+      //se usa strtotime y puede devolver una fecha en el futuro, en el ejemplo siempre devolvera la fecha del sabado próximo o si
+      //el día actual es sábado devolvera la del día actual, entonces se descartan las fechas en el futuro
+      $values['fecha_seccion'] = (!empty($values['fecha_seccion']) &&  $values['fecha_seccion'] < time()) ? $values['fecha_seccion'] : NULL;
+
+      //debido a lo anterior si la fecha de la nota es el futuro, ocurrio un error similar y se establece como la fecha actual,
+      //dando un margen de error de por los menos 2 horas
+      $values['fecha'] = (!empty($values['fecha']) &&  $values['fecha'] < (time() + 7200)) ? $values['fecha'] : time();
+
+      if (!empty($values['fecha_rss']) && ($values['fecha_rss'] > $values['fecha'])){
+        $fecha = $values['fecha_rss'];
+      }
+      elseif (!empty($values['fecha_seccion']) && ($values['fecha_seccion'] > $values['fecha'])){
+        $fecha = $values['fecha_seccion'];
+      }
+      elseif (!empty($values['fecha'])) {
+        $fecha = $values['fecha'];
+      }
+      else {
+        $fecha = time();
+      }
+      //si la fecha es igual a d-m-Y 12:00 am y corresponde al dia actual, entonces tomar la hora actual
+      //ya que muchos medios solo colocan el dia, mes y año y no la hora,
+      //es mas preciso tomar como hora de publicación la hora actual
+      if (date('d-m-Y H:i', $fecha) == date('d-m-Y') . ' 00:00') {
+        $fecha = time();
+      }
+
+      //chequear que la nota no existe con otro id, si existe actualizarla
+      $query = new EntityFieldQuery();
+      $query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'nota')
+        ->propertyCondition('title', $values['titulo'])
+        ->fieldCondition('field_fecha', 'value', time(), '<=')
+        ->fieldCondition('field_fecha', 'value', ($fecha - 24*3600), '>')
+        ->fieldCondition('field_medio', 'tid', $medio_tid);
+      $resultado = $query->execute();
+
+      if (isset($resultado['node'])) {
+        $nid = key($resultado['node']);
+        $node = node_load($nid);
+        $wrapper = entity_metadata_wrapper('node', $node);
+        $logger->info("Medio:".$medio_name." Nota actualizada ".$NotaId." ".$values['url']);
+      }
+      else {
+        $node = entity_create('node', array(
+          'type' => 'nota',
+          'title' => $values['titulo'],
+        ));
+        $wrapper = entity_metadata_wrapper('node', $node);
+        $wrapper->save();
+        $logger->info("Medio:".$medio_name." Nota creada ".$NotaId." ".$values['url']);
+
+        $tipo_medio_digital_tid = key(taxonomy_get_term_by_name('Digital', 'tipo_medio'));
+        $wrapper->field_tipo_medio->set($tipo_medio_digital_tid);
+      }
+
+      //chequear que la nota no ha sido modificada por los usuarios
+      $usuario_actualizacion = $wrapper->field_usuario_actualizacion->getIdentifier();
+      if (empty($usuario_actualizacion)) {
+        $wrapper->field_area->set($area_tid);
+        $wrapper->field_fecha->set(strtotime(date('Y-m-d', $fecha)));
+        $wrapper->field_fecha_original->set($fecha);
+      }
+      $wrapper->field_autoid->set($NotaId);
+
+
+      if(mb_stristr($values['category'], 'opinión') !== FALSE || mb_stristr($values['etiqueta'], 'opinión') !== FALSE) {
+        $tipo_informacion_tid = key(taxonomy_get_term_by_name('Artículo de opinión', 'tipo_informacion'));
+      }
+      elseif(mb_stristr($values['category'], 'entrevista') !== FALSE || mb_stristr($values['etiqueta'], 'entrevista') !== FALSE) {
+        $tipo_informacion_tid = key(taxonomy_get_term_by_name('Entrevista', 'tipo_informacion'));
+      }
+      else {
+        $tipo_informacion_tid = key(taxonomy_get_term_by_name('Noticia', 'tipo_informacion'));
+      }
+      $wrapper->field_tipo_informacion->set($tipo_informacion_tid);
+      $wrapper->field_medio->set($medio_tid);
+      $wrapper->field_enlace->set($values['url']);
+
+      if (!empty($values['antetitulo']) && strlen($values['antetitulo']) <= 255){
+        $wrapper->field_antetitulo->set($values['antetitulo']);
+      }
+
+
+      if (!empty($values['cuerpo'])){
+        //sanitizar cuerpo
+        //Si para extraer el cuerpo se uso innertext se deben limpiar todas las etiquetas excepto los p y br, y aque esta se usaran para convertirlas en saltos de lineas
+        $values['cuerpo'] = strip_tags($values['cuerpo'], '<br><br/><br /><p>');
+        $values['cuerpo'] = str_ireplace("<p>", "", $values['cuerpo']);
+        $breaks = array("<br />","<br>","<br/>", "</p>");
+        $values['cuerpo'] = str_ireplace($breaks, "\r\n", $values['cuerpo']);
+        //reemplazar tags que no pudieron ser sustuidos, tales como un p con el atributo class (<p class="class">)
+        $values['cuerpo'] = strip_tags($values['cuerpo']);
+
+        //reemplazar multiples espacios sin reeemplazar saltos de lineas y
+        //multiples saltos de linea con uno solo
+        $values['cuerpo'] = preg_replace("/[\r\n]+/", "\r\n\r\n", $values['cuerpo']);
+        $values['cuerpo'] = preg_replace('/[ \t]+/', ' ', $values['cuerpo']);
+        $wrapper->body->set(array('value' => $values['cuerpo']));
+      }
+      else {
+        //reportar que el campo cuerpo esta vacio
+        $logger->error("Medio:".$medio_name." El cuerpo de esta nota esta vacio ".$NotaId." ".$values['url']);
+        $logger_error->error("Medio:".$medio_name." El cuerpo de esta nota esta vacio ".$NotaId." ".$values['url'], $values);
+        //Establecer el autoid en 0 para que se reintente establecer el valor del cuerpo durante la actualizacion de esta
+        $wrapper->field_autoid->set(0);
+      }
+
+      if (!empty($values['sumario']) || !empty($values['sumario_rss']) || !empty($values['sumario_seccion'])){
+        if (!empty($values['sumario'])) {
+          $wrapper->field_sumario->set($values['sumario']);
+        }
+        elseif(!empty($values['sumario_rss'])) {
+          //limpiar el sumario que viene del feed rss
+          $values['sumario_rss'] = strip_tags($values['sumario_rss']);
+          $longitud_sumario = strlen(preg_replace('/\s+/', '', $values['sumario_rss']));
+          $longitud_cuerpo = strlen(preg_replace('/\s+/', '', $values['cuerpo']));
+          //comparar la longitud del cuerpo y del sumario, si la longitud del sumario es superior al 80% del cuerpo, se considera que no es un sumario y por ende se descarta
+          if ($longitud_sumario < ($longitud_cuerpo*80/100)) {
+            $wrapper->field_sumario->set($values['sumario_rss']);
+          }
+        }
+        else {
+          $wrapper->field_sumario->set($values['sumario_seccion']);
+        }
+      }
+
+
+      if (!empty($values['objeto_multimedia'])) {
+        $values['objeto_multimedia'] = preg_split('/\r\n|[\r\n]/', $values['objeto_multimedia']);
+        $wrapper->field_objeto_multimedia->set($values['objeto_multimedia']);
+      }
+
+      if (!empty($values['tweets'])) {
+        $values['tweets'] = preg_split('/\r\n|[\r\n]/', $values['tweets']);
+        $wrapper->field_twitter->set($values['tweets']);
+      }
+
+      if (!empty($values['autor_seccion']) && strlen($values['autor_seccion']) <= 255){
+        $wrapper->field_autor->set($values['autor_seccion']);
+      }
+      elseif (!empty($values['autor']) && strlen($values['autor']) <= 255){
+        $wrapper->field_autor->set($values['autor']);
+      }
+      else {
+        $wrapper->field_autor->set($medio_name);
+      }
+
+      //guardar la categoria y la etiqueta como etiquetas
+      $etiquetas = array();
+      if (isset($values['category']) && !empty($values['category'])) {
+        $tid_category = key(taxonomy_get_term_by_name($values['category'], 'etiqueta'));
+        if (empty($tid_category)) {
+          //crear etiqueta si no existe
+          $term = new stdClass();
+          $term->name = $values['category'];
+          $term->vid = $vocabulary_etiqueta->vid;
+          taxonomy_term_save($term);
+          $tid_category = $term->tid;
+        }
+        $etiquetas[] = $tid_category;
+      }
+
+      if ((!empty($values['etiqueta'])) && ($values['etiqueta'] != $values['category'])) {
+        $tid_etiqueta = key(taxonomy_get_term_by_name($values['etiqueta'], 'etiqueta'));
+        if (empty($tid_etiqueta)) {
+          //crear etiqueta si no existe
+          $term = new stdClass();
+          $term->name = $values['etiqueta'];
+          $term->vid = $vocabulary_etiqueta->vid;
+          taxonomy_term_save($term);
+          $tid_etiqueta = $term->tid;
+        }
+        if (!empty($tid_etiqueta)) {
+          $etiquetas[] = $tid_etiqueta;
+        }
+      }
+      if (!empty($values['etiqueta_otras'])){
+        $etiquetas_otras = preg_split('/\r\n|[\r\n]/', $values['etiqueta_otras']);
+        foreach($etiquetas_otras as $etiqueta){
+          if (!empty($etiqueta) && $etiqueta != $values['etiqueta'] && $etiqueta != $values['category']) {
+            $tid_etiqueta = key(taxonomy_get_term_by_name($etiqueta, 'etiqueta'));
+            if (empty($tid_etiqueta)) {
+              //crear etiqueta si no existe
+              $term = new stdClass();
+              $term->name = $etiqueta;
+              $term->vid = $vocabulary_etiqueta->vid;
+              taxonomy_term_save($term);
+              $tid_etiqueta = $term->tid;
+            }
+            if (!empty($tid_etiqueta)) {
+              $etiquetas[] = $tid_etiqueta;
+            }
+          }
+        }
+      }
+
+      if (!empty($etiquetas)) {
+        $wrapper->field_etiqueta->set($etiquetas);
+      }
+
+      if (!empty($values['imagen'])) {
+        $imagenes_url = preg_split('/\r\n|[\r\n]/', $values['imagen']);
+
+        if (!empty($values['leyenda_imagen'])) {
+          $leyendas = preg_split('/\r\n|[\r\n]/', $values['leyenda_imagen']);
+        }
+      }
+
+      if (!empty($values['imagen_otras'])) {
+        $imagenes_otras_url = preg_split('/\r\n|[\r\n]/', $values['imagen_otras']);
+        if (!empty($imagenes_url)) {
+          $imagenes_url = array_merge($imagenes_url, $imagenes_otras_url);
+        }
+        else {
+          $imagenes_url = $imagenes_otras_url;
+        }
+
+        if (!empty($values['leyenda_imagen_otras'])) {
+          $leyendas_otras = preg_split('/\r\n|[\r\n]/', $values['leyenda_imagen_otras']);
+          if (!empty($leyendas)) {
+            $leyendas = array_merge($leyendas,$leyendas_otras);
+          }
+          else {
+            $imagenes_url = $leyendas_otras;
+          }
+        }
+
+      }
+
+      if (!empty($imagenes_url)) {
+
+        $imagenes = array();
+        foreach ($imagenes_url as $key => $imagen_url) {
+          $dir = 'public://imagenes/' . date('Ymd');
+          file_prepare_directory($dir, FILE_CREATE_DIRECTORY);
+
+          $retry = TRUE;
+          $numberRetries = 1;
+          while (($retry) && $numberRetries <= 3) {
+            $file = system_retrieve_file($imagen_url, $dir, TRUE);
+            if ($file) {
+              $retry = FALSE;
+            }
+            else {
+              $logger->warning("Medio:".$medio_name." Retries: $numberRetries de la imagen $imagen_url de la nota ".$values['url']);
+              sleep(3);
+              $numberRetries++;
+            }
+          }
+          if ($file) {
+            $imagen = array(
+              'fid' => $file->fid,
+              'display' => 1
+            );
+            if (isset($leyendas[$key])) {
+              $imagen['description'] =  $leyendas[$key];
+            }
+            $imagenes[] = $imagen;
+          }
+          else {
+            $logger->error("Medio:".$medio_name." Fallo descarga de la imagen $imagen_url de la nota ".$values['url']);
+          }
+        }
+        $wrapper->field_imagen->set($imagenes);
+      }
+    }
+    catch (EntityMetadataWrapperException $exc) {
+      $logger->error($exc->getTraceAsString());
+      $logger->error("Medio:".$medio_name." Valores que se intentaron insertar", $values);
+      watchdog(
+        'feeder',
+        'See '  . __FUNCTION__ . '() <pre>' .  $exc->getTraceAsString() . '</pre>',
+        NULL, WATCHDOG_ERROR
+      );
+    }
+    if (isset($wrapper)) {
+      $wrapper->save();
+      $nids[] = $wrapper->getIdentifier();
+    }
+
+  }
+  return $nids;
+}
+
+
+
+
+function feeder_rules($tid, &$form_state, $tipo) {
+  $rules_dir = drupal_get_path('module', 'feeder') . "/rules/";
+  $term = taxonomy_term_load($tid);
+  $url = $term->field_pagina_web[LANGUAGE_NONE][0]['value'];
+  $domain =   str_ireplace('www.', '', parse_url($url, PHP_URL_HOST));
+  if (empty($domain)) {
+    $domain = str_ireplace('www.', '', $url);
+  }
+  $rules_file = '.' . $domain . '.php';
+
+  $variables = unserialize($term->field_variables_medio[LANGUAGE_NONE][0]['value']);
+  if ($tipo == 'contenido') {
+    $contenido = explode('|', $form_state['values']['superior']['contenido']);
+    $contenido_grabber = !empty($form_state['values']['superior']['contenido_grabber']) ? $form_state['values']['superior']['contenido_grabber'] : '"%.*%';
+    $url_prueba = !empty($form_state['values']['superior']['url_prueba']) ? $form_state['values']['superior']['url_prueba'] : '';
+  }
+  else {
+    $contenido = explode('|', $variables['contenido']);
+    $contenido_grabber = isset($variables['contenido_grabber']) ? $variables['contenido_grabber'] : '"%.*%';
+    $url_prueba = isset($variables['url_prueba']) ? $variables['url_prueba'] : '';
+  }
+
+  if ($tipo == 'seccion') {
+    $seccion = explode('|', $form_state['values']['superior']['seccion']);
+    $seccion_grabber = $form_state['values']['superior']['seccion_grabber'];
+    $url_prueba_seccion = !empty($form_state['values']['superior']['url_prueba_seccion']) ? $form_state['values']['superior']['url_prueba_seccion'] : '';
+  }
+  else {
+    $seccion = isset($variables['seccion_grabber']) ? explode('|', $variables['seccion']) : NULL;
+    $seccion_grabber = isset($variables['seccion_grabber']) ? $variables['seccion_grabber'] : NULL;
+    $url_prueba_seccion = isset($variables['url_prueba_seccion']) ? $variables['url_prueba_seccion'] : '';
+  }
+
+  $grabbers = array();
+  $test_url = array();
+  if (isset($contenido) && isset($contenido_grabber)) {
+    $grabbers['contenido'] = [
+      'body' => $contenido,
+      'grabber' => $contenido_grabber,
+      'url' => $url_prueba
+    ];
+  }
+  if (isset($seccion) && isset($seccion_grabber)) {
+    $grabbers['seccion'] = [
+      'body' => $seccion,
+      'grabber' => $seccion_grabber,
+      'url' => $url_prueba_seccion
+    ];
+  }
+  $orden = (isset($variables['orden_grabber'])) ? $variables['orden_grabber'] : 'contenido';
+  $primer_grabber = $grabbers[$orden];
+  unset($grabbers[$orden]);
+  array_unshift($grabbers, $primer_grabber);
+
+  //if (file_destination($rules_dir . $rules_file, FILE_EXISTS_ERROR)) {
+  $data = "<?php" . PHP_EOL;
+  $data .= "return array(" . PHP_EOL;
+  $data .= "\t'grabber' => array(" . PHP_EOL;
+  foreach($grabbers as $grabber) {
+    $data .= "\t\t'" . $grabber['grabber'] . "' => array(" . PHP_EOL;
+    $data .= "\t\t\t'test_url' => '" . $grabber['url'] . "'," . PHP_EOL;
+    $data .= "\t\t\t'body' => array(" . PHP_EOL;
+    foreach ($grabber['body'] as $body) {
+      $data .= "\t\t\t\t'//" . $body . "'," . PHP_EOL;
+    }
+    $data .= "\t\t\t)," . PHP_EOL;
+    $data .= "\t\t\t'strip' => array(" . PHP_EOL;
+    $data .= "\t\t\t\t'//script'" . PHP_EOL;
+    $data .= "\t\t\t)," . PHP_EOL;
+    $data .= "\t\t)," . PHP_EOL;
+  }
+  $data .= "\t)" . PHP_EOL;
+  $data .= ");";
+  file_unmanaged_save_data($data, $rules_dir . $rules_file, FILE_EXISTS_REPLACE);
+  //}
+}
+
+function sanitizar($value) {
+  if (is_string($value)) {
+    $value = trim($value, '.-');
+    //reemplazar entidades html no numericas
+    $value = html_entity_decode($value);
+    //reemplazar entidades numericas por su caracter correspondiente
+    $value = html_entity_decode_numeric($value);
+    //reemplazar espacio no estandar en utf8
+    $value = str_replace(array("\xC2\xA0", "\xE2\x80\x8B"), ' ', $value);
+    //limpiar espacios
+    $value = trim($value);
+  }
+  return $value;
+}
+
+function traducirFecha($fecha) {
+  $traducciones = array(
+    'ene' => 'jan',
+    'ago' => 'aug',
+    'abr' => 'apr',
+    'dic' => 'dec',
+    'enero' => 'january',
+    'febrero' => 'february',
+    'marzo' => 'march',
+    'mayo'=> 'may',
+    'junio'=> 'june',
+    'julio' => 'july',
+    'agosto' => 'august',
+    'septiembre' => 'september',
+    'octubre' => 'october' ,
+    'noviembre' => 'november',
+    'diciembre' => 'december',
+    'lunes' => 'monday',
+    'martes' => 'tuesday',
+    'miércoles' => 'wednesday',
+    'jueves' => 'thursday',
+    'viernes' => 'friday',
+    'sábado' => 'saturday',
+    'domingo' => 'sunday',
+    'lun' => 'mon',
+    'mié' => 'wed',
+    'mie' => 'wed',
+    'mar,' => 'tue',
+    'mi' => 'wed',
+    'jue' => 'thu',
+    'vie' => 'fri',
+    'sab' => 'sat',
+    'sáb' => 'sat',
+    'dom' => 'sun',
+    'de ' => ' ',
+    'hoy' => 'today',
+    '/' => '-',
+    ',' => '',
+    '- ' => '',
+  );
+
+  return str_ireplace(array_keys($traducciones), array_values($traducciones), $fecha);
+
+}
+
+function limpiar_elemento (&$elemento) {
+  $elemento = trim($elemento);
+  $elemento = trim($elemento, "'");
+  $elemento = trim($elemento);
+}
+
+
+function tidyHTML5($buffer)
+{
+    $buffer = str_replace('<menu', '<mytag', $buffer);
+    $buffer = str_replace('menu>', 'mytag>', $buffer);
+    $tidy = new tidy();
+    $options = array(
+      'hide-comments'         => true,
+      //'tidy-mark'             => false,
+      //'indent'                => true,
+      //'indent-spaces'         => 4,
+      'new-blocklevel-tags'   => 'menu,mytag,article,header,footer,section,nav',
+      'new-inline-tags'       => 'video,audio,canvas,ruby,rt,rp',
+      //'doctype'               => '<!DOCTYPE HTML>',
+      //'sort-attributes'     => 'alpha',
+      //'vertical-space'        => false,
+      //'output-xhtml'          => true,
+      //'wrap'                  => 180,
+      //'wrap-attributes'       => false,
+      //'break-before-br'       => false,
+      'char-encoding'         => 'utf8',
+      'input-encoding'        => 'utf8',
+      'output-encoding'       => 'utf8',
+      'show-body-only' => true
+    );
+
+    $tidy->parseString($buffer, $options, 'utf8');
+    $tidy->cleanRepair();
+
+    //$html = '<!DOCTYPE HTML>' . PHP_EOL . $tidy->html();
+    $html = $tidy->html();
+    $html = str_replace('<html lang="en" xmlns="http://www.w3.org/1999/xhtml">', '<html>', $html);
+    $html = str_replace('<html xmlns="http://www.w3.org/1999/xhtml">', '<html>', $html);
+
+    //Hackish stuff starts here
+    //We use regex to parse html, which is usually a bad idea
+    //But currently there is no alternative to it, since tidy is not MENU TAG friendly
+    preg_match_all('/\<mytag(?:[^\>]*)\>\s*\<ul>/', $html, $matches);
+    foreach($matches as $m) {
+        $mo = $m;
+        $m = str_replace('mytag', 'menu', $m);
+        $m = str_replace('<ul>', '', $m);
+        $html = str_replace($mo, $m, $html);
+    }
+    $html = str_replace('<mytag', '<menu', $html);
+    $html = str_replace('</ul></mytag>', '</menu>', $html);
+    $html = str_replace('mytag>', 'menu>', $html);
+    return $html;
+}
+
+
+/**
+* Decodes all HTML entities, including numeric and hexadecimal ones.
+*
+* @param mixed $string
+* @return string decoded HTML
+*/
+
+function html_entity_decode_numeric($string, $quote_style = ENT_COMPAT, $charset = "utf-8")
+{
+$string = html_entity_decode($string, $quote_style, $charset);
+$string = preg_replace_callback('~&#x([0-9a-fA-F]+);~i', "chr_utf8_callback", $string);
+$string = preg_replace('~&#([0-9]+);~e', 'chr_utf8("\\1")', $string);
+return $string;
+}
+
+/**
+ * Callback helper
+ */
+
+function chr_utf8_callback($matches)
+ {
+  return chr_utf8(hexdec($matches[1]));
+ }
+
+/**
+* Multi-byte chr(): Will turn a numeric argument into a UTF-8 string.
+*
+* @param mixed $num
+* @return string
+*/
+
+function chr_utf8($num)
+{
+if ($num < 128) return chr($num);
+if ($num < 2048) return chr(($num >> 6) + 192) . chr(($num & 63) + 128);
+if ($num < 65536) return chr(($num >> 12) + 224) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
+if ($num < 2097152) return chr(($num >> 18) + 240) . chr((($num >> 12) & 63) + 128) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
+return '';
+}

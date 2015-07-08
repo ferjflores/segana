@@ -1,0 +1,7 @@
+name = Feeder SEGANA
+description = Alimentación automática de Notas SEGANA
+package = Segana modules
+version = VERSION
+core = 7.x
+
+dependencies[] = simplehtmldom
