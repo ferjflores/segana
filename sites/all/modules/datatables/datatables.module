@@ -40,7 +40,7 @@ function datatables_library() {
         drupal_get_path('module', 'datatables') . '/js/datatables.js' => array(),
       ),
       'css' => array(
-        $lib_path . '/media/css/demo_table.css' => array(),
+        $lib_path . '/media/css/jquery.dataTables.css' => array(),
       ),
     );
 
@@ -54,6 +54,20 @@ function datatables_library() {
       ),
       'css' => array(
         $lib_path . '/extras/TableTools/media/css/TableTools.css' => array(),
+      ),
+      'dependencies' => array(
+        array('datatables', 'datatables'),
+      ),
+    );
+    $libraries['datatables-fixedheader'] = array(
+      'title' => 'FixedHeader plugin for DataTables',
+      'website' => 'https://datatables.net/extensions/fixedheader/',
+      'version' => '1.1.4',
+      'js' => array(
+        $lib_path . '/extensions/FixedHeader/js/dataTables.fixedHeader.js' => array(),
+      ),
+      'css' => array(
+        $lib_path . '/extensions/FixedHeader/css/dataTables.fixedHeader.css' => array(),
       ),
       'dependencies' => array(
         array('datatables', 'datatables'),
@@ -211,7 +225,6 @@ function theme_datatable($variables) {
 
   if (isset($variables['rows'])) {
     $datatable_options = !empty($attributes['datatable_options']) ? $attributes['datatable_options'] : array();
-
     // Column settings can either be set with the global options
     // or in each header definition.
     if (!isset($datatable_options['aoColumns'])) {
@@ -231,6 +244,9 @@ function theme_datatable($variables) {
     }
 
     drupal_add_library('datatables', 'datatables');
+    if (isset($datatable_options['fixedheader']) && ($datatable_options['fixedheader'])){
+      drupal_add_library('datatables', 'datatables-fixedheader');
+    }
     drupal_add_js(array('datatables' => array('#' . $attributes['id'] => $datatable_options)), 'setting');
     unset($attributes['datatable_options']);
   }

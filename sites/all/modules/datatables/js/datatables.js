@@ -22,7 +22,45 @@
             settings.aoColumns.unshift({"bSortable": false});
           }
 
-          var datatable = $(selector).dataTable(settings);
+           var datatable = $(selector).DataTable(settings);
+
+          if (settings.individualSearch) {
+            $(selector+' tfoot th').each( function () {
+              var title = $(selector+' thead th').eq( $(this).index() ).text();
+              $(this).html( '<input type="text" placeholder="Buscar '+title+'" />' );
+            } );
+
+            datatable.columns().every( function () {
+              var that = this;
+              var search = $.fn.dataTable.util.throttle(
+                function ( val ) {
+                  that.search( val ).draw();
+                },
+                1000
+              );
+
+              $( 'input', this.footer() ).on( 'keyup change', function () {
+                //that
+                    search( this.value )
+                    //.draw();
+              } );
+            } );
+          }
+
+          if (settings.fixedheader) {
+            if (settings.offsetTop) {
+              var offsetTop = settings.offsetTop;
+            }
+            else {
+              var offsetTop = 0;
+            }
+
+            var oFH = new $.fn.dataTable.FixedHeader(datatable, {
+              offsetTop: offsetTop
+
+            });
+            oFH.fnPosition();
+          }
 
           if (settings.bExpandable) {
             // Add column headers to table settings.
