@@ -1,7 +1,6 @@
 <?php
 
-function vista_notas($nid) {
-	$node = node_load($nid);
+function vista_notas($node) {
 	$titulo = $node->title;
 	$language = LANGUAGE_NONE;
 	$cuerpo_texto = $node->body[$language][0]['value'];

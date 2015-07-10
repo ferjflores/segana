@@ -3,7 +3,7 @@ function vistas_menu() {
   $items = array();
 
 
-  $items['notas/ver/%nid'] = array(
+  $items['notas/ver/%node'] = array(
     'page callback' => 'vista_notas',
     'file' => 'vistas.inc',
     'page arguments' => array(2),
