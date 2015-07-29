@@ -100,6 +100,9 @@ function vistas_discursivo_form($form, &$form_state, $tid = NULL, $elemento_disc
       case 'list_boolean':
         $type = 'radios';
         break;
+      case 'text_long':
+        $type = 'textarea';
+        break;
     }
     $form['contenedor'][$field_name] = array(
       '#type' => $type,
@@ -119,6 +122,9 @@ function vistas_discursivo_form($form, &$form_state, $tid = NULL, $elemento_disc
     elseif ($values['type'] == 'list_boolean') {
       $form['contenedor'][$field_name]['#options'] = $values['allowed_values'];
       $form['contenedor'][$field_name]['#default_value'] = isset($form_state['values'][$field_name]) ? $form_state['values'][$field_name] : (!empty($$field_name) ? $$field_name : '0');
+    }
+    elseif ($values['type'] == 'text_long') {
+      $form['contenedor'][$field_name]['#resizable'] = FALSE;
     }
   }
 
