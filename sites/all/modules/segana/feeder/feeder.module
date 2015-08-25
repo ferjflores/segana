@@ -209,6 +209,8 @@ function feeder_extraer($contenido_html, $elementos = NULL) {
       //8: cadena de caracteres a borrar
       //9: cadena a buscar
       //10: strip_tags
+      //11 eliminar saltos de linea
+
       //se puede escapar los elementos usando \
       $elemento = preg_split('~(?<!\\\)' . preg_quote(',', '~') . '~', $elemento);
 
@@ -226,6 +228,7 @@ function feeder_extraer($contenido_html, $elementos = NULL) {
       $cadena_borrar = (isset($elemento[8]) && !empty($elemento[8])) ? str_replace('\\', '', $elemento[8]) : NULL;
       $cadena_buscar = (isset($elemento[9]) && !empty($elemento[9])) ? $elemento[9] : NULL;
       $strip_tags = (isset($elemento[10]) && !empty($elemento[10])) ? $elemento[10] : NULL;
+      $saltos_linea = (isset($elemento[11]) && !empty($elemento[11])) ? $elemento[11] : NULL;
 
       //chequear si el elemento anterior fue nulo
       if (!empty($resultado_final) && isset($alternativo)) {
@@ -274,6 +277,9 @@ function feeder_extraer($contenido_html, $elementos = NULL) {
               }
             }
             else {
+              if ($saltos_linea) {
+                $PreResultado = preg_replace('/\r\n?/', " ", $PreResultado);
+              }
               $resultado .= $PreResultado . PHP_EOL;
             }
           }
