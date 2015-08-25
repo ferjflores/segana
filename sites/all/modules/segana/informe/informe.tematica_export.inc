@@ -222,7 +222,7 @@ function  informe_tematica_export($iid){
 			${'indice_' . $tid}->addRow(400);
 			${'indice_' . $tid}->addCell(1000, $styleCell)->addText(' ', $paginaIndice);
 			$titulo_nota = ${'indice_' . $tid}->addCell(4000, $styleCell);
-			$titulo_nota->addText($values_nota['title'], $notaIndiceStyle);
+			$titulo_nota->addText(htmlspecialchars($values_nota['title']), $notaIndiceStyle);
 			$titulo_nota->addTextBreak(1, array('size' => 6));
 			$page++;
 			if (strlen($values_nota['body']) > 3000) {
